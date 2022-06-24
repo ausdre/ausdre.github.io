@@ -2,7 +2,7 @@
 <head></head>
 <body>
 <canvas id="canv"></canvas>
-<svg style="position: absolute;" viewBox="0 0 900 900" xmlns="http://www.w3.org/2000/svg">
+<svg style="position: absolute;" viewBox="0 0 300 900" xmlns="http://www.w3.org/2000/svg">
     <filter id="noiseFilter">
         <feTurbulence baseFrequency="3.95" numOctaves="99" stitchTiles="stitch" type="fractalNoise"></feTurbulence>
     </filter>
@@ -27,6 +27,7 @@
         display: flex;
         overflow: hidden;
         width: 100%;
+        height: 100%;
         align-items: center;
         justify-content: center;
         background: radial-gradient(35% 65%, black, whitesmoke), url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc1MDAnIGhlaWdodD0nNTAwJz48ZmlsdGVyIGlkPSdub2lzZScgeD0nMCcgeT0nMCc+PGZlVHVyYnVsZW5jZSB0eXBlPSdmcmFjdGFsTm9pc2UnIGJhc2VGcmVxdWVuY3k9JzAuNjUnIG51bU9jdGF2ZXM9JzMnIHN0aXRjaFRpbGVzPSdzdGl0Y2gnLz48ZmVCbGVuZCBtb2RlPSdzY3JlZW4nLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0nNTAwJyBoZWlnaHQ9JzUwMCcgZmlsdGVyPSd1cmwoI25vaXNlKScgb3BhY2l0eT0nMC41Jy8+PC9zdmc+");
@@ -105,13 +106,13 @@
 </style>
 <script>
 !function(){
-  const { mozRequestAnimationFrame, addEventListener, setTimeout, requestAnimationFrame, oRequestAnimationFrame, msRequestAnimationFrame, innerHeight, innerWidth, webkitRequestAnimationFrame, outerWidth } = window
+  const { mozRequestAnimationFrame, addEventListener, setTimeout, requestAnimationFrame, oRequestAnimationFrame, msRequestAnimationFrame, innerHeight, innerWidth, webkitRequestAnimationFrame, outerWidth, outerHeight } = window
   const RGBA_REGEXP = /(\d{1,3})(?:\s?,\s?)(\d{1,3})(?:\s?,\s?)(\d{1,3})(?:\s?,\s?)(.*[^\)])/g
 
   let c                   = document.getElementById('canv'),
       $                   = c.getContext('2d'),
       w                   = c.width = outerWidth,
-      h                   = c.height = innerHeight,
+      h                   = c.height = outerHeight,
       i, j, p, _p, ang, z = 0,
       mouseX, mouseY      = 0,
       num                 = 60,
@@ -253,7 +254,7 @@
 
   window.addEventListener('resize', function () {
     c.width = w = window.outerWidth
-    c.height = h = window.innerHeight
+    c.height = h = window.outerHeight
   }, false)
 
   document.addEventListener('pointerenter', changeColor, false)
