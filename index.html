@@ -120,20 +120,17 @@
       i = 0, j = 0, p = 0 , _p = 0, ang = 0, z = 0,
       mouseX = 0, mouseY = 0,
       sDisplay            = (w < h),
-      sz                  = {min:4, max:9},
-      num                 = 129,
+      sz                  = {min: sDisplay ? 3 : 4, max: sDisplay ? 8 : 9},
+      num                 = 180,
       sc                  = 760,
       mTrace              = true,
+      colorStep           = 250 / num,
+      szStep = (sz.max - sz.min) / num,
       arr                 = new Array(0)
 
 
-  if(sDisplay) {
-    sz.min -= 1
-    sz.max -= 2
-    v.remove()
-  }
 
-  v ? v.attributes.viewBox.value = `0 0 ${w} ${h}` : noop()
+
 
   window.requestAnimFrame = (() => requestAnimationFrame || webkitRequestAnimationFrame || mozRequestAnimationFrame || oRequestAnimationFrame || msRequestAnimationFrame || function (callback) {setTimeout(callback, 1000 / 60)})()
   window.document.title = "Enjoy"
@@ -145,6 +142,10 @@
   $.shadowOffsetX = -1.20
   $.shadowOffsetY = 0.50
 
+  v ? v.attributes.viewBox.value = `0 0 ${w} ${h}` : noop()
+
+  const indexMask = () =>  i + 1;
+
   function getRandomBool () { return Math.random() >= .5 }
   function getRandomFloat (min, max) {return Math.random() * (max - min) + min}
   function getRandomInt (e, t) { return Math.round(Math.random() * (t - e)) + e }
@@ -153,6 +154,26 @@
       getRandomInt(50, 180 + i),
       getRandomInt(50, 180 + i)].join(',')
   }
+
+  function shuffle(array) {
+    let counter = array.length;
+
+    // While there are elements in the array
+    while (counter > 0) {
+        // Pick a random index
+        let index = Math.floor(Math.random() * counter);
+
+        // Decrease counter by 1
+        counter--;
+
+        // And swap the last element with it
+        let temp = array[counter];
+        array[counter] = array[index];
+        array[index] = temp;
+    }
+
+    return array;
+}
 
   function changeColor () {
     if(sDisplay) return
@@ -185,9 +206,7 @@
     }
   }
   function rgbaStrFromInt (r, g, b, a) {
-    return `rgba(${ Math.round(r) }, ${ Math.round(g) }, ${ Math.round(b) }, ${ isNaN(a)
-      ? getRandomFloat(.90, .99)
-      : a })`
+    return `rgba(${ ++r % 251 }, ${ ++g % 251 }, ${ ++b % 251 }, ${ isNaN(a) ? getRandomFloat(.90, .99) : a })`
   }
   function intFromRGBAStr (rgba) {
     const len = 3, int = new Array(len), matches = RGBA_REGEXP.exec(rgba)
@@ -201,18 +220,25 @@
     }
     return int
   }
-  for (i = 0; i < num; i++) {
+
+  if(sDisplay) v.remove();
+
+  for (i = 0; i < num; i++)
     arr.push({
-      x: (i * getRandomInt(1, 5)) * Math.random() + i,
-      y: (i * getRandomInt(1, 5)) * Math.random() + i,
-      col: 'rgba(' + getRandomColor() + ', ' + getRandomFloat(.95, .99) + ')',
-      sz: ((getRandomInt(sz.min, sz.max) + (num - i) / num) & 0x1e) + Math.random()
+      x: (indexMask() * getRandomInt(1, 5)) * Math.random() + indexMask(),
+      y: (indexMask() * getRandomInt(1, 5)) * Math.random() + indexMask(),
+        col: rgbaStrFromInt((Math.random()*indexMask())*getRandomInt(1,5), (Math.random()*indexMask())*getRandomInt(1,5), (Math.random()*indexMask())*getRandomInt(1,5),getRandomFloat(.95,.99)),
+        sz: ((sz.max - (szStep*indexMask())) % sz.max) - sz.min/4
+      /*col: 'rgba(' + getRandomColor() + ', ' + getRandomFloat(.95, .99) + ')',
+      sz: ((getRandomInt(sz.min, sz.max) + (num - i) / num) & 0x1e) + Math.random()*/
     })
-  }
+
+  arr=shuffle(arr)
+
   var run = function () {
-    if(z > 600 && z < 9000) z=0;
+    if(z > 600 && z < 9000) { z=0; arr=shuffle(arr) }
     $.clearRect(0, 0, w, h)
-    z += 0.008 / (getRandomFloat(.0005, 7.5))
+    z += 0.008 / (getRandomFloat(.0005, 6))
     for (i = 0; i < num;) {
       p = arr[ i++ ]
       p.x += n(p.x / sc + z, p.y / sc) * 5.7
@@ -282,8 +308,6 @@
     document.addEventListener('pointerup', () => {z = 0;mTrace = true}, false)
   }
 
-  document.addEventListener('pointerenter', changeColor, false)
-  document.addEventListener('pointerleave', changeColor, false)
   document.addEventListener('pointermove', onmousemove, {passive: true});
 
   run();
