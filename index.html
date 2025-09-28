@@ -573,10 +573,10 @@ const linksKeyForLayout = l => (l === 'coral' || l === 'WDMTG') ? 'hierarchyRela
 
 const MESSAGES = {
   'home-main-title-1': 'toller text.',
-  'home-main-title-2': 'noch mehr toller text.',
-  'home-main-title-3': 'und noch viel mehr toller text.',
+  'home-main-title-2': '...mehr toller text.',
+  'home-main-title-3': 'und noch mehr toller text.',
   'home-main-title-4': ' ',
-  'home-main-title-5': 'mehr toller text.',
+  'home-main-title-5': 'nochmal toller text.',
   'home-main-title-6': ' ',
   'home-main-title-7': ' ',
   'home-main-title-8': 'und ende.'
@@ -732,7 +732,7 @@ async function loadFramesAndLinks() {
   const pts = await safeLoadGZJSON('./points_w_ratio.json.gz');
   if (Array.isArray(pts) && pts.length) {
     // (legacy mobile tweak kept exactly as before)
-    if ((innerWidth || innerHeight) <= 600 && pts[5] && pts[5][0]) {
+    if (innerWidth <= 600 && pts[5] && pts[5][0]) {
       const A = Array.isArray(pts[5][0]) ? pts[5][0] : Object.values(pts[5][0]);
       for (let i = 0; i < A.length; i += 3) {
         const x = A[i];
@@ -1363,7 +1363,6 @@ function Animation({ settings, setSettings, setEdgeOpacity, setBackground, setSt
           delay: 500,
           duration: 12000
         }).add({
-          easing: 'easeInOutExpo',
           targets: __state,
           ...{
             cameraLat: Math.PI * 2.55,
@@ -1385,7 +1384,7 @@ function Animation({ settings, setSettings, setEdgeOpacity, setBackground, setSt
       if (running && activeSteps[3]) {
         const a = anime.timeline({ easing: 'easeInOutExpo' }).add({
           targets: { opacity: 0 },
-          opacity: 0.95,
+          opacity: 0.50,
           delay: 6000,
           easing: 'linear',
           duration: 4000,
