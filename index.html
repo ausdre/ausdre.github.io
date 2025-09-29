@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="de">
-  <head>
+<head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>hi.</title>
+    <title>Disrupt tomorrow, today.</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,671 +11,663 @@
           rel="stylesheet">
 
 
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Orbitron:wght@700;900&display=swap"
-            rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Orbitron:wght@700;900&display=swap"
+          rel="stylesheet">
 
     <!-- Tailwind for landing -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-::-webkit-scrollbar {width: 10px;}
-::-webkit-scrollbar-thumb {background: linear-gradient(180deg, #030519 28%, rgba(1, 13, 40, 0) 100%);}
-::-webkit-scrollbar-track {background-color: #ffffff;}
-
-
-.loader {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    max-width: 14.6rem;
-    margin-top: 7.3rem;
-    margin-bottom: 7.3rem;
-    }
-.loader:before, .loader:after {
-    content: "";
-    position: absolute;
-    border-radius: 50%;
-    animation-duration: 1.8s;
-    animation-iteration-count: infinite;
-    animation-timing-function: ease-in-out;
-    filter: drop-shadow(0 0 0.7555555556rem rgba(255, 255, 255, 0.75));
-    }
-.loader:before {
-    width: 100%;
-    padding-bottom: 100%;
-    box-shadow: inset 0 0 0 1.7rem #fff;
-    animation-name: pulsA;
-    }
-.loader:after {
-    width: calc(100% - 1.7rem*2);
-    padding-bottom: calc(100% - 1.7rem*2);
-    box-shadow: 0 0 0 0 #fff;
-    animation-name: pulsB;
-    }
-
-@keyframes pulsA {
-    0% {
-        box-shadow: inset 0 0 0 1.7rem #fff;
-        opacity: 1;
-        }
-    50%, 100% {
-        box-shadow: inset 0 0 0 0 #fff;
-        opacity: 0;
-        }
-    }
-@keyframes pulsB {
-    0%, 50% {
-        box-shadow: 0 0 0 0 #fff;
-        opacity: 0;
-        }
-    100% {
-        box-shadow: 0 0 0 1.7rem #fff;
-        opacity: 1;
-        }
-    }
-
-body,html,#root {
-    margin:                  0;
-    padding:                 0;
-    width:                   100%;
-    font-size:               16px;
-    line-height:             150%;
-    text-rendering:          optimizeLegibility;
-    font-feature-settings:   "liga", "kern", "ss01";
-    -webkit-font-smoothing:  antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    overflow-x:              hidden;
-    cursor: auto                  ;
-    }
-
-/* ensure only body scrolls */
-html, body {overflow-y: auto;}
-
-#snap-container {
-  height: auto;
-  overflow: visible;
-}
-
-
-/* make the root the snap scroller */
-html {
-  scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
-
-}
-
-
-#root, .R3FHeader, .section-immersive, footer {scroll-snap-align: start;}
-
-/* prevent margin-collapsing from breaking the snap */
-.section-immersive {min-height: 100vh;}
-
-
-.R3FHeader {
-  width: 100%;
-  height: 100vh; /* header height */
-  display: flex;
-  background: #030519;
-  transition: background 1s;
-  position: relative; /* anchor for ::after and Title */
-}
-
-/*#root::after {
-  pointer-events: none;
-  content: '';
-  position: absolute;
-  z-index: 1;
-  left: 0;
-  right: 0;
-  top: calc(100vh - 100px);
-  height: 100px;
-  transition: background 1s;
-  background: linear-gradient(0deg, #030519 28%, rgba(1, 13, 40, 0) 100%);
-}*/
-
-
-.TitleContainer {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  z-index: 3;
-  perspective: 600px;
-}
-
-
-.TitleHome {
-    position: relative;
-    min-width: 25vw;
-    max-width: 75vw;
-    margin: auto;
-    text-shadow: 1px 2px 2px #3d3d3d;
-    color: #ffffff;
-    text-align: center;
-    font-family: "Sora", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    font-weight: 300;
-    letter-spacing: -0.055em;
-    /* word-spacing: 1rem; */
-    font-size: clamp(33px, 3vw, 55px);
-    line-height: 110%;
-    transform-style: preserve-3d;
-    backface-visibility: visible;
-    -webkit-backface-visibility: visible;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    font-feature-settings: "liga", "kern", "ss01";
-    }
-
-
-/* Title animation */
-.swing-in-right-fwd {
-  -webkit-animation: swing-in-right-fwd .5s cubic-bezier(1.000, 0.000, 0.000, 1.000) both;
-  animation: swing-in-right-fwd .5s cubic-bezier(1.000, 0.000, 0.000, 1.000) both
-}
-
-@-webkit-keyframes swing-in-right-fwd {
-  0% {
-    -webkit-transform: rotateY(-100deg);
-    transform: rotateY(-100deg);
-    -webkit-transform-origin: right;
-    transform-origin: right;
-    opacity: 0
-  }
-
-  100% {
-    -webkit-transform: rotateY(0);
-    transform: rotateY(0);
-    -webkit-transform-origin: right;
-    transform-origin: right;
-    opacity: 1
-  }
-}
-
-@keyframes swing-in-right-fwd {
-  0% {
-    transform: rotateY(-100deg);
-    transform-origin: right;
-    opacity: 0
-  }
-
-  100% {
-    transform: rotateY(0);
-    transform-origin: right;
-    opacity: 1
-  }
-}
-
-#bg3d {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100vh;
-  z-index: -1;
-  pointer-events: none;
-}
-
-#snap-container {
-  height: auto !important;
-  overflow: visible !important;
-}
-
-#snap-container p{
-    font-family: Manrope,sans-serif;
-    font-kerning: auto;
-    font-weight: lighter;
-    text-rendering: optimizeLegibility;
-    text-align-last: start;
-    text-align: justify;
-    -webkit-backface-visibility: hidden;
-    -webkit-font-smoothing: antialiased;
-    font-feature-settings: "liga", "kern", "ss01";
-    }
-
-/* Section transition effects */
-.section-immersive {
-  min-height: 100vh;
-    min-width: 100%;
-  opacity: 1;
-    backdrop-filter: blur(0px);
-  filter: blur(100px) brightness(1.08);
-  transition: opacity .77s cubic-bezier(.7, 0, .3, 1),
-              backdrop-filter .99s cubic-bezier(.7, 0, .3, 1),
-              filter .99s cubic-bezier(.7, 0, .3, 1);
-  will-change: opacity, backdrop-filter, filter;
-  z-index: 2;
-}
-
-.section-immersive.active {
-  opacity: 1;
-  filter: blur(0) brightness(1);
-    backdrop-filter: blur(100px);
-}
-
-/* Glassy container */
-.glass {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(3px) saturate(112%);
-}
-
-/* Burger menu */
-.burger {
-    position:        fixed;
-    top:             4rem;
-    right:           4rem;
-    z-index:         60;
-    width:           48px;
-    height:          48px;
-    display:         flex;
-    flex-direction:  column;
-    justify-content: center;
-    align-items:     center;
-    border-radius:   50%;
-    background:      none;
-    border:          none;
-    transition:      .77s cubic-bezier(.7, 0, .3, 1), filter .77s ease-in-out;
-    cursor:          pointer;
-    }
-
-.burger-bar {
-    width:         26px;
-    height:        3px;
-    background:    #FFFFFF;
-    margin:        4px 0;
-    border-radius: 0;
-    transition:    .77s cubic-bezier(.7, 0, .3, 1), filter .77s ease-in-out;
-    filter:        none;
-    }
-
-
-@keyframes breathe {
-    0%   { transform: scaleX(1) rotate(0deg); opacity: 1; }
-    25%  { transform: scaleX(1.18) rotate(1deg); opacity: 0.95; }
-    50%  { transform: scaleX(1) rotate(0deg); opacity: 1; }
-    75%  { transform: scaleX(0.82) rotate(-1deg); opacity: 0.95; }
-    100% { transform: scaleX(1) rotate(0deg); opacity: 1; }
-    }
-
-.burger:not(.open):hover .bar1{
-    animation: breathe 2s ease-in-out infinite;
-    }
-.burger:not(.open):hover .bar2 {
-    animation: breathe 2s ease-in-out infinite 0.2s;
-    }
-.burger:not(.open):hover .bar3 {
-    animation: breathe 2s ease-in-out infinite 0.4s;
-    }
-
-
-.burger.open .bar1 {
-  transform: rotate(45deg) translate(6px, 6px);
-}
-
-.burger.open .bar2 {
-  opacity: 0;
-}
-
-.burger.open .bar3 {
-  transform: rotate(-45deg) translate(6px, -6px);
-}
-
-/* Navigation overlay */
-#nav-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 55;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  /*background: radial-gradient(rgb(3 5 25), #000);*/
-  backdrop-filter: blur(24px) saturate(60%);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .33s, backdrop-filter .33s;
-}
-
-#nav-overlay.open {
-  opacity: 1;
-  pointer-events: all;
-}
-
-#nav-overlay ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-#nav-overlay li {
-  margin: 2.5rem 0;
-}
-
-#nav-overlay a {
-    font-family: 'Atkinson Hyperlegible', 'Inter', Arial, sans-serif;
-    font-size: 2.5vw;
-    color: #FFFFFF;
-    text-decoration: none;
-    letter-spacing: 0.09em;
-    font-weight: 300;
-    transition: font-weight .177s linear(0 0%, 0.21 31.79%, 0.43 70.7%, 0.99 98.26%), letter-spacing .12s linear;
-}
-
-#nav-overlay a:hover, #nav-overlay a.active-nav {
-    font-weight: 900;
-    letter-spacing: -0.05em;
-    }
-
-/* Footer */
-footer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 6vh 0 2vh 0;
-  gap: 2rem;
-  background: transparent;
-}
-
-.vaeora-logo-svg { max-width: 10vw; }
-
-/* Custom pointer */
-#custom-pointer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 30px;
-  height: 30px;
-  border-radius: 40%;
-  backdrop-filter: invert(1) blur(2px) saturate(100%);
-  background: rgba(17, 17, 17, 0.0085);
-  transform: translate(-50%, -50%) scale(1);
-  pointer-events: none;
-  z-index: 1000;
-  transition: transform 0.1s ease, background 0.3s ease-in-out;
-}
-
-/* Intro overlay transition */
-#intro-overlay {
-  transition: opacity .7s, filter .7s, transform .7s;
-}
-
-#brand-left {
-    position: fixed;
-    top: 4rem;
-    left: 4rem;
-    z-index: 60;
-    line-height: 0;
-    }
-
-
-#brand-left .vaeora-wordmark { filter: none; transition: filter .77s ease-in-out; }
-#brand-left.invertV .vaeora-wordmark { filter: invert(1); }
-
-.invertMe { filter: invert(1); }
-
-/* one scroller with snapping */
-#page {
-  height: 100vh;
-  overflow-y: auto;
-  scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* snap targets */
-#root,
-.R3FHeader,
-.section-immersive,
-footer {
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-  /* forces stop on each */
-}
-
-/* ensure header + sections fill a viewport */
-#root {
-  min-height: 100vh;
-}
-
-/* parent of the header */
-.R3FHeader {
-  height: 100vh;
-}
-
-/* your header wrapper */
-.section-immersive {
-  min-height: 100vh;
-}
-
-/* kill the second scroller completely */
-html, body {
-  overflow: hidden;
-}
-
-/* body does NOT scroll */
-#snap-container {
-  height: auto;
-  overflow: visible;
-}
-
-/* remove outer margins that break snapping */
-.section-immersive {
-  margin: 0;
-}
-
-/* replace margins with padding inside */
-
-@media (max-width: 700px) {
-  .TitleHome {
-    font-size: clamp(24px, 2.5vw, 55px);
-  }
-
-  .vaeora-logo-svg {
-    width: 25vw;
-    height: auto;
-}
-
-  #nav-overlay a {font-size: 2rem;}
-}
+        ::-webkit-scrollbar {width: 10px;}
+        ::-webkit-scrollbar-thumb {background: linear-gradient(180deg, #030519 28%, rgba(1, 13, 40, 0) 100%);}
+        ::-webkit-scrollbar-track {background-color: #ffffff;}
+
+
+        .loader {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 14.6rem;
+            margin-top: 7.3rem;
+            margin-bottom: 7.3rem;
+            }
+        .loader:before, .loader:after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            animation-duration: 1.8s;
+            animation-iteration-count: infinite;
+            animation-timing-function: ease-in-out;
+            filter: drop-shadow(0 0 0.7555555556rem rgba(255, 255, 255, 0.75));
+            }
+        .loader:before {
+            width: 100%;
+            padding-bottom: 100%;
+            box-shadow: inset 0 0 0 1.7rem #fff;
+            animation-name: pulsA;
+            }
+        .loader:after {
+            width: calc(100% - 1.7rem*2);
+            padding-bottom: calc(100% - 1.7rem*2);
+            box-shadow: 0 0 0 0 #fff;
+            animation-name: pulsB;
+            }
+
+        @keyframes pulsA {
+            0% {
+                box-shadow: inset 0 0 0 1.7rem #fff;
+                opacity: 1;
+                }
+            50%, 100% {
+                box-shadow: inset 0 0 0 0 #fff;
+                opacity: 0;
+                }
+            }
+        @keyframes pulsB {
+            0%, 50% {
+                box-shadow: 0 0 0 0 #fff;
+                opacity: 0;
+                }
+            100% {
+                box-shadow: 0 0 0 1.7rem #fff;
+                opacity: 1;
+                }
+            }
+
+        body,html,#root {
+            margin:                  0;
+            padding:                 0;
+            width:                   100%;
+            font-size:               16px;
+            line-height:             150%;
+            text-rendering:          optimizeLegibility;
+            font-feature-settings:   "liga", "kern", "ss01";
+            -webkit-font-smoothing:  antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x:              hidden;
+            cursor: auto                  ;
+            }
+
+        /* ensure only body scrolls */
+        html, body {overflow-y: auto;}
+
+        #snap-container {
+            height: auto;
+            overflow: visible;
+            }
+
+
+        /* make the root the snap scroller */
+        html {
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+
+            }
+
+
+        #root, .R3FHeader, .section-immersive, footer {scroll-snap-align: start;}
+
+        /* prevent margin-collapsing from breaking the snap */
+        .section-immersive {min-height: 100vh;}
+
+
+        .R3FHeader {
+            width: 100%;
+            height: 100vh; /* header height */
+            display: flex;
+            background: #030519;
+            transition: background 1s;
+            position: relative; /* anchor for ::after and Title */
+            }
+
+        /*#root::after {
+          pointer-events: none;
+          content: '';
+          position: absolute;
+          z-index: 1;
+          left: 0;
+          right: 0;
+          top: calc(100vh - 100px);
+          height: 100px;
+          transition: background 1s;
+          background: linear-gradient(0deg, #030519 28%, rgba(1, 13, 40, 0) 100%);
+        }*/
+
+
+        .TitleContainer {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 3;
+            perspective: 600px;
+            }
+
+
+        .TitleHome {
+            position: relative;
+            min-width: 25vw;
+            max-width: 75vw;
+            margin: auto;
+            text-shadow: 1px 2px 2px #3d3d3d;
+            color: #ffffff;
+            text-align: center;
+            font-family: "Sora", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-weight: 300;
+            letter-spacing: -0.055em;
+            /* word-spacing: 1rem; */
+            font-size: clamp(33px, 3vw, 55px);
+            line-height: 110%;
+            transform-style: preserve-3d;
+            backface-visibility: visible;
+            -webkit-backface-visibility: visible;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+            font-feature-settings: "liga", "kern", "ss01";
+            }
+
+
+        /* Title animation */
+        .swing-in-right-fwd {
+            -webkit-animation: swing-in-right-fwd .5s cubic-bezier(1.000, 0.000, 0.000, 1.000) both;
+            animation: swing-in-right-fwd .5s cubic-bezier(1.000, 0.000, 0.000, 1.000) both
+            }
+
+        @-webkit-keyframes swing-in-right-fwd {
+            0% {
+                -webkit-transform: rotateY(-100deg);
+                transform: rotateY(-100deg);
+                -webkit-transform-origin: right;
+                transform-origin: right;
+                opacity: 0
+                }
+
+            100% {
+                -webkit-transform: rotateY(0);
+                transform: rotateY(0);
+                -webkit-transform-origin: right;
+                transform-origin: right;
+                opacity: 1
+                }
+            }
+
+        @keyframes swing-in-right-fwd {
+            0% {
+                transform: rotateY(-100deg);
+                transform-origin: right;
+                opacity: 0
+                }
+
+            100% {
+                transform: rotateY(0);
+                transform-origin: right;
+                opacity: 1
+                }
+            }
+
+        #bg3d {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+            }
+
+        #snap-container {
+            height: auto !important;
+            overflow: visible !important;
+            }
+
+        #snap-container p{
+            font-family: Manrope,sans-serif;
+            font-kerning: auto;
+            font-weight: lighter;
+            text-rendering: optimizeLegibility;
+            text-align-last: start;
+            text-align: justify;
+            -webkit-backface-visibility: hidden;
+            -webkit-font-smoothing: antialiased;
+            font-feature-settings: "liga", "kern", "ss01";
+            }
+
+        /* Section transition effects */
+        .section-immersive {
+            min-height: 100vh;
+            min-width: 100%;
+            opacity: 1;
+            backdrop-filter: blur(0px);
+            filter: blur(100px) brightness(1.08);
+            transition: opacity .77s cubic-bezier(.7, 0, .3, 1),
+                        backdrop-filter .99s cubic-bezier(.7, 0, .3, 1),
+                        filter .99s cubic-bezier(.7, 0, .3, 1);
+            will-change: opacity, backdrop-filter, filter;
+            z-index: 2;
+            }
+
+        .section-immersive.active {
+            opacity: 1;
+            filter: blur(0) brightness(1);
+            backdrop-filter: blur(100px);
+            }
+
+        /* Glassy container */
+        .glass {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(3px) saturate(112%);
+            }
+
+        /* Burger menu */
+        .burger {
+            position:        fixed;
+            top:             4rem;
+            right:           4rem;
+            z-index:         60;
+            width:           48px;
+            height:          48px;
+            display:         flex;
+            flex-direction:  column;
+            justify-content: center;
+            align-items:     center;
+            border-radius:   50%;
+            background:      none;
+            border:          none;
+            transition:      .77s cubic-bezier(.7, 0, .3, 1), filter .77s ease-in-out;
+            cursor:          pointer;
+            }
+
+        .burger-bar {
+            width:         26px;
+            height:        3px;
+            background:    #FFFFFF;
+            margin:        4px 0;
+            border-radius: 0;
+            transition:    .77s cubic-bezier(.7, 0, .3, 1), filter .77s ease-in-out;
+            filter:        none;
+            }
+
+
+        @keyframes breathe {
+            0%   { transform: scaleX(1) rotate(0deg); opacity: 1; }
+            25%  { transform: scaleX(1.18) rotate(1deg); opacity: 0.95; }
+            50%  { transform: scaleX(1) rotate(0deg); opacity: 1; }
+            75%  { transform: scaleX(0.82) rotate(-1deg); opacity: 0.95; }
+            100% { transform: scaleX(1) rotate(0deg); opacity: 1; }
+            }
+
+        .burger:not(.open):hover .bar1{
+            animation: breathe 2s ease-in-out infinite;
+            }
+        .burger:not(.open):hover .bar2 {
+            animation: breathe 2s ease-in-out infinite 0.2s;
+            }
+        .burger:not(.open):hover .bar3 {
+            animation: breathe 2s ease-in-out infinite 0.4s;
+            }
+
+
+        .burger.open .bar1 {
+            transform: rotate(45deg) translate(6px, 6px);
+            }
+
+        .burger.open .bar2 {
+            opacity: 0;
+            }
+
+        .burger.open .bar3 {
+            transform: rotate(-45deg) translate(6px, -6px);
+            }
+
+        /* Navigation overlay */
+        #nav-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 55;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            /*background: radial-gradient(rgb(3 5 25), #000);*/
+            backdrop-filter: blur(24px) saturate(60%);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .33s, backdrop-filter .33s;
+            }
+
+        #nav-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+            }
+
+        #nav-overlay ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            }
+
+        #nav-overlay li {
+            margin: 2.5rem 0;
+            }
+
+        #nav-overlay a {
+            font-family: 'Atkinson Hyperlegible', 'Inter', Arial, sans-serif;
+            font-size: 2.5vw;
+            color: #FFFFFF;
+            text-decoration: none;
+            letter-spacing: 0.09em;
+            font-weight: 300;
+            transition: font-weight .177s linear(0 0%, 0.21 31.79%, 0.43 70.7%, 0.99 98.26%), letter-spacing .12s linear;
+            }
+
+        #nav-overlay a:hover, #nav-overlay a.active-nav {
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            }
+
+        /* Footer */
+        footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 6vh 0 2vh 0;
+            gap: 2rem;
+            background: transparent;
+            }
+
+        .vaeora-logo-svg { max-width: 10vw; }
+
+        /* Custom pointer */
+        #custom-pointer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 30px;
+            height: 30px;
+            border-radius: 40%;
+            backdrop-filter: invert(1) blur(2px) saturate(100%);
+            background: rgba(17, 17, 17, 0.0085);
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: none;
+            z-index: 1000;
+            transition: transform 0.1s ease, background 0.3s ease-in-out;
+            }
+
+        /* Intro overlay transition */
+        #intro-overlay {
+            transition: opacity .7s, filter .7s, transform .7s;
+            }
+
+        #brand-left {
+            position: fixed;
+            top: 4rem;
+            left: 4rem;
+            z-index: 60;
+            line-height: 0;
+            }
+
+
+        #brand-left .vaeora-wordmark { filter: none; transition: filter .77s ease-in-out; }
+        #brand-left.invertV .vaeora-wordmark { filter: invert(1); }
+
+        .invertMe { filter: invert(1); }
+
+        /* one scroller with snapping */
+        #page {
+            height: 100vh;
+            overflow-y: auto;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            }
+
+        /* snap targets */
+        #root,
+        .R3FHeader,
+        .section-immersive,
+        footer {
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            /* forces stop on each */
+            }
+
+        /* ensure header + sections fill a viewport */
+        #root {
+            min-height: 100vh;
+            }
+
+        /* parent of the header */
+        .R3FHeader {
+            height: 100vh;
+            }
+
+        /* your header wrapper */
+        .section-immersive {
+            min-height: 100vh;
+            }
+
+        /* kill the second scroller completely */
+        html, body {
+            overflow: hidden;
+            }
+
+        /* body does NOT scroll */
+        #snap-container {
+            height: auto;
+            overflow: visible;
+            }
+
+        /* remove outer margins that break snapping */
+        .section-immersive {
+            margin: 0;
+            }
+
+        /* replace margins with padding inside */
+
+        @media (max-width: 700px) {
+            .TitleHome {
+                font-size: clamp(24px, 2.5vw, 55px);
+                }
+
+            .vaeora-logo-svg {
+                width: 25vw;
+                height: auto;
+                }
+
+            #nav-overlay a {font-size: 2rem;}
+            }
     </style>
-      <!--
-      Fonts available
+    <!--
+    Fonts available
 
-      Space Grotesk
-      Sora
-      Outfit
-      Plus Jakarta Sans
-      Manrope
-      Inter
-      Inter Tight
-      Work Sans
-      Atkinson Hyperlegible
-      League Spartan
-      Bebas Neue
-      Orbitron
+    Space Grotesk
+    Sora
+    Outfit
+    Plus Jakarta Sans
+    Manrope
+    Inter
+    Inter Tight
+    Work Sans
+    Atkinson Hyperlegible
+    League Spartan
+    Bebas Neue
+    Orbitron
 
-      -->
+    -->
     <!-- React/R3F import map from original ref.html -->
     <script type="importmap">
-      {
-          "imports": {
-            "react": "https://esm.sh/react@18.2.0",
-            "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
-            "three": "https://esm.sh/three@0.158.0",
-            "@react-three/fiber": "https://esm.sh/@react-three/fiber@8.15.16?deps=react@18.2.0,react-dom@18.2.0,three@0.158.0",
-            "animejs": "https://esm.sh/animejs@3.2.1",
-            "pako": "https://esm.sh/pako@2.1.0",
-            "react-intl": "https://esm.sh/react-intl@6.6.6?deps=react@18.2.0",
-            "@react-spring/web": "https://esm.sh/@react-spring/web@9.7.3?deps=react@18.2.0,react-dom@18.2.0"
+        {
+            "imports": {
+              "react": "https://esm.sh/react@18.2.0",
+              "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+              "three": "https://esm.sh/three@0.158.0",
+              "@react-three/fiber": "https://esm.sh/@react-three/fiber@8.15.16?deps=react@18.2.0,react-dom@18.2.0,three@0.158.0",
+              "animejs": "https://esm.sh/animejs@3.2.1",
+              "pako": "https://esm.sh/pako@2.1.0",
+              "react-intl": "https://esm.sh/react-intl@6.6.6?deps=react@18.2.0",
+              "@react-spring/web": "https://esm.sh/@react-spring/web@9.7.3?deps=react@18.2.0,react-dom@18.2.0"
+            }
           }
-        }
     </script>
-  </head>
+</head>
 
-  <body>
-    <!--<div id="custom-pointer"></div>-->
-    <div id="intro-overlay" style="position:fixed;inset:0;z-index:110;display:flex;align-items:center;justify-content:center;background:#030519;"><div class="loader"></div></div>
-     <div id="page">
-      <!-- R3F header -->
-      <div id="root"></div>
-    </div>
-    <!-- background canvas -->
-    <script type="module">
-/* === Libs === */
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import * as THREE from 'three';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import anime from 'animejs';
-import { ungzip } from 'pako';
-import { IntlProvider, injectIntl } from 'react-intl';
-import { useTransition, animated } from '@react-spring/web';
+<body>
+<!--<div id="custom-pointer"></div>-->
+<div id="intro-overlay" style="position:fixed;inset:0;z-index:110;display:flex;align-items:center;justify-content:center;background:#030519;"><div class="loader"></div></div>
+<div id="page">
+    <!-- R3F header -->
+    <div id="root"></div>
+</div>
+<!-- background canvas -->
+<script type="module">
+  /* === Libs === */
+  import React from 'react';
+  import { createRoot } from 'react-dom/client';
+  import * as THREE from 'three';
+  import { Canvas, useFrame, useThree } from '@react-three/fiber';
+  import anime from 'animejs';
+  import { ungzip } from 'pako';
+  import { IntlProvider, injectIntl } from 'react-intl';
+  import { useTransition, animated } from '@react-spring/web';
+  import { MESSAGES } from "./messages.js";
 
-/* ================= Core constants / helpers ================= */
-const BASE_W = 2560,
-  BASE_H = 1361;
-const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
-const BACKG = ['#030519', '#120319', '#031419'];
+  /* ================= Core constants / helpers ================= */
+  const browser = (()=>{var u=Object.defineProperty;var b=Object.getOwnPropertyDescriptor;var W=Object.getOwnPropertyNames;var O=Object.prototype.hasOwnProperty;var B=(r,e)=>{for(var n in e)u(r,n,{get:e[n],enumerable:!0})},x=(r,e,n,i)=>{if(e&&typeof e=="object"||typeof e=="function")for(let o of W(e))!O.call(r,o)&&o!==n&&u(r,o,{get:()=>e[o],enumerable:!(i=b(e,o))||i.enumerable});return r};var A=r=>x(u({},"__esModule",{value:!0}),r);var k={};B(k,{BotInfo:()=>l,BrowserInfo:()=>v,NodeInfo:()=>h,ReactNativeInfo:()=>p,SearchBotDeviceInfo:()=>w,browserName:()=>I,detect:()=>R,detectOS:()=>S,getNodeVersion:()=>g,parseUserAgent:()=>d});var N=function(){for(var r=0,e=0,n=arguments.length;e<n;e++)r+=arguments[e].length;for(var i=Array(r),o=0,e=0;e<n;e++)for(var t=arguments[e],s=0,a=t.length;s<a;s++,o++)i[o]=t[s];return i},v=(function(){function r(e,n,i){this.name=e,this.version=n,this.os=i,this.type="browser"}return r})();var h=(function(){function r(e){this.version=e,this.type="node",this.name="node",this.os=process.platform}return r})();var w=(function(){function r(e,n,i,o){this.name=e,this.version=n,this.os=i,this.bot=o,this.type="bot-device"}return r})();var l=(function(){function r(){this.type="bot",this.bot=!0,this.name="bot",this.version=null,this.os=null}return r})();var p=(function(){function r(){this.type="react-native",this.name="react-native",this.version=null,this.os=null}return r})();var y=/alexa|bot|crawl(er|ing)|facebookexternalhit|feedburner|google web preview|nagios|postrank|pingdom|slurp|spider|yahoo!|yandex/,_=/(nuhk|Googlebot|Yammybot|Openbot|Slurp|MSNBot|Ask\ Jeeves\/Teoma|ia_archiver)/,c=3,E=[["aol",/AOLShield\/([0-9\._]+)/],["edge",/Edge\/([0-9\._]+)/],["edge-ios",/EdgiOS\/([0-9\._]+)/],["yandexbrowser",/YaBrowser\/([0-9\._]+)/],["kakaotalk",/KAKAOTALK\s([0-9\.]+)/],["samsung",/SamsungBrowser\/([0-9\.]+)/],["silk",/\bSilk\/([0-9._-]+)\b/],["miui",/MiuiBrowser\/([0-9\.]+)$/],["beaker",/BeakerBrowser\/([0-9\.]+)/],["edge-chromium",/Edg\/([0-9\.]+)/],["chromium-webview",/(?!Chrom.*OPR)wv\).*Chrom(?:e|ium)\/([0-9\.]+)(:?\s|$)/],["chrome",/(?!Chrom.*OPR)Chrom(?:e|ium)\/([0-9\.]+)(:?\s|$)/],["phantomjs",/PhantomJS\/([0-9\.]+)(:?\s|$)/],["crios",/CriOS\/([0-9\.]+)(:?\s|$)/],["firefox",/Firefox\/([0-9\.]+)(?:\s|$)/],["fxios",/FxiOS\/([0-9\.]+)/],["opera-mini",/Opera Mini.*Version\/([0-9\.]+)/],["opera",/Opera\/([0-9\.]+)(?:\s|$)/],["opera",/OPR\/([0-9\.]+)(:?\s|$)/],["ie",/Trident\/7\.0.*rv\:([0-9\.]+).*\).*Gecko$/],["ie",/MSIE\s([0-9\.]+);.*Trident\/[4-7].0/],["ie",/MSIE\s(7\.0)/],["bb10",/BB10;\sTouch.*Version\/([0-9\.]+)/],["android",/Android\s([0-9\.]+)/],["ios",/Version\/([0-9\._]+).*Mobile.*Safari.*/],["safari",/Version\/([0-9\._]+).*Safari/],["facebook",/FBAV\/([0-9\.]+)/],["instagram",/Instagram\s([0-9\.]+)/],["ios-webview",/AppleWebKit\/([0-9\.]+).*Mobile/],["ios-webview",/AppleWebKit\/([0-9\.]+).*Gecko\)$/],["searchbot",y]],f=[["iOS",/iP(hone|od|ad)/],["Android OS",/Android/],["BlackBerry OS",/BlackBerry|BB10/],["Windows Mobile",/IEMobile/],["Amazon OS",/Kindle/],["Windows 3.11",/Win16/],["Windows 95",/(Windows 95)|(Win95)|(Windows_95)/],["Windows 98",/(Windows 98)|(Win98)/],["Windows 2000",/(Windows NT 5.0)|(Windows 2000)/],["Windows XP",/(Windows NT 5.1)|(Windows XP)/],["Windows Server 2003",/(Windows NT 5.2)/],["Windows Vista",/(Windows NT 6.0)/],["Windows 7",/(Windows NT 6.1)/],["Windows 8",/(Windows NT 6.2)/],["Windows 8.1",/(Windows NT 6.3)/],["Windows 10",/(Windows NT 10.0)/],["Windows ME",/Windows ME/],["Open BSD",/OpenBSD/],["Sun OS",/SunOS/],["Chrome OS",/CrOS/],["Linux",/(Linux)|(X11)/],["Mac OS",/(Mac_PowerPC)|(Macintosh)/],["QNX",/QNX/],["BeOS",/BeOS/],["OS/2",/OS\/2/]];function R(r){return r?d(r):typeof document>"u"&&typeof navigator<"u"&&navigator.product==="ReactNative"?new p:typeof navigator<"u"?d(navigator.userAgent):g()}function m(r){return r!==""&&E.reduce(function(e,n){var i=n[0],o=n[1];if(e)return e;var t=o.exec(r);return!!t&&[i,t]},!1)}function I(r){var e=m(r);return e?e[0]:null}function d(r){var e=m(r);if(!e)return null;var n=e[0],i=e[1];if(n==="searchbot")return new l;var o=i[1]&&i[1].split(/[._]/).slice(0,3);o?o.length<c&&(o=N(o,M(c-o.length))):o=[];var t=o.join("."),s=S(r),a=_.exec(r);return a&&a[1]?new w(n,t,s,a[1]):new v(n,t,s)}function S(r){for(var e=0,n=f.length;e<n;e++){var i=f[e],o=i[0],t=i[1],s=t.exec(r);if(s)return o}return null}function g(){var r=typeof process<"u"&&process.version;return r?new h(process.version.slice(1)):null}function M(r){for(var e=[],n=0;n<r;n++)e.push("0");return e}return A(k);})().detect();
+  const isMobile = browser && (browser.os === 'iOS' || browser.os === 'Android') // /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
 
-const ratio = () => Math.max(innerWidth / BASE_W, innerHeight / BASE_H);
-const xRatio = () => innerWidth / BASE_W;
-const yRatio = () => innerHeight / BASE_H;
+  const BASE_W = 2560, BASE_H = 1361;
+  const BACKG = ['#030519', '#120319', '#031419'];
 
-const NODE_PX = 1.2;
-const FOV = 75;
-const CAMERA_FAR = 5e5;
-const CAMERA_NEAR = 0.01;
+  const ratio = () => Math.max(innerWidth / BASE_W, innerHeight / BASE_H);
+  const xRatio = () => innerWidth / BASE_W;
+  const yRatio = () => innerHeight / BASE_H;
 
-/* Edge-Breiten-Konfiguration:
-   - Wir speichern die gewünschte Breite in Pixeln in state.edgeWidthPx (siehe Scene).
-   - Umrechnung in Clip-Space (Shader erwartet „width“ in Clip-Koordinaten):
-     1 px ≈ 2/1080 Clip (Y wird im Shader auf 1080 „fixiert“, dadurch viewport-stabil).
-   - EDGE_PX_BASE = „dünn“, EDGE_PX_EMPH = „betont“ (Steps 3 & 6).
-*/
-const edgeClipFromPx = (px) => (px * 2.0) / 1080.0;
-const EDGE_PX_BASE = isMobile ? 14 : 18; // Grunddicke (sichtbar, aber dezent)
-const EDGE_PX_EMPH = isMobile ? 35 : 55; // betont (Steps 3 & 6)
+  const NODE_PX = 0.91;
+  const FOV = 70;
+  const CAMERA_FAR = 5e3;
+  const CAMERA_NEAR = 0.1;
 
-/* Minimal layouts, damit Object.keys(layouts)[…] identisch bleibt */
-const layouts = {
-  circle: { axis1: { step: 10, min: 0, max: 720, values: [0, 360] }, axis2: { step: 10, min: 0, max: 1000, values: [100, 500] }, axis3: { step: 5, min: -600, max: 600, values: [-300, 300] } },
-  grid: { axis1: { step: 10, min: -1000, max: 1000, values: [-500, 500] }, axis2: { step: 10, min: -1000, max: 1000, values: [-300, 300] }, axis3: { step: 5, min: -600, max: 600, values: [-300, 300] } },
-  forceLayout: {},
-  coral: { axis1: { step: 10, min: 0, max: 720, values: [0, 360] }, axis2: { step: 10, min: 0, max: 1000, values: [100, 500] }, axis3: { step: 5, min: -600, max: 600, values: [-300, 300] } }
-};
-
-/* layout -> link family */
-const linksKeyForLayout = l => (l === 'coral' || l === 'WDMTG') ? 'hierarchyRelation' : (l === 'forceLayout') ? 'logicLinks' : 'getLinks';
-
-const MESSAGES = {
-  'home-main-title-1': 'toller text.',
-  'home-main-title-2': '...mehr toller text.',
-  'home-main-title-3': 'und noch mehr toller text.',
-  'home-main-title-4': ' ',
-  'home-main-title-5': 'nochmal toller text.',
-  'home-main-title-6': ' ',
-  'home-main-title-7': ' ',
-  'home-main-title-8': 'und ende.'
-};
+  /* Edge-Breiten-Konfiguration:
+     - Wir speichern die gewünschte Breite in Pixeln in state.edgeWidthPx (siehe Scene).
+     - Umrechnung in Clip-Space (Shader erwartet „width“ in Clip-Koordinaten):
+       1 px ≈ 2/1080 Clip (Y wird im Shader auf 1080 „fixiert“, dadurch viewport-stabil).
+     - EDGE_PX_BASE = „dünn“, EDGE_PX_EMPH = „betont“ (Steps 3 & 6).
+  */
+  const edgeClipFromPx = (px) => (px * 2.0) / 1080.0;
+  const EDGE_PX_BASE = isMobile ? 14 : 18; // Grunddicke (sichtbar, aber dezent)
+  const EDGE_PX_EMPH = isMobile ? 35 : 55; // betont (Steps 3 & 6)
 
 
-function setBG(color) {
-  const r3fHeader = document.getElementsByClassName('R3FHeader')[0]
-  const rootEl = document.getElementById('root');
-  if (rootEl) rootEl.style.background = color;
-  if (r3fHeader) r3fHeader.style.background = `linear-gradient(180deg, ${color} 28%, rgba(1,13,40,0) 100%)`;
-}
+  const layouts = {
+    circle: { axis1: { step: 10, min: 0, max: 720, values: [0, 360] }, axis2: { step: 10, min: 0, max: 1000, values: [100, 500] }, axis3: { step: 5, min: -600, max: 600, values: [-300, 300] } },
+    grid: { axis1: { step: 10, min: -1000, max: 1000, values: [-500, 500] }, axis2: { step: 10, min: -1000, max: 1000, values: [-300, 300] }, axis3: { step: 5, min: -600, max: 600, values: [-300, 300] } },
+    forceLayout: {},
+    coral: { axis1: { step: 10, min: 0, max: 720, values: [0, 360] }, axis2: { step: 10, min: 0, max: 1000, values: [100, 500] }, axis3: { step: 5, min: -600, max: 600, values: [-300, 300] } }
+  };
 
-function pxToWorld(px, camZ, fovDeg, viewportH) {
-  const f = Math.tan(THREE.MathUtils.degToRad(fovDeg * 0.5)) * 2;
-  return px * camZ * f / viewportH;
-}
+  /* layout -> link family */
+  const linksKeyForLayout = l => (l === 'coral' || l === 'WDMTG') ? 'hierarchyRelation' : (l === 'forceLayout') ? 'logicLinks' : 'getLinks';
 
-function dedupeLinks(list) {
-  const s = new Set(),
-    out = [];
-  for (const { from, to } of list || []) {
-    const a = Math.min(from, to),
-      b = Math.max(from, to),
-      k = `${a}-${b}`;
-    if (!s.has(k)) {
-      s.add(k);
-      out.push({ from: a, to: b });
-    }
+  function setBG(color) {
+    const r3fHeader = document.getElementsByClassName('R3FHeader')[0]
+    const rootEl = document.getElementById('root');
+    if (rootEl) rootEl.style.background = color;
+    if (r3fHeader) r3fHeader.style.background = `linear-gradient(180deg, ${color} 28%, rgba(1,13,40,0) 100%)`;
   }
-  return out;
-}
 
-function webglOK() {
-  try { const c = document.createElement('canvas'); return !!(c.getContext('webgl') || c.getContext('experimental-webgl')); } catch { return false; }
-}
+  function pxToWorld(px, camZ, fovDeg, viewportH) {
+    const f = Math.tan(THREE.MathUtils.degToRad(fovDeg * 0.5)) * 2;
+    return px * camZ * f / viewportH;
+  }
 
-function TitleBase({ intl, current }) {
-  const ref = React.useRef(null);
-  const [text, setText] = React.useState("");
+  function dedupeLinks(list) {
+    const s = new Set(),
+        out = [];
+    for (const { from, to } of list || []) {
+      const a = Math.min(from, to),
+          b = Math.max(from, to),
+          k = `${a}-${b}`;
+      if (!s.has(k)) {
+        s.add(k);
+        out.push({ from: a, to: b });
+      }
+    }
+    return out;
+  }
 
-  React.useEffect(() => {
-    setText(intl.formatMessage({ id: `home-main-title-${current}` }));
-    const el = ref.current;
-    if (!el) return;
-    // Re-trigger the CSS keyframes each time `current` changes
-    el.classList.remove("swing-in-right-fwd");
-    void el.offsetWidth; // force reflow
-    el.classList.add("swing-in-right-fwd");
-  }, [current, intl]);
+  function webglOK() {
+    try { const c = document.createElement('canvas'); return !!(c.getContext('webgl') || c.getContext('experimental-webgl')); } catch { return false; }
+  }
 
-  return React.createElement(
-    "div",
-    { className: "TitleContainer" },
-    React.createElement("div", {
-      ref,
-      className: "TitleHome swing-in-right-fwd",
-      dangerouslySetInnerHTML: { __html: text }
-    })
-  );
-}
+  function TitleBase({ current }) {
+    const ref = React.useRef(null);
+    const [text, setText] = React.useState("");
 
-const Title = injectIntl(TitleBase);
+    React.useEffect(() => {
+      // Array ist 0-basiert, current vermutlich 1-basiert → -1
+      const newText = MESSAGES[current - 1] || "";
+      setText(newText);
 
-/* ================= Title (react-spring crossfade) =================
-function TitleBase({ intl, current }) {
-  const [items, setItems] = React.useState([]);
-  React.useEffect(() => {
-    setItems({ text: intl.formatMessage({ id: `home-main-title-${current}` }), key: String(current) });
-  }, [current, intl]);
-  const transitions = useTransition(items, {
-    config: { mass: 1, tension: 140, friction: 40 },
-    trail: 1500,
-    initial: { opacity: 0, position: 'absolute', transform: 'translate3d(100px,-50%,0)' },
-    from: { opacity: 0, position: 'absolute', transform: 'translate3d(100px,-50%,0)' },
-    enter: { opacity: 1, position: 'absolute', transform: 'translate3d(0px,-50%,0)' },
-    leave: { opacity: 0, position: 'absolute', transform: 'translate3d(-100px,-50%,0)' },
-    keys: item => item.key,
-  });
-  return React.createElement('div', { className: 'TitleContainer' },
-    React.createElement('div', { className: 'TitleHome' },
-      React.createElement('div', { key: current },
-        transitions((style, item) => React.createElement(animated.div, { style }, item.text)),
-      )));
-}
-const Title = injectIntl(TitleBase);
-*/
+      const el = ref.current;
+      if (!el) return;
+      el.classList.remove("swing-in-right-fwd");
+      void el.offsetWidth; // force reflow
+      el.classList.add("swing-in-right-fwd");
+    }, [current]);
 
-/* ================= Shaders ================= */
-const edgeShader = {
-  transparent: true,
-  depthTest: false,
-  depthWrite: false,
-  uniforms: {
-    opacity: { value: 0.0 }, // wird pro Step gesetzt
-    width: { value: edgeClipFromPx(EDGE_PX_EMPH) }, // wird pro Frame aus state.edgeWidthPx gespiegelt
-    resolution: { value: new THREE.Vector2(1920, 1080) }
-  },
-  vertexShader: `
+    return React.createElement(
+        "div",
+        { className: "TitleContainer" },
+        React.createElement("div", {
+          ref,
+          className: "TitleHome swing-in-right-fwd",
+          dangerouslySetInnerHTML: { __html: text }
+        })
+    );
+  }
+
+  const Title = TitleBase;
+
+  /* ================= Title (react-spring crossfade) =================
+  function TitleBase({ intl, current }) {
+    const [items, setItems] = React.useState([]);
+    React.useEffect(() => {
+      setItems({ text: intl.formatMessage({ id: `home-main-title-${current}` }), key: String(current) });
+    }, [current, intl]);
+    const transitions = useTransition(items, {
+      config: { mass: 1, tension: 140, friction: 40 },
+      trail: 1500,
+      initial: { opacity: 0, position: 'absolute', transform: 'translate3d(100px,-50%,0)' },
+      from: { opacity: 0, position: 'absolute', transform: 'translate3d(100px,-50%,0)' },
+      enter: { opacity: 1, position: 'absolute', transform: 'translate3d(0px,-50%,0)' },
+      leave: { opacity: 0, position: 'absolute', transform: 'translate3d(-100px,-50%,0)' },
+      keys: item => item.key,
+    });
+    return React.createElement('div', { className: 'TitleContainer' },
+      React.createElement('div', { className: 'TitleHome' },
+        React.createElement('div', { key: current },
+          transitions((style, item) => React.createElement(animated.div, { style }, item.text)),
+        )));
+  }
+  const Title = injectIntl(TitleBase);
+  */
+
+  /* ================= Shaders ================= */
+  const edgeShader = {
+    transparent: true,
+    depthTest: false,
+    depthWrite: false,
+    uniforms: {
+      opacity: { value: 0.0 }, // wird pro Step gesetzt
+      width: { value: edgeClipFromPx(EDGE_PX_EMPH) }, // wird pro Frame aus state.edgeWidthPx gespiegelt
+      resolution: { value: new THREE.Vector2(1920, 1080) }
+    },
+    vertexShader: `
       precision highp float; uniform vec2 resolution; uniform float width;
       attribute vec3 instanceFrom,instanceTo;
       void main(){
@@ -690,14 +682,14 @@ const edgeShader = {
         if(position.y<0.0) off+=-dir; else if(position.y>1.0) off+=dir;
         off*=width; vec4 clip=(position.y<0.5)?s:e; clip.xy+=off; gl_Position=clip;
       }`,
-  fragmentShader: `precision highp float; uniform float opacity; void main(){ gl_FragColor=vec4(1.0,1.0,1.0,opacity); }`,
-};
-const nodeShader = {
-  transparent: true,
-  depthTest: true,
-  depthWrite: true,
-  uniforms: { paillette: { value: 0 } },
-  vertexShader: `
+    fragmentShader: `precision highp float; uniform float opacity; void main(){ gl_FragColor=vec4(1.0,1.0,1.0,opacity); }`,
+  };
+  const nodeShader = {
+    transparent: true,
+    depthTest: true,
+    depthWrite: true,
+    uniforms: { paillette: { value: 0 } },
+    vertexShader: `
       precision highp float; uniform float paillette;
       attribute vec3 instancePosition,instanceColor; attribute float instanceScale,instanceOpacity;
       varying vec3 vColor; varying float vOpacity;
@@ -707,732 +699,899 @@ const nodeShader = {
         vColor=instanceColor+(vec3(1.0)*(cos(instanceOpacity+paillette)*0.1));
         vOpacity=(instanceOpacity==1.0)?(0.8+cos(instanceOpacity+paillette)*0.2):instanceOpacity;
       }`,
-  fragmentShader: `precision highp float; varying vec3 vColor; varying float vOpacity; void main(){ gl_FragColor=vec4(vColor,vOpacity); }`,
-};
-
-/* ================= Load data + global centering ================= */
-/* ---------- robust loader: multi-frame + append single-frame ---------- */
-async function loadFramesAndLinks() {
-  // small helper that returns null on failure (404/network/etc.)
-  async function safeLoadGZJSON(url) {
-    try {
-      const r = await fetch(url);
-      if (!r.ok) return null;
-      const a = await r.arrayBuffer();
-      return JSON.parse(ungzip(new Uint8Array(a), { to: 'string' }));
-    } catch (_) {
-      console.warn(_.message, url)
-      return null;
-    }
-  }
-
-  const frames = [];
-
-  /* 1) Load the original multi-frame capture (if available) */
-  const pts = await safeLoadGZJSON('./points_w_ratio.json.gz');
-  if (Array.isArray(pts) && pts.length) {
-    // (legacy mobile tweak kept exactly as before)
-    if (innerWidth <= 600 && pts[5] && pts[5][0]) {
-      const A = Array.isArray(pts[5][0]) ? pts[5][0] : Object.values(pts[5][0]);
-      for (let i = 0; i < A.length; i += 3) {
-        const x = A[i];
-        A[i] = A[i + 1] * 0.6;
-        A[i + 1] = -x * 0.6;
-      }
-      pts[5][0] = A;
-    }
-    for (const d of pts) {
-      const p = new Float32Array(Array.isArray(d[0]) ? d[0] : Object.values(d[0]));
-      const c = new Float32Array(Array.isArray(d[1]) ? d[1] : Object.values(d[1]));
-      // guard: if colors missing/mismatched, fill white
-      const col = (c.length === p.length) ? c : new Float32Array(p.length).fill(1);
-      frames.push([p, col]);
-    }
-  }
-
-  /* 2) Load your single-frame and APPEND it as the last frame (if present) */
-  const single = await safeLoadGZJSON('./vaeora.json.gz');
-  if (single && Array.isArray(single) && single.length === 2 &&
-    Array.isArray(single[0]) && Array.isArray(single[1]) &&
-    single[0].length === single[1].length && (single[0].length % 3 === 0)) {
-    const p = new Float32Array(single[0]);
-    const c = new Float32Array(single[1]);
-    frames.push([p, c]); // <- APPEND to the end
-  }
-
-  if (!frames.length) {
-    throw new Error('No frame data found (points_w_ratio.json.gz or vaeora.json.gz).');
-  }
-
-  /* 3) Global centering across ALL frames (keeps everything aligned) */
-  let minX = Infinity,
-    maxX = -Infinity,
-    minY = Infinity,
-    maxY = -Infinity;
-  for (const [p] of frames) {
-    for (let i = 0; i < p.length; i += 3) {
-      const x = p[i],
-        y = p[i + 1];
-      if (x < minX) minX = x;
-      if (x > maxX) maxX = x;
-      if (y < minY) minY = y;
-      if (y > maxY) maxY = y;
-    }
-  }
-  const cx = (minX + maxX) / 2,
-    cy = (minY + maxY) / 2;
-
-  const centered = frames.map(([p, c]) => {
-    const out = new Float32Array(p.length);
-    for (let i = 0; i < p.length; i += 3) {
-      out[i] = p[i] - cx;
-      out[i + 1] = p[i + 1] - cy;
-      out[i + 2] = p[i + 2] || 0;
-    }
-    return [out, c];
-  });
-
-
-  /* 4) Links (gracefully handle missing file) */
-  const linksByType = (await safeLoadGZJSON('./links.json.gz')) || {
-    getLinks: [],
-    logicLinks: [],
-    hierarchyRelation: []
+    fragmentShader: `precision highp float; varying vec3 vColor; varying float vOpacity; void main(){ gl_FragColor=vec4(vColor,vOpacity); }`,
   };
 
-  //console.log('Loaded data:', { frames: centered.length, linksByType });
-  return { frames: centered, linksByType };
-}
-/* ================= Inline worker (no-transfer → no detach) ================= */
-const workerCode = `
-    function lerp(a,b,t){ return a + (b-a)*t; }
-    onmessage = (e)=>{
-      let [ nodesFrom, nodesTo, edgesFrom, edgesTo, relations ] = e.data;
-      const factor = 0.05;
-      let i=0, total = (nodesTo.length/3);
-      while(total>i){
-        const v3=i*3; const ff = factor - (i/total)/100.0;
-        nodesFrom[v3]   = lerp(nodesFrom[v3],   nodesTo[v3],   ff);
-        nodesFrom[v3+1] = lerp(nodesFrom[v3+1], nodesTo[v3+1], ff);
-        nodesFrom[v3+2] = lerp(nodesFrom[v3+2], nodesTo[v3+2], ff);
-        i++;
-      }
-      i=0;
-      while(relations.length>i){
-        const v3=i*3, f3=relations[i].from*3, t3=relations[i].to*3;
-        edgesFrom[v3]   = nodesFrom[f3];
-        edgesFrom[v3+1] = nodesFrom[f3+1];
-        edgesFrom[v3+2] = nodesFrom[f3+2];
-        edgesTo[v3]     = nodesFrom[t3];
-        edgesTo[v3+1]   = nodesFrom[t3+1];
-        edgesTo[v3+2]   = nodesFrom[t3+2];
-        i++;
-      }
-      postMessage([nodesFrom, edgesFrom, edgesTo]);
-    };
-  `;
-
-function makeWorker() {
-  try { const blob = new Blob([workerCode], { type: 'text/javascript' }); const url = URL.createObjectURL(blob); return new Worker(url); } catch { return null; }
-}
-
-/* ================= Nodes ================= */
-function NodeCloud({ state }) {
-  const { camera } = useThree();
-  const root = React.useRef();
-  const geo = React.useRef();
-  const mat = React.useRef();
-  const base = React.useMemo(() => new THREE.CircleGeometry(2, 24), []);
-
-  React.useEffect(() => {
-    const g = new THREE.InstancedBufferGeometry();
-    g.index = base.index;
-    g.attributes.position = base.attributes.position;
-    g.attributes.normal = base.attributes.normal || undefined;
-    g.attributes.uv = base.attributes.uv || undefined;
-    geo.current = g;
-    const m = new THREE.ShaderMaterial(nodeShader);
-    mat.current = m;
-    const mesh = new THREE.Mesh(g, m);
-    mesh.frustumCulled = false;
-    root.current.add(mesh);
-    return () => {
-      g.dispose();
-      m.dispose();
-      root.current.remove(mesh);
-    };
-  }, [base]);
-
-  React.useEffect(() => {
-    if (!state.nodesFrom) return;
-    const count = state.nodesFrom.length / 3;
-    const g = geo.current;
-    g.setAttribute('instancePosition', new THREE.InstancedBufferAttribute(new Float32Array(count * 3), 3));
-    g.setAttribute('instanceColor', new THREE.InstancedBufferAttribute(new Float32Array(count * 3), 3));
-    g.setAttribute('instanceScale', new THREE.InstancedBufferAttribute(new Float32Array(count), 1));
-    g.setAttribute('instanceOpacity', new THREE.InstancedBufferAttribute(new Float32Array(count), 1));
-    g.getAttribute('instanceColor').set(state.colFrom);
-    const sWorld = pxToWorld(NODE_PX, state.camZ, camera.fov, state.viewportH);
-    const sca = g.getAttribute('instanceScale'),
-      opa = g.getAttribute('instanceOpacity');
-    for (let i = 0; i < sca.count; i++) {
-      sca.array[i] = sWorld;
-      opa.array[i] = 1.0;
-    }
-    sca.needsUpdate = opa.needsUpdate = true;
-    g.getAttribute('instanceColor').needsUpdate = true;
-  }, [state.nodesFrom]);
-
-  useFrame(() => {
-    if (!geo.current || !mat.current) return;
-    mat.current.uniforms.paillette.value += 0.03;
-
-    if (state.nodesFrom) {
-      const posA = geo.current.getAttribute('instancePosition');
-      if (posA && posA.array.length === state.nodesFrom.length) {
-        posA.array.set(state.nodesFrom);
-        posA.needsUpdate = true;
-      }
-    }
-    if (state.colFrom && state.colTo) {
-      const a = 0.18;
-      for (let i = 0; i < state.colTo.length; i++) state.colFrom[i] += (state.colTo[i] - state.colFrom[i]) * a;
-      const colA = geo.current.getAttribute('instanceColor');
-      if (colA && colA.array.length === state.colFrom.length) {
-        colA.array.set(state.colFrom);
-        colA.needsUpdate = true;
-      }
-    }
-    if (state.needsScaleUpdate) {
-      const sca = geo.current.getAttribute('instanceScale');
-      if (sca) {
-        const sWorld = pxToWorld(NODE_PX, state.camZ, state.fov, state.viewportH);
-        for (let i = 0; i < sca.count; i++) sca.array[i] = sWorld;
-        sca.needsUpdate = true;
-        state.needsScaleUpdate = false;
-      }
-    }
-  });
-
-  return React.createElement('group', { ref: root });
-}
-
-/* ================= Edges ================= */
-function Edges({ state }) {
-  const root = React.useRef();
-  const geo = React.useRef();
-  const mat = React.useRef();
-  const quad = React.useMemo(() => {
-    const g = new THREE.BufferGeometry();
-    const a = new Float32Array([-1, 0, 0, 1, 0, 0, -1, 1, 0, -1, 1, 0, 1, 0, 0, 1, 1, 0]);
-    g.setAttribute('position', new THREE.BufferAttribute(a, 3));
-    return g;
-  }, []);
-
-  React.useEffect(() => {
-    const g = new THREE.InstancedBufferGeometry();
-    g.index = null;
-    g.attributes.position = quad.attributes.position;
-    geo.current = g;
-    const m = new THREE.ShaderMaterial(edgeShader);
-    // Optional: additive Blending lässt Linien „glühen“
-    m.blending = THREE.AdditiveBlending;
-    m.transparent = true;
-    m.depthTest = false;
-    m.depthWrite = false;
-    m.uniforms.width.value = edgeClipFromPx(EDGE_PX_EMPH);
-    mat.current = m;
-    const mesh = new THREE.Mesh(g, m);
-    mesh.frustumCulled = false;
-    root.current.add(mesh);
-    return () => {
-      g.dispose();
-      m.dispose();
-      root.current.remove(mesh);
-    };
-  }, [quad]);
-
-  React.useEffect(() => {
-    if (!state.edgePairs) return;
-    const n = state.edgePairs.length,
-      g = geo.current;
-    g.setAttribute('instanceFrom', new THREE.InstancedBufferAttribute(new Float32Array(n * 3), 3));
-    g.setAttribute('instanceTo', new THREE.InstancedBufferAttribute(new Float32Array(n * 3), 3));
-    if (mat.current) {
-      mat.current.uniforms.resolution.value.set(state.viewportW, state.viewportH);
-      mat.current.uniforms.opacity.value = state.edgeOpacity;
-      mat.current.uniforms.width.value = edgeClipFromPx(state.edgeWidthPx);
-    }
-  }, [state.edgePairs, state.viewportW, state.viewportH, state.edgeOpacity]);
-
-  useFrame(() => {
-    if (!geo.current || !state.edgesFrom || !state.edgesTo) return;
-    const fromA = geo.current.getAttribute('instanceFrom');
-    const toA = geo.current.getAttribute('instanceTo');
-    if (fromA && toA && fromA.array.length === state.edgesFrom.length && toA.array.length === state.edgesTo.length) {
-      fromA.array.set(state.edgesFrom);
-      toA.array.set(state.edgesTo);
-      fromA.needsUpdate = true;
-      toA.needsUpdate = true;
-    }
-    if (mat.current) {
-      // Live-Spiegelung: Breite & Opacity pro Frame aus state
-      const wantW = edgeClipFromPx(state.edgeWidthPx);
-      if (mat.current.uniforms.width.value !== wantW) mat.current.uniforms.width.value = wantW;
-      if (mat.current.uniforms.opacity.value !== state.edgeOpacity) mat.current.uniforms.opacity.value = state.edgeOpacity;
-    }
-  });
-
-  return React.createElement('group', { ref: root });
-}
-
-/* ================= Camera sync ================= */
-function CameraSync({ state }) {
-  const { camera, gl } = useThree();
-  React.useEffect(() => {
-    camera.fov = state.fov;
-    camera.near = CAMERA_NEAR;
-    camera.far = CAMERA_FAR;
-    camera.updateProjectionMatrix();
-  }, [camera, state.fov]);
-  React.useEffect(() => {
-    gl.setPixelRatio(state.dpr);
-    gl.setSize(state.viewportW, state.viewportH, false);
-    gl.outputColorSpace = THREE.SRGBColorSpace;
-    gl.toneMapping = THREE.ACESFilmicToneMapping;
-    gl.toneMappingExposure = 1.2;
-  }, [gl, state.viewportW, state.viewportH, state.dpr]);
-
-  useFrame(() => {
-    if (!state.cameraPos) state.cameraPos = [0, 0, 0];
-    state.cameraPos[0] = camera.position.x;
-    state.cameraPos[1] = camera.position.y;
-    state.cameraPos[2] = camera.position.z;
-  });
-  return null;
-}
-
-/* ================= App / Scene ================= */
-function App() {
-  const [data, setData] = React.useState(null);
-  React.useEffect(() => {
-    (async () => {
+  /* ================= Load data + global centering ================= */
+  /* ---------- robust loader: multi-frame + append single-frame ---------- */
+  async function loadFramesAndLinks() {
+    // small helper that returns null on failure (404/network/etc.)
+    async function safeLoadGZJSON(url) {
       try {
-        setData(await loadFramesAndLinks());
-      } catch (e) {
-        console.log(e.message);
-        console.error('Failed to load data.');
+        const r = await fetch(url);
+        if (!r.ok) return null;
+        const a = await r.arrayBuffer();
+        return JSON.parse(ungzip(new Uint8Array(a), { to: 'string' }));
+      } catch (_) {
+        console.warn(_.message, url)
+        return null;
       }
-    })();
-  }, []);
-  return data ? React.createElement(Scene, { data }) : null;
-}
+    }
 
-function Scene({ data }) {
-  const [dims, setDims] = React.useState({ w: innerWidth, h: innerHeight, dpr: Math.min(devicePixelRatio || 1, 2) });
-  React.useEffect(() => {
-    const onR = () => setDims({ w: innerWidth, h: innerHeight, dpr: Math.min(devicePixelRatio || 1, 2) });
-    addEventListener('resize', onR, { passive: true });
-    return () => removeEventListener('resize', onR);
-  }, []);
+    const frames = [];
 
-  const [uiStep, setUiStep] = React.useState(1);
-  const [bg, setBg] = React.useState(BACKG[0]);
-  React.useEffect(() => setBG(bg), [bg]);
+    const pts = await safeLoadGZJSON('./points_w_ratio.json.gz');
+    if (Array.isArray(pts) && pts.length) {
+      // (legacy mobile tweak kept exactly as before)
+      if ((innerWidth || innerHeight) <= 600 && pts[5] && pts[5][0]) {
+        const A = Array.isArray(pts[5][0]) ? pts[5][0] : Object.values(pts[5][0]);
+        for (let i = 0; i < A.length; i += 3) {
+          const x = A[i];
+          A[i] = A[i + 1] * 0.6;
+          A[i + 1] = -x * 0.6;
+        }
+        pts[5][0] = A;
+      }
+      for (const d of pts) {
+        const p = new Float32Array(Array.isArray(d[0]) ? d[0] : Object.values(d[0]));
+        const c = new Float32Array(Array.isArray(d[1]) ? d[1] : Object.values(d[1]));
+        // guard: if colors missing/mismatched, fill white
+        const col = (c.length === p.length) ? c : new Float32Array(p.length).fill(1);
+        frames.push([p, col]);
+      }
+    }
+    const single = await safeLoadGZJSON('./vaeora.json.gz');
+    if (single && Array.isArray(single) && single.length === 2 &&
+        Array.isArray(single[0]) && Array.isArray(single[1]) &&
+        single[0].length === single[1].length && (single[0].length % 3 === 0)) {
+      const p = new Float32Array(single[0]);
+      const c = new Float32Array(single[1]);
+      frames.push([p, c]); // <- APPEND
+    }
 
-  const [settings, setSettings] = React.useState({
-    layout: Object.keys(layouts)[0],
-    edges: { display: true, opacity: 0.0, width: EDGE_PX_EMPH },
-    axises: {},
-  });
+    if (!frames.length) {
+      throw new Error('No frames found.');
+    }
 
-  const state = React.useRef({
-    viewportW: dims.w,
-    viewportH: dims.h,
-    dpr: dims.dpr,
-    fov: FOV,
-    camZ: dims.h * 0.5 / ratio(),
-    needsScaleUpdate: true,
-    nodesFrom: null,
-    nodesTo: null,
-    colFrom: null,
-    colTo: null,
-    edgesFrom: null,
-    edgesTo: null,
-    edgePairs: [],
-    edgeOpacity: 0.0,
-    edgeWidthPx: EDGE_PX_EMPH,
-  }).current;
+    /* 3) Global centering across ALL frames (keeps everything aligned) */
+    let minX = Infinity,
+        maxX = -Infinity,
+        minY = Infinity,
+        maxY = -Infinity;
+    for (const [p] of frames) {
+      for (let i = 0; i < p.length; i += 3) {
+        const x = p[i],
+            y = p[i + 1];
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+      }
+    }
+    const cx = (minX + maxX) / 2,
+        cy = (minY + maxY) / 2;
 
-  const setEdgeOpacity = (o) => { state.edgeOpacity = o; };
-  const setEdgeWidthPx = (px) => { state.edgeWidthPx = px; };
-  const setBackground = (c) => setBg(c);
-  const setStep = (s) => setUiStep(s);
+    const centered = frames.map(([p, c]) => {
+      const out = new Float32Array(p.length);
+      for (let i = 0; i < p.length; i += 3) {
+        out[i] = p[i] - cx;
+        out[i + 1] = p[i + 1] - cy;
+        out[i + 2] = p[i + 2] || 0;
+      }
+      return [out, c];
+    });
 
-  React.useEffect(() => {
-    state.viewportW = dims.w;
-    state.viewportH = dims.h;
-    state.dpr = dims.dpr;
-    state.fov = FOV;
-    state.needsScaleUpdate = true;
-  }, [dims]);
+    /* 4) Links (gracefully handle missing file) */
+    const linksByType = (await safeLoadGZJSON('./links.json.gz')) || {
+      getLinks: [],
+      logicLinks: [],
+      hierarchyRelation: []
+    };
 
-  React.useEffect(() => {
-    const [p0, c0] = data.frames[0];
-    state.nodesFrom = new Float32Array(p0);
-    state.nodesTo = new Float32Array(p0);
-    state.colFrom = new Float32Array(c0);
-    state.colTo = new Float32Array(c0);
-    setLayoutEdges(settings.layout);
-    setBg(BACKG[0]);
-    setUiStep(1);
-    startLerpLoop();
-  }, []);
-
-  React.useEffect(() => { setLayoutEdges(settings.layout); }, [settings.layout]);
-
-  function setLayoutEdges(layoutKey) {
-    const key = linksKeyForLayout(layoutKey);
-    const raw = data.linksByType[key] || [];
-    const pairs = dedupeLinks(raw);
-    state.edgePairs = pairs;
-    state.edgesFrom = new Float32Array(pairs.length * 3);
-    state.edgesTo = new Float32Array(pairs.length * 3);
+    //console.log('Loaded data:', { frames: centered.length, linksByType });
+    return { frames: centered, linksByType };
+  }
+  /* ================= Inline worker (no-transfer → no detach) ================= */
+  const workerCode = `
+  function easeInOutExpo(t){
+    if (t <= 0) return 0;
+    if (t >= 1) return 1;
+    return t < 0.5
+      ? Math.pow(2, 20 * t - 10) / 2
+      : 1 - Math.pow(2, -20 * t + 10) / 2;
   }
 
-  const frameRef = React.useRef(0);
+  onmessage = (e)=>{
+    let [nodesFrom, nodesTo, edgesFrom, edgesTo, relations, seed, params] = e.data;
+    const { time, amp, freq, scale, maxF, minF, snap } = params;
 
-  const bumpFrame = React.useCallback(() => {
-    frameRef.current = (frameRef.current + 1) % data.frames.length
-    const [p, c] = data.frames[frameRef.current];
-    state.nodesTo.set(p);
-    state.colTo.set(c);
-  }, [data.frames, state]);
+    const N = nodesTo.length/3;
+    for (let i=0;i<N;i++){
+      const i3 = i*3;
 
-  /* ---- LERP loop (worker or main) ---- */
-  let worker = null;
+      // Distanz zum Ziel
+      const dx0 = nodesTo[i3]   - nodesFrom[i3];
+      const dy0 = nodesTo[i3+1] - nodesFrom[i3+1];
+      const dz0 = nodesTo[i3+2] - nodesFrom[i3+2];
+      const dist0 = Math.sqrt(dx0*dx0 + dy0*dy0 + dz0*dz0);
 
-  function startLerpLoop() {
-    worker = makeWorker();
-    if (worker) {
-      worker.onmessage = (e) => {
-        const [nodesFromArr, edgesFromArr, edgesToArr] = e.data;
-        state.nodesFrom = nodesFromArr;
-        state.edgesFrom = edgesFromArr;
-        state.edgesTo = edgesToArr;
-        state.workerTicks++;
-        requestAnimationFrame(tick);
+      if (dist0 < snap){
+        nodesFrom[i3]   = nodesTo[i3];
+        nodesFrom[i3+1] = nodesTo[i3+1];
+        nodesFrom[i3+2] = nodesTo[i3+2];
+      } else {
+        // adaptiver LERP-Faktor via easeInOutExpo
+        const x = Math.min(1, dist0 / (scale || 1));   // 0..1
+        const eased = easeInOutExpo(x);                // 0..1
+        const f = (minF || 0.001) + ((maxF || 0.08) - (minF || 0.001)) * eased;
+
+        nodesFrom[i3]   += dx0 * f;
+        nodesFrom[i3+1] += dy0 * f;
+        nodesFrom[i3+2] += dz0 * f;
+      }
+
+      // Wobble nur während Bewegung, distanz-gewichtet
+      if (dist0 > 1e-4 && amp > 0 && freq > 0){
+        const inv = 1 / dist0;
+        const ux = dx0 * inv, uy = dy0 * inv, uz = dz0 * inv;
+        const ax = Math.abs(ux) < 0.9 ? 1 : 0;
+        const ay = Math.abs(ux) < 0.9 ? 0 : 1;
+        const az = 0;
+        let px = uy*az - uz*ay;
+        let py = uz*ax - ux*az;
+        let pz = ux*ay - uy*ax;
+        const pl = Math.hypot(px,py,pz) || 1e-6;
+        px /= pl; py /= pl; pz /= pl;
+
+        const falloff = Math.min(1, Math.max(0, dist0 / (scale || 1)));
+        const wob = amp * falloff * Math.sin(time * freq + seed[i]);
+
+        nodesFrom[i3]   += px * wob;
+        nodesFrom[i3+1] += py * wob;
+        nodesFrom[i3+2] += pz * wob;
+      }
+    }
+
+    // Edges aktualisieren
+    for (let i=0;i<relations.length;i++){
+      const v3=i*3, f3=relations[i].from*3, t3=relations[i].to*3;
+      edgesFrom[v3]   = nodesFrom[f3];
+      edgesFrom[v3+1] = nodesFrom[f3+1];
+      edgesFrom[v3+2] = nodesFrom[f3+2];
+      edgesTo[v3]     = nodesFrom[t3];
+      edgesTo[v3+1]   = nodesFrom[t3+1];
+      edgesTo[v3+2]   = nodesFrom[t3+2];
+    }
+
+    postMessage([nodesFrom, edgesFrom, edgesTo]);
+  };
+`;
+  function makeWorker() {
+    try { const blob = new Blob([workerCode], { type: 'text/javascript' }); const url = URL.createObjectURL(blob); return new Worker(url); } catch { return null; }
+  }
+
+  /* ================= Nodes ================= */
+  function NodeCloud({ state }) {
+    const { camera } = useThree();
+    const root = React.useRef();
+    const geo = React.useRef();
+    const mat = React.useRef();
+    const base = React.useMemo(() => new THREE.CircleGeometry(2, 24), []);
+
+    React.useEffect(() => {
+      const g = new THREE.InstancedBufferGeometry();
+      g.index = base.index;
+      g.attributes.position = base.attributes.position;
+      g.attributes.normal = base.attributes.normal || undefined;
+      g.attributes.uv = base.attributes.uv || undefined;
+      geo.current = g;
+      const m = new THREE.ShaderMaterial(nodeShader);
+      mat.current = m;
+      const mesh = new THREE.Mesh(g, m);
+      mesh.frustumCulled = false;
+      root.current.add(mesh);
+      return () => {
+        g.dispose();
+        m.dispose();
+        root.current.remove(mesh);
       };
-      requestAnimationFrame(tick);
-    } else {
+    }, [base]);
+
+    React.useEffect(() => {
+      if (!state.nodesFrom) return;
+      const count = state.nodesFrom.length / 3;
+      const g = geo.current;
+      g.setAttribute('instancePosition', new THREE.InstancedBufferAttribute(new Float32Array(count * 3), 3));
+      g.setAttribute('instanceColor', new THREE.InstancedBufferAttribute(new Float32Array(count * 3), 3));
+      g.setAttribute('instanceScale', new THREE.InstancedBufferAttribute(new Float32Array(count), 1));
+      g.setAttribute('instanceOpacity', new THREE.InstancedBufferAttribute(new Float32Array(count), 1));
+      g.getAttribute('instanceColor').set(state.colFrom);
+      const sWorld = pxToWorld(NODE_PX, state.camZ, camera.fov, state.viewportH);
+      const sca = g.getAttribute('instanceScale'),
+          opa = g.getAttribute('instanceOpacity');
+      for (let i = 0; i < sca.count; i++) {
+        sca.array[i] = sWorld;
+        opa.array[i] = 1.0;
+      }
+      sca.needsUpdate = opa.needsUpdate = true;
+      g.getAttribute('instanceColor').needsUpdate = true;
+    }, [state.nodesFrom]);
+
+    useFrame(() => {
+      if (!geo.current || !mat.current) return;
+      mat.current.uniforms.paillette.value += 0.0317;
+
+      if (state.nodesFrom) {
+        const posA = geo.current.getAttribute('instancePosition');
+        if (posA && posA.array.length === state.nodesFrom.length) {
+          posA.array.set(state.nodesFrom);
+          posA.needsUpdate = true;
+        }
+      }
+      if (state.colFrom && state.colTo) {
+        const a = 0.18;
+        for (let i = 0; i < state.colTo.length; i++) state.colFrom[i] += (state.colTo[i] - state.colFrom[i]) * a;
+        const colA = geo.current.getAttribute('instanceColor');
+        if (colA && colA.array.length === state.colFrom.length) {
+          colA.array.set(state.colFrom);
+          colA.needsUpdate = true;
+        }
+      }
+      if (state.needsScaleUpdate) {
+        const sca = geo.current.getAttribute('instanceScale');
+        if (sca) {
+          const sWorld = pxToWorld(NODE_PX, state.camZ, state.fov, state.viewportH);
+          for (let i = 0; i < sca.count; i++) sca.array[i] = sWorld;
+          sca.needsUpdate = true;
+          state.needsScaleUpdate = false;
+        }
+      }
+    });
+
+    return React.createElement('group', { ref: root });
+  }
+
+  /* ================= Edges ================= */
+  function Edges({ state }) {
+    const root = React.useRef();
+    const geo = React.useRef();
+    const mat = React.useRef();
+    const quad = React.useMemo(() => {
+      const g = new THREE.BufferGeometry();
+      const a = new Float32Array([-1, 0, 0, 1, 0, 0, -1, 1, 0, -1, 1, 0, 1, 0, 0, 1, 1, 0]);
+      g.setAttribute('position', new THREE.BufferAttribute(a, 3));
+      return g;
+    }, []);
+
+    React.useEffect(() => {
+      const g = new THREE.InstancedBufferGeometry();
+      g.index = null;
+      g.attributes.position = quad.attributes.position;
+      geo.current = g;
+      const m = new THREE.ShaderMaterial(edgeShader);
+      // Optional: additive Blending lässt Linien „glühen“
+      m.blending = THREE.AdditiveBlending;
+      m.transparent = true;
+      m.depthTest = false;
+      m.depthWrite = false;
+      m.uniforms.width.value = edgeClipFromPx(EDGE_PX_EMPH);
+      mat.current = m;
+      const mesh = new THREE.Mesh(g, m);
+      mesh.frustumCulled = false;
+      root.current.add(mesh);
+      return () => {
+        g.dispose();
+        m.dispose();
+        root.current.remove(mesh);
+      };
+    }, [quad]);
+
+    React.useEffect(() => {
+      if (!state.edgePairs) return;
+      const n = state.edgePairs.length,
+          g = geo.current;
+      g.setAttribute('instanceFrom', new THREE.InstancedBufferAttribute(new Float32Array(n * 3), 3));
+      g.setAttribute('instanceTo', new THREE.InstancedBufferAttribute(new Float32Array(n * 3), 3));
+      if (mat.current) {
+        mat.current.uniforms.resolution.value.set(state.viewportW, state.viewportH);
+        mat.current.uniforms.opacity.value = state.edgeOpacity;
+        mat.current.uniforms.width.value = edgeClipFromPx(state.edgeWidthPx);
+      }
+    }, [state.edgePairs, state.viewportW, state.viewportH, state.edgeOpacity, state.edgeWidthPx]);
+
+    useFrame(() => {
+      if (!geo.current || !state.edgesFrom || !state.edgesTo) return;
+      const fromA = geo.current.getAttribute('instanceFrom');
+      const toA = geo.current.getAttribute('instanceTo');
+      if (fromA && toA && fromA.array.length === state.edgesFrom.length && toA.array.length === state.edgesTo.length) {
+        fromA.array.set(state.edgesFrom);
+        toA.array.set(state.edgesTo);
+        fromA.needsUpdate = true;
+        toA.needsUpdate = true;
+      }
+      if (mat.current) {
+        // Live-Spiegelung: Breite & Opacity pro Frame aus state
+        const wantW = edgeClipFromPx(state.edgeWidthPx);
+        if (mat.current.uniforms.width.value !== wantW) mat.current.uniforms.width.value = wantW;
+        if (mat.current.uniforms.opacity.value !== state.edgeOpacity) mat.current.uniforms.opacity.value = state.edgeOpacity;
+      }
+    });
+
+    return React.createElement('group', { ref: root });
+  }
+
+  /* ================= Camera sync ================= */
+  function CameraSync({ state }) {
+    const { camera, gl } = useThree();
+    React.useEffect(() => {
+      camera.fov = state.fov;
+      camera.near = CAMERA_NEAR;
+      camera.far = CAMERA_FAR;
+      camera.updateProjectionMatrix();
+    }, [camera, state.fov]);
+    React.useEffect(() => {
+      gl.setPixelRatio(state.dpr);
+      gl.setSize(state.viewportW, state.viewportH, false);
+      gl.outputColorSpace = THREE.SRGBColorSpace;
+      gl.toneMapping = THREE.ACESFilmicToneMapping;
+      gl.toneMappingExposure = 1.2;
+    }, [gl, state.viewportW, state.viewportH, state.dpr]);
+
+    useFrame(() => {
+      if (!state.cameraPos) state.cameraPos = [0, 0, 0];
+      state.cameraPos[0] = camera.position.x;
+      state.cameraPos[1] = camera.position.y;
+      state.cameraPos[2] = camera.position.z;
+    });
+    return null;
+  }
+
+  /* ================= App / Scene ================= */
+  function App() {
+    const [data, setData] = React.useState(null);
+    React.useEffect(() => {
+      (async () => {
+        try {
+          setData(await loadFramesAndLinks());
+        } catch (e) {
+          console.log(e.message);
+          console.error('Failed to load data.');
+        }
+      })();
+    }, []);
+    return data ? React.createElement(Scene, { data }) : null;
+  }
+
+  function Scene({ data }) {
+    const [dims, setDims] = React.useState({ w: innerWidth, h: innerHeight, dpr: Math.min(devicePixelRatio || 1, 2) });
+    React.useEffect(() => {
+      const onR = () => setDims({ w: innerWidth, h: innerHeight, dpr: Math.min(devicePixelRatio || 1, 2) });
+      addEventListener('resize', onR, { passive: true });
+      return () => removeEventListener('resize', onR);
+    }, []);
+
+    const [uiStep, setUiStep] = React.useState(0);
+    const [bg, setBg] = React.useState(BACKG[0]);
+    React.useEffect(() => setBG(bg), [bg]);
+
+    const [settings, setSettings] = React.useState({
+      layout: Object.keys(layouts)[0],
+      colorScale: 'users',
+      edges: { display: true, opacity: 0.1, width: EDGE_PX_EMPH },
+      nodes: { display: true, opacity: 1, width: 1 },
+      axises: {
+        axis1: {
+          value: 'startDay',
+          bounds: {
+            values: [0, 360]
+          }
+        },
+        axis2: {
+          value: 'startTime',
+          bounds: {
+            values: [100, 500]
+          }
+        },
+        axis3: {
+          value: 'collaborationNumber',
+          bounds: {
+            values: [-300, 300]
+          }
+        }
+      }
+    });
+
+    const state = React.useRef({
+      viewportW: dims.w,
+      viewportH: dims.h,
+      dpr: dims.dpr,
+      fov: FOV,
+      camZ: dims.h * 0.5 / ratio(),
+      needsScaleUpdate: true,
+      nodesFrom: null,
+      nodesTo: null,
+      colFrom: null,
+      colTo: null,
+      edgesFrom: null,
+      edgesTo: null,
+      edgePairs: [],
+      edgeOpacity: 0.0,
+      edgeWidthPx: EDGE_PX_EMPH,
+      workerTicks: 0,
+    }).current;
+
+    const setEdgeOpacity = (o) => { state.edgeOpacity = o; };
+    const setEdgeWidthPx = (px) => { state.edgeWidthPx = px; };
+    const setBackground = (c) => setBg(c);
+    const setStep = () => setUiStep(prev => (prev + 1) % MESSAGES.length);
+
+    function percentile(arr, p){
+      if (!arr.length) return 1;
+      const a = arr.slice().sort((x,y)=>x-y);
+      const i = Math.min(a.length-1, Math.max(0, Math.floor((p/100)*a.length)));
+      return a[i] || 1;
+    }
+
+    function updateWobbleScale(){
+      const nf = state.nodesFrom, nt = state.nodesTo;
+      const N = nt.length/3;
+      const dists = new Array(N);
+      for (let i=0;i<N;i++){
+        const i3=i*3;
+        const dx = nt[i3]-nf[i3], dy = nt[i3+1]-nf[i3+1], dz = nt[i3+2]-nf[i3+2];
+        dists[i] = Math.hypot(dx,dy,dz);
+      }
+      // robuste Skala: 90. Perzentil der aktuellen Bewegungsdistanzen
+      let s = percentile(dists, 90);
+      if (!(s>0)) s = 1;
+      state.wobbleScale = s;
+    }
+
+    React.useEffect(() => {
+      state.viewportW = dims.w;
+      state.viewportH = dims.h;
+      state.dpr = dims.dpr;
+      state.fov = FOV;
+      state.needsScaleUpdate = true;
+    }, [dims]);
+
+    React.useEffect(() => {
+      const [p0, c0] = data.frames[0];
+      state.nodesFrom = new Float32Array(p0);
+      state.nodesTo = new Float32Array(p0);
+      state.colFrom = new Float32Array(c0);
+      state.colTo = new Float32Array(c0);
+
+      // Seeds für organisches Wobble
+      state.seed = new Float32Array(state.nodesFrom.length / 3);
+      for (let i = 0; i < state.seed.length; i++) state.seed[i] = Math.random() * 1000;
+
+      state.wobbleAmp   = 1.3;
+      state.wobbleFreq  = 0.99;
+      state.wobbleScale = 1;      // wird dynamisch gesetzt
+
+      state.lerpMax = 0.09;   // schnell am Anfang
+      state.lerpMin = 0.02;  // sehr langsam am Ende
+      state.snapDist = 0.001;   // unterhalb: direkt aufs Ziel setzen
+
+      setLayoutEdges(settings.layout);
+      setBg(BACKG[0]);
+      startLerpLoop();
+    }, []);
+
+    React.useEffect(() => { setLayoutEdges(settings.layout); }, [settings.layout]);
+
+    function setLayoutEdges(layoutKey) {
+      const key = linksKeyForLayout(layoutKey);
+      const raw = data.linksByType[key] || [];
+      const pairs = dedupeLinks(raw);
+      state.edgePairs = pairs;
+      state.edgesFrom = new Float32Array(pairs.length * 3);
+      state.edgesTo = new Float32Array(pairs.length * 3);
+    }
+
+    const frameRef = React.useRef(0);
+    window.frameRef = frameRef;
+    window.setEdgeOpacity = setEdgeOpacity;
+    window.setEdgeWidthPx = setEdgeWidthPx;
+    window.setSettings = setSettings;
+    window.setBackground = setBackground;
+    window.setStep = setStep;
+    window.state = state;
+    window.data = data;
+
+    const bumpFrame = React.useCallback(() => {
+      frameRef.current = (frameRef.current + 1) % data.frames.length
+      console.debug('bumpFrame', frameRef.current);
+      const [p, c] = data.frames[frameRef.current];
+      state.nodesTo.set(p);
+      state.colTo.set(c);
+      updateWobbleScale();           // << hier Skala aktualisieren
+    }, [data.frames, state]);
+
+    window.nextFrame = bumpFrame;
+    /* ---- LERP loop (worker or main) ---- */
+    let worker = null;
+
+    function startLerpLoop() {
+      worker = makeWorker();
+      if (worker) {
+        worker.onmessage = (e)=>{
+          const [nodesFromArr, edgesFromArr, edgesToArr] = e.data;
+          state.nodesFrom = nodesFromArr;
+          state.edgesFrom = edgesFromArr;
+          state.edgesTo   = edgesToArr;
+          state.workerTicks++;
+          requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      } else {
+        requestAnimationFrame(tickFallback);
+      }
+    }
+
+    function tick(){
+      worker.postMessage([
+        state.nodesFrom, state.nodesTo, state.edgesFrom, state.edgesTo, state.edgePairs,
+        state.seed,
+        {
+          time: performance.now()*0.001,
+          amp: state.wobbleAmp,
+          freq: state.wobbleFreq,
+          scale: state.wobbleScale,
+          maxF: state.lerpMax,
+          minF: state.lerpMin,
+          snap: state.snapDist
+        }
+      ]);;
+    }
+
+    function tickFallback(){
+      const nf = state.nodesFrom, nt = state.nodesTo, rel = state.edgePairs, seed = state.seed;
+      if (!nf || !nt || !rel) { requestAnimationFrame(tickFallback); return; }
+
+      const N = nt.length/3, time = performance.now()*0.001;
+      const amp = state.wobbleAmp||0, freq = state.wobbleFreq||0;
+      const scale = state.wobbleScale>0 ? state.wobbleScale : 1;
+      const maxF = state.lerpMax||0.08, minF = state.lerpMin||0.001, pow = state.lerpPow||1.2;
+      const snap = state.snapDist||0.5;
+
+      for (let i=0;i<N;i++){
+        const i3=i*3;
+
+        const dx0 = nt[i3]-nf[i3];
+        const dy0 = nt[i3+1]-nf[i3+1];
+        const dz0 = nt[i3+2]-nf[i3+2];
+        const dist0 = Math.hypot(dx0,dy0,dz0);
+
+        if (dist0 < snap){
+          nf[i3]=nt[i3]; nf[i3+1]=nt[i3+1]; nf[i3+2]=nt[i3+2];
+        } else {
+          const x = Math.min(1, dist0/scale);
+          const eased = Math.pow(x, Math.max(0.1, pow));
+          const f = minF + (maxF - minF) * eased;
+
+          nf[i3]   += dx0 * f;
+          nf[i3+1] += dy0 * f;
+          nf[i3+2] += dz0 * f;
+        }
+
+        if (amp>0 && freq>0){
+          // perpendikuläres Wobble wie zuvor
+          const dx = nt[i3]-nf[i3], dy = nt[i3+1]-nf[i3+1], dz = nt[i3+2]-nf[i3+2];
+          const dist = Math.hypot(dx,dy,dz);
+          if (dist>1e-4){
+            const inv=1/dist, ux=dx*inv, uy=dy*inv, uz=dz*inv;
+            const ax = Math.abs(ux)<0.9 ? 1:0, ay = Math.abs(ux)<0.9 ? 0:1, az=0;
+            let px = uy*az-uz*ay, py = uz*ax-ux*az, pz = ux*ay-uy*ax;
+            const pl = Math.hypot(px,py,pz)||1e-6; px/=pl; py/=pl; pz/=pl;
+            const falloff = Math.min(1, Math.max(0, dist/scale));
+            const wob = amp * falloff * Math.sin(time*freq + seed[i]);
+            nf[i3]+=px*wob; nf[i3+1]+=py*wob; nf[i3+2]+=pz*wob;
+          }
+        }
+      }
+
+      if (!state.edgesFrom || state.edgesFrom.length !== rel.length*3)
+        state.edgesFrom = new Float32Array(rel.length*3);
+      if (!state.edgesTo || state.edgesTo.length !== rel.length*3)
+        state.edgesTo = new Float32Array(rel.length*3);
+
+      for (let i=0;i<rel.length;i++){
+        const v3=i*3, f3=rel[i].from*3, t3=rel[i].to*3;
+        state.edgesFrom[v3]=nf[f3]; state.edgesFrom[v3+1]=nf[f3+1]; state.edgesFrom[v3+2]=nf[f3+2];
+        state.edgesTo[v3]=nf[t3];   state.edgesTo[v3+1]=nf[t3+1];   state.edgesTo[v3+2]=nf[t3+2];
+      }
+
       requestAnimationFrame(tickFallback);
     }
-  }
 
-  function tick() {
-    worker.postMessage([state.nodesFrom, state.nodesTo, state.edgesFrom, state.edgesTo, state.edgePairs]);
-  }
+    React.useEffect(() => () => { if (worker) worker.terminate(); }, []);
 
-  function tickFallback() {
-    const factor = 0.05,
-      nf = state.nodesFrom,
-      nt = state.nodesTo;
-    let i = 0,
-      total = nt.length / 3;
-    while (total > i) {
-      const v3 = i * 3,
-        ff = factor - (i / total) / 100;
-      nf[v3] += (nt[v3] - nf[v3]) * ff;
-      nf[v3 + 1] += (nt[v3 + 1] - nf[v3 + 1]) * ff;
-      nf[v3 + 2] += (nt[v3 + 2] - nf[v3 + 2]) * ff;
-      i++;
-    }
-    i = 0;
-    while (state.edgePairs.length > i) {
-      const v3 = i * 3,
-        f3 = state.edgePairs[i].from * 3,
-        t3 = state.edgePairs[i].to * 3;
-      state.edgesFrom[v3] = nf[f3];
-      state.edgesFrom[v3 + 1] = nf[f3 + 1];
-      state.edgesFrom[v3 + 2] = nf[f3 + 2];
-      state.edgesTo[v3] = nf[t3];
-      state.edgesTo[v3 + 1] = nf[t3 + 1];
-      state.edgesTo[v3 + 2] = nf[t3 + 2];
-      i++;
-    }
-    requestAnimationFrame(tickFallback);
-  }
-  React.useEffect(() => () => { if (worker) worker.terminate(); }, []);
+    window.setLerpTail = (min,max,snap) => {state.lerpMin=min; state.lerpMax=max; state.snapDist=snap};
+    window.setWobble = (amp,freq) => {state.wobbleAmp=amp; state.wobbleFreq=freq};
 
-  return React.createElement(
-    'div', {
-      className: 'R3FHeader',
-      style: {
-        width: '100%',
-        height: '100vh',
-        display: 'flex',
-        background: '#030519',
-        transition: 'background 1s',
-        position: 'relative',
-      }
-    },
-          [
-            React.createElement(Canvas, {
-        key: 'canvas',
-        dpr: [1, dims.dpr],
-        camera: { fov: FOV, near: CAMERA_NEAR, far: CAMERA_FAR, position: [0, 0, state.camZ] },
-        onCreated: ({ gl, camera }) => {
-          gl.setPixelRatio(dims.dpr);
-          gl.setSize(dims.w, dims.h, false);
-          gl.outputColorSpace = THREE.SRGBColorSpace;
-          gl.toneMapping = THREE.ACESFilmicToneMapping;
-          gl.toneMappingExposure = 1.2;
-          camera.fov = FOV;
-          camera.near = CAMERA_NEAR;
-          camera.far = CAMERA_FAR;
-          camera.position.set(0, 0, state.camZ);
-          camera.updateProjectionMatrix();
+    return React.createElement(
+        'div', {
+          className: 'R3FHeader',
+          style: {
+            width: '100%',
+            height: '100vh',
+            display: 'flex',
+            background: '#030519',
+            transition: 'background 1s',
+            position: 'relative',
+          }
         },
-        style: { position: 'absolute', inset: 0, zIndex: 0, height: window.innerHeight, opacity: 0.9 },
-      }, [
-              React.createElement(CameraSync, { key: 'cam', state }),
-              React.createElement(NodeCloud, { key: 'nodes', state }),
-              React.createElement(Edges, { key: 'edges', state }),
-              React.createElement(Animation, {
-          key: 'anim',
-          settings,
-          setSettings,
-          setEdgeOpacity,
-          setBackground,
-          setStep,
-          setEdgeWidthPx,
-          bumpFrame
-        }),
-            ]),
-            React.createElement(Title, { key: 'title', current: uiStep }),
-          ]
-  );
-}
+        [
+          React.createElement(Canvas, {
+            key: 'canvas',
+            dpr: [1, dims.dpr],
+            camera: { fov: FOV, near: CAMERA_NEAR, far: CAMERA_FAR, position: [0, 0, state.camZ] },
+            onCreated: ({ gl, camera }) => {
+              gl.setPixelRatio(dims.dpr);
+              gl.setSize(dims.w, dims.h, false);
+              gl.outputColorSpace = THREE.SRGBColorSpace;
+              gl.toneMapping = THREE.ACESFilmicToneMapping;
+              gl.toneMappingExposure = 1.2;
+              camera.fov = FOV;
+              camera.near = CAMERA_NEAR;
+              camera.far = CAMERA_FAR;
+              camera.position.set(0, 0, state.camZ);
+              camera.updateProjectionMatrix();
+            },
+            style: { position: 'absolute', inset: 0, zIndex: 0, height: window.innerHeight, opacity: 0.8 },
+          }, [
+            React.createElement(CameraSync, { key: 'cam', state }),
+            React.createElement(NodeCloud, { key: 'nodes', state }),
+            React.createElement(Edges, { key: 'edges', state }),
+            React.createElement(Animation, {
+              key: 'anim',
+              settings,
+              setSettings,
+              setEdgeOpacity,
+              setBackground,
+              setStep,
+              setEdgeWidthPx,
+              bumpFrame
+            }),
+          ]),
+          React.createElement(Title, { key: 'title', current: uiStep }),
+        ]
+    );
+  }
 
-const RAD2DEG = 180 / Math.PI;
-const DEG2RAD = Math.PI / 180;
+  const RAD2DEG = 180 / Math.PI;
+  const DEG2RAD = Math.PI / 180;
 
-function moveCamera(lng, lat, radius = window.innerHeight * 0.5) {
-  const phi = Math.PI / 2 - lat; // polar/elevation
-  const theta = lng + Math.PI; // azimuth (Dataset-Ausrichtung)
-  return [-(radius * Math.sin(phi) * Math.sin(theta)),
+  function moveCamera(lng, lat, radius = window.innerHeight * 0.5) {
+    const phi = Math.PI / 2 - lat; // polar/elevation
+    const theta = lng + Math.PI; // azimuth (Dataset-Ausrichtung)
+    return [-(radius * Math.sin(phi) * Math.sin(theta)),
       (radius * Math.cos(phi)),
       -(radius * Math.sin(phi) * Math.cos(theta))]
-}
+  }
 
-function Animation({ settings, setSettings, setEdgeOpacity, setBackground, setStep, setEdgeWidthPx, bumpFrame }) {
-  const { camera } = useThree();
+  function Animation({ settings, setSettings, setEdgeOpacity, setBackground, setStep, setEdgeWidthPx, bumpFrame }) {
+    const { camera } = useThree();
 
-  React.useEffect(() => {
-    function deplaceCAmera(lat, lng, radius) {
-      camera.position.set(...moveCamera(lat, lng, radius));
-      camera.lookAt(0, 0, 0);
-    }
-
-    const originalsettigs = { ...settings };
-    const animations = [];
-    let running = true;
-
-    async function run() {
-      let currentSettings = originalsettigs;
-      const width = window.innerWidth,
-        height = window.innerHeight;
-
-      let offset = 0;
-
-      const calcOffset = s => offset = offset + s
-
-
-      setStep(1)
-      setTimeout(() => {
-        bumpFrame();
-      }, calcOffset(4000));
-
-      setTimeout(() => {
-        bumpFrame();
-        setStep(2)
-      }, calcOffset(4000));
-
-      setTimeout(() => {
-        bumpFrame();
-        setStep(3)
-      }, calcOffset(6000));
-
-      setTimeout(() => {
-        bumpFrame();
-        setStep(4)
-      }, calcOffset(4000));
-
-      setTimeout(() => {
-        bumpFrame();
-        setStep(5)
-      }, calcOffset(4500));
-
-      setTimeout(() => {
-        bumpFrame();
-        setStep(6)
-      }, calcOffset(5000));
-
-      setTimeout(() => {
-        bumpFrame();
-        setStep(7)
-      }, calcOffset(5000));
-
-      setTimeout(() => {
-        bumpFrame();
-        setStep(8)
-      }, calcOffset(8000));
-
-
-      const __state = {
-        cameraLat: Math.PI,
-        cameraLng: 0,
-        cameraRadius: height * 0.5,
-        edgeOpacity: 0
+    React.useEffect(() => {
+      function deplaceCAmera(lat, lng, radius) {
+        camera.position.set(...moveCamera(lat, lng, radius));
+        camera.lookAt(0, 0, 0);
       }
 
-      const activeSteps = { 1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true };
+      const settingsClone = { ...settings };
+      const animations = [];
+      let running = true;
 
-      /* ------------------------- STEP 1 ---------------------------------
-         Easing: easeInOutExpo, Dauer 4000ms.
-      ------------------------------------------------------------------ */
-      if (running && activeSteps[1]) {
-        const a = anime({
-          targets: __state,
-          ...{
-            cameraLat: Math.PI * 2,
-            cameraRadius: __state.cameraRadius / ratio()
-          },
-          delay: 0,
-          duration: 4000,
-          easing: 'easeOutExpo',
-          changeBegin: function () {
-            if (!running) return;
-            currentSettings = {
-              layout: Object.keys(layouts)[0],
-              colorScale: 'users',
-              nodes: { display: true, opacity: 1, width: 2 },
-              axises: {
-                axis1: { value: 'startDay', bounds: { values: [0, 360] } },
-                axis2: { value: 'startTime', bounds: { values: [100, 600] } },
-                axis3: { value: 'collaborationNumber', bounds: { values: [-300, 300] } },
-              },
-            };
-            setBackground(BACKG[0]);
-            setEdgeOpacity(0);
-            setSettings(currentSettings);
+      async function run() {
+        let currentSettings = settingsClone;
+        const width = window.innerWidth, height = window.innerHeight;
 
-          },
-          update: function (v) {
-            if (running && v.changeBegan) deplaceCAmera(__state.cameraLat, __state.cameraLng, __state.cameraRadius);
-          },
-        }).finished;
-        animations.push(a);
-        await a;
-      }
+        let offset = 0;
 
-      /* ------------------------- STEP 2 ---------------------------------
-         - .add mit Dummy-Target, um "changeBegin" (einmalig) zu bekommen → setSettings.
-         - Danach längerer Kameraschwenk (10s) mit easing 'easeInOutExpo'.
-      ------------------------------------------------------------------ */
-      if (running && activeSteps[2]) {
-        animations.push(anime.timeline({ easing: 'easeInOutExpo' }).add({
-          targets: { i: 0 },
-          ...{ i: 1 },
-          delay: 2000,
-          duration: 100,
-          changeBegin: function () {
-            if (!running) return;
-            currentSettings = {
-              ...currentSettings,
-              axises: {
-                ...currentSettings.axises,
-                axis3: { value: 'users', bounds: { values: [(-window.innerWidth * 0.3) / ratio(), (window.innerWidth * 0.3) / ratio()] } }
+        const calcOffset = s => offset = offset + s
+
+
+        setTimeout(setStep, 10);
+
+        // zoom-like effekt direkt nach dem intro schwenk
+        setTimeout(() => {
+          bumpFrame();
+          setTimeout(setStep, 1500);
+        }, calcOffset(4000));
+
+        // formt collaboration "tube"
+        setTimeout(() => {
+          bumpFrame();
+          setTimeout(setStep, 3000);
+        }, calcOffset(3000));
+
+        // connections mit edges collapse zu circle
+        setTimeout(() => {
+          bumpFrame();
+          setTimeout(setStep, 200);
+        }, calcOffset(6000));
+
+        // circle extrusion mit edges
+        setTimeout(() => {
+          bumpFrame();
+          setTimeout(setStep, 1400);
+        }, calcOffset(3600));
+
+        // circle transform to grid
+        setTimeout(() => {
+          bumpFrame();
+          setTimeout(setStep, 2000);
+        }, calcOffset(3000));
+
+        setTimeout(() => {
+          bumpFrame();
+          setTimeout(setStep, 200);
+        }, calcOffset(6000));
+
+        setTimeout(() => {
+          bumpFrame();
+          setTimeout(setStep, 100);
+        }, calcOffset(5000));
+
+        setTimeout(() => {
+          bumpFrame();
+          setTimeout(setStep, 100);
+        }, calcOffset(8000));
+
+        const state = {
+          cameraLat: Math.PI,
+          cameraLng: 0,
+          cameraRadius: height * 0.5,
+          edgeOpacity: 0
+        }
+
+        const activeSteps = { 1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true };
+
+        /* ------------------------- STEP 1 ---------------------------------
+           Easing: easeInOutExpo, Dauer 4000ms.
+        ------------------------------------------------------------------ */
+        if (running && activeSteps[1]) {
+
+          const a = anime({
+            targets: state,
+            ...{
+              cameraLat: Math.PI * 2,
+              cameraRadius: state.cameraRadius / ratio()
+            },
+            delay: 0,
+            duration: 4000,
+            easing: 'easeInOutExpo',
+            changeBegin: function () {
+              if (!running) return;
+              currentSettings = { ...currentSettings, ...{ edges: { ...currentSettings.edges, display: false } },
+                layout: Object.keys(layouts)[0],
+                colorScale: 'users',
+                axises: {
+                  axis1: { value: 'startDay', bounds: { values: [0, 360] } },
+                  axis2: { value: 'startTime', bounds: { values: [100, 600] } },
+                  axis3: { value: 'collaborationNumber', bounds: { values: [-300, 300] } },
+                },
+              };
+              setBackground(BACKG[0]);
+              setEdgeOpacity(0.0);
+              setSettings(currentSettings);
+            },
+            update: function (v) {
+              if (running && v.changeBegan) {
+                deplaceCAmera(state.cameraLat, state.cameraLng, state.cameraRadius);
               }
-            };
-            setSettings(currentSettings);
-          },
-        }));
-        animations.push(anime.timeline({
-          easing: 'easeInOutExpo',
-          delay: 500,
-          duration: 12000
-        }).add({
-          targets: __state,
-          ...{
-            cameraLat: Math.PI * 2.55,
-            cameraRadius: (height * 0.9) / ratio()
-          },
-          duration: 10000,
-          changeBegin: function () { if (!running) return; setSettings(currentSettings); },
-          update: function (v) { if (running && v.changeBegan) deplaceCAmera(__state.cameraLat, __state.cameraLng, __state.cameraRadius); },
-        }));
-      }
+            },
+          }).finished;
+          animations.push(a);
+          await a;
+        }
 
-      /* ------------------------- STEP 3 ---------------------------------
-         "Connections emerge": Edges EIN (sichtbar) + BREITER.
-         Zwei Segmente:
-         1) Softes Einblenden der Edge-Opacity (0 → 0.5) über 4s (linear).
-            → Im begin() schalten wir auch die Breite hoch (EDGE_PX_EMPH).
-         2) Achsenwechsel auf 'projects' (axis2), 'users' (axis3), Kanten bleiben an.
-      ------------------------------------------------------------------ */
-      if (running && activeSteps[3]) {
-        const a = anime.timeline({ easing: 'easeInOutExpo' }).add({
-          targets: { opacity: 0 },
-          opacity: 0.50,
-          delay: 6000,
-          easing: 'linear',
-          duration: 4000,
-          update: function (v) { if (running && v.changeBegan) setEdgeOpacity(v.animatables[0].target.opacity); },
-        }).add({
-          targets: { i: 0 },
-          ...{ i: 1 },
-          easing: 'easeInOutExpo',
-          duration: 4000,
-          delay: 6000,
-          changeBegin: function () {
-            if (!running) return;
-            setEdgeWidthPx(EDGE_PX_EMPH*3);
-            currentSettings = {
-              ...currentSettings,
-              edges: {
-                ...currentSettings.edges,
-                display: true
-              },
-              axises: {
-                ...currentSettings.axises,
-                axis2: { value: 'projects', bounds: { values: [100, 700] } },
-                axis3: { value: 'users', bounds: { values: [(-window.innerWidth * 0.3) / ratio(), (window.innerWidth * 0.3) / ratio()] } },
-              },
-            };
-            setSettings(currentSettings);
-          },
-        }, 10).finished;
-        animations.push(a);
-        await a;
-      }
+        /* ------------------------- STEP 2 ---------------------------------
+           - .add mit Dummy-Target, um "changeBegin" (einmalig) zu bekommen → setSettings.
+           - Danach längerer Kameraschwenk (10s) mit easing 'easeInOutExpo'.
+        ------------------------------------------------------------------ */
+        if (running && activeSteps[2]) {
+          animations.push(anime.timeline({ easing: 'easeInOutExpo' }).add({
+            targets: { i: 0 },
+            ...{ i: 1 },
+            delay: 0,
+            duration: 100,
+            changeBegin: function () {
+              if (!running) return;
+              currentSettings = {
+                ...currentSettings,
+                axises: {
+                  ...currentSettings.axises,
+                  axis3: { value: 'users', bounds: { values: [(-window.innerWidth * 0.3) / ratio(), (window.innerWidth * 0.3) / ratio()] } }
+                }
+              };
+              setSettings(currentSettings);
 
-      /* ------------------------- STEP 4 ---------------------------------
-         Farbwechsel (BACKGROUND 1), Skala 'collaborationNumber', weitere Bounds.
-         Kanten wieder AUS (Opacity 0)
-         Dazu kurzer Kameraschritt.
-      ------------------------------------------------------------------ */
-      if (running && activeSteps[4]) {
-        setSettings({...currentSettings,
-          edges: { ...currentSettings.edges, display: false }})
-        const a = anime.timeline({ easing: 'easeInOutExpo' })
+            },
+          }));
+
+          animations.push(anime.timeline({
+                delay: 0,
+                duration: 10000
+              }).add({
+                targets: state,
+            easing: 'easeInOutExpo',
+                ...{
+                  cameraLat: Math.PI * 2.55,
+                  cameraRadius: (height * 0.9) / ratio()
+                },
+                duration: 8000,
+                changeBegin: function () {
+                  if (!running) return;
+                  console.debug(".")
+
+                },
+                update: function (v) { if (running && v.changeBegan) deplaceCAmera(state.cameraLat, state.cameraLng, state.cameraRadius);
+                },
+              })
+          );
+        }
+
+        /* ------------------------- STEP 3 ---------------------------------
+           "Connections emerge": Edges EIN (sichtbar) + BREITER.
+           Zwei Segmente:
+           1) Softes Einblenden der Edge-Opacity (0 → 0.5) über 4s (linear).
+              → Im begin() schalten wir auch die Breite hoch (EDGE_PX_EMPH).
+           2) Achsenwechsel auf 'projects' (axis2), 'users' (axis3), Kanten bleiben an.
+        ------------------------------------------------------------------ */
+        if (running && activeSteps[3]) {
+          const a = anime.timeline({ easing: 'easeInOutExpo' })
           .add({
-            targets: __state,
+            targets: { opacity: 0 },
+            opacity: 0.5,
+            delay: 5000,
+            easing: 'linear',
+            duration: 4000,
+            update: function (v) { if (running && v.changeBegan) setEdgeOpacity(v.animatables[0].target.opacity); },
+          }).add({
+            targets: { i: 0 },
+            ...{ i: 1 },
+            duration: 4000,
+            delay: 4000,
+            changeBegin: function () {
+              if (!running) return;
+              currentSettings = {
+                ...currentSettings,
+                edges: {
+                  ...currentSettings.edges,
+                  display: true
+                },
+                axises: {
+                  ...currentSettings.axises,
+                  axis2: { value: 'projects', bounds: { values: [100, 700] } },
+                  axis3: { value: 'users', bounds: { values: [(-window.innerWidth * 0.3) / ratio(), (window.innerWidth * 0.3) / ratio()] } },
+                },
+              };
+              setEdgeWidthPx(EDGE_PX_EMPH*2);
+              setSettings(currentSettings);
+            },
+          }, 10).finished;
+          animations.push(a);
+          await a;
+        }
+
+        /* ------------------------- STEP 4 ---------------------------------
+           Farbwechsel (BACKGROUND 1), Skala 'collaborationNumber', weitere Bounds.
+           Kanten wieder AUS (Opacity 0)
+           Dazu kurzer Kameraschritt.
+        ------------------------------------------------------------------ */
+        if (running && activeSteps[4]) {
+          const a = anime.timeline({ easing: 'easeInOutExpo' })
+          .add({
+            targets: state,
             ...{
               cameraLat: Math.PI * 2
             },
             duration: 2000,
-            update: function (v) { if (running && v.changeBegan) deplaceCAmera(__state.cameraLat, __state.cameraLng, __state.cameraRadius); },
+            update: function (v) { if (running && v.changeBegan) deplaceCAmera(state.cameraLat, state.cameraLng, state.cameraRadius); },
           })
           .add({
             targets: { i: 0 },
@@ -1445,7 +1604,8 @@ function Animation({ settings, setSettings, setEdgeOpacity, setBackground, setSt
                 colorScale: 'collaborationNumber',
                 edges: {
                   ...currentSettings.edges,
-                  display: false
+                  display: true,
+                  // placeholder
                 },
                 axises: {
                   ...currentSettings.axises,
@@ -1453,8 +1613,10 @@ function Animation({ settings, setSettings, setEdgeOpacity, setBackground, setSt
                   axis3: { value: 'users', bounds: { values: [-1, 1] } },
                 },
               };
-              setSettings(currentSettings);
+              setEdgeWidthPx(EDGE_PX_EMPH)
               setBackground(BACKG[1]);
+              //setEdgeOpacity(0.05)
+              setSettings(currentSettings);
             },
           }, 200).add({
             targets: { i: 0 },
@@ -1466,7 +1628,8 @@ function Animation({ settings, setSettings, setEdgeOpacity, setBackground, setSt
                 ...currentSettings,
                 edges: {
                   ...currentSettings.edges,
-                  display: false
+                  display: true
+                  //opacity: 0,
                 },
                 axises: {
                   ...currentSettings.axises,
@@ -1477,51 +1640,50 @@ function Animation({ settings, setSettings, setEdgeOpacity, setBackground, setSt
                   },
                 },
               };
-              setEdgeWidthPx(EDGE_PX_EMPH * 3);
+              // CIRCLE EXTRUSION SETTINGS
+              setEdgeOpacity(0.05)
+              setEdgeWidthPx(EDGE_PX_EMPH * 7);
               setSettings(currentSettings);
-
             },
           }, 1500).add({
             easing: 'easeInOutExpo',
-            targets: __state,
+            targets: state,
             ...{
               cameraLng: Math.PI * -0.25,
               cameraRadius: (window.innerHeight * 0.66) / ratio()
             },
-            duration: 6000,
-            update: function (v) { if (running && v.changeBegan) deplaceCAmera(__state.cameraLat, __state.cameraLng, __state.cameraRadius); },
+            duration: 5000,
+            update: function (v) { if (running && v.changeBegan) deplaceCAmera(state.cameraLat, state.cameraLng, state.cameraRadius); },
           }, 1000).finished;
-        animations.push(a);
-        await a;
-      }
+          animations.push(a);
+          await a;
+        }
 
-      /* ------------------------- STEP 5 ---------------------------------
-         Übergang ins Grid-Layout, Zoom/FOV-Gefühl, Kanten bleiben AUS.
-         Drei Segmente (kurzer EaseInOut → linearer Drift → Layoutwechsel).
-      ------------------------------------------------------------------ */
-      if (running && activeSteps[5]) {
-        setSettings({...currentSettings,
-            edges: { ...currentSettings.edges, display: false }})
-        const a = anime.timeline({})
+        /* ------------------------- STEP 5 ---------------------------------
+           Übergang ins Grid-Layout, Zoom/FOV-Gefühl, Kanten bleiben AUS.
+           Drei Segmente (kurzer EaseInOut → linearer Drift → Layoutwechsel).
+        ------------------------------------------------------------------ */
+        if (running && activeSteps[5]) {
+          const a = anime.timeline({})
           .add({
-            targets: __state,
+            targets: state,
             ...{
               cameraLng: 0,
               cameraRadius: (height * 0.71) / (isMobile ? yRatio() : xRatio())
             },
             easing: 'easeInOutExpo',
             duration: 1000,
-            update: function (v) { if (running && v.changeBegan) deplaceCAmera(__state.cameraLat, __state.cameraLng, __state.cameraRadius); },
+            update: function (v) { if (running && v.changeBegan) deplaceCAmera(state.cameraLat, state.cameraLng, state.cameraRadius); },
           })
           .add({
-            targets: __state,
+            targets: state,
             ...{
-              cameraLat: __state.cameraLat + Math.PI * 0.01,
+              cameraLat: state.cameraLat + Math.PI * 0.01,
               cameraRadius: (height * 0.62) / (isMobile ? yRatio() : xRatio()),
             },
             easing: 'linear',
             duration: 5000,
-            update: function (v) { if (running && v.changeBegan) deplaceCAmera(__state.cameraLat, __state.cameraLng, __state.cameraRadius); },
+            update: function (v) { if (running && v.changeBegan) deplaceCAmera(state.cameraLat, state.cameraLng, state.cameraRadius); },
           }, 1000)
           .add({
             targets: { i: 0 },
@@ -1533,62 +1695,62 @@ function Animation({ settings, setSettings, setEdgeOpacity, setBackground, setSt
                 ...currentSettings,
                 layout: Object.keys(layouts)[1],
                 colorScale: 'projects',
-                edges: { ...currentSettings.edges, display: false },
+                edges: { ...currentSettings.edges, display: true },
                 axises: {
                   axis1: { value: 'startDay', bounds: { values: [-width * 0.48, width * 0.48] } },
                   axis2: { value: 'projectTasks', bounds: { values: [-height * 0.45, height * 0.45] } },
                   axis3: { value: 'collaborationNumber', bounds: { values: [-2, 2] } },
                 },
               };
-              setSettings(currentSettings);
+              setTimeout(setEdgeOpacity, 1000, 0.0);
               setBackground(BACKG[2]);
+              setSettings(currentSettings);
             }
           }, 0).finished;
-        animations.push(a);
-        await a;
-      }
+          animations.push(a);
+          await a;
+        }
 
-      animations.push(anime({
-        targets: __state,
-        ...{
-          cameraLat: Math.PI * 2.5,
-          cameraRadius: (height * 1.1) / ratio()
-        },
-        easing: 'linear',
-        duration: 19000,
-        delay: 0,
-        complete: () => {
-          if (running) {
-            //running = false;
-            bumpFrame();
-            animations.forEach(d=>anime.remove(d));
-            run();
-          }
-        },
-        update: function (v) {
-          if (running && v.changeBegan) {
-            setEdgeOpacity(0);
-            deplaceCAmera(__state.cameraLat, __state.cameraLng, __state.cameraRadius);
-          }
-        },
-      }));
+        animations.push(anime({
+          targets: state,
+          ...{
+            cameraLat: Math.PI * 2.7,
+            cameraRadius: (height * 1.1) / ratio()
+          },
+          easing: 'linear',
+          duration: 19000,
+          delay: 0,
+          complete: () => {
+            if (running) {
+              //running = false;
+              //animations.forEach(d=>anime.remove(d));
+              bumpFrame();
+              run();
+            }
+          },
+          update: function (v) {
+            if (running && v.changeBegan) {
+              deplaceCAmera(state.cameraLat, state.cameraLng, state.cameraRadius);
+            }
+          },
+        }));
 
-      /* ------------------------- STEP 6 ---------------------------------
-         „Logic binds…“: Layout coral, Edges wieder EIN + BREITER (Betonung).
-         Ein Segment zum Ein-/Umschalten.
-      ------------------------------------------------------------------ */
-      if (activeSteps[6]) {
-        const a = anime.timeline({ easing: 'easeInOutExpo' })
+        /* ------------------------- STEP 6 ---------------------------------
+           „Logic binds…“: Layout coral, Edges wieder EIN + BREITER (Betonung).
+           Ein Segment zum Ein-/Umschalten.
+        ------------------------------------------------------------------ */
+        if (activeSteps[6]) {
+          const a = anime.timeline({ easing: 'easeInOutExpo' })
           .add({
             targets: { opacity: 0 },
-            opacity: 0.5,
+            opacity: 0,
             duration: 3000,
             update: function (v) { if (running && v.changeBegan) setEdgeOpacity(v.animatables[0].target.opacity); },
           })
           .add({
             targets: { i: 0 },
             ...{ i: 1 },
-            delay: 0,
+            delay: 1000,
             duration: 6000,
             changeBegin: function () {
               if (!running) return;
@@ -1597,18 +1759,19 @@ function Animation({ settings, setSettings, setEdgeOpacity, setBackground, setSt
                 layout: Object.keys(layouts)[3],
                 edges: { ...currentSettings.edges, display: true },
               };
+              setEdgeWidthPx(EDGE_PX_EMPH*4);
               setSettings(currentSettings);
             },
           }, 200).finished;
-        animations.push(a);
-        await a;
-      }
+          animations.push(a);
+          await a;
+        }
 
-      /* ------------------------- STEP 7 ---------------------------------
-         Neuordnung (forceLayout), Edges wieder AUS und zurück auf „dünn“.
-      ------------------------------------------------------------------ */
-      if (running && activeSteps[7]) {
-        const a = anime.timeline({
+        /* ------------------------- STEP 7 ---------------------------------
+           Neuordnung (forceLayout), Edges wieder AUS und zurück auf „dünn“.
+        ------------------------------------------------------------------ */
+        if (running && activeSteps[7]) {
+          const a = anime.timeline({
             easing: 'easeInOutExpo',
             duration: 8000,
             delay: 3000
@@ -1616,47 +1779,48 @@ function Animation({ settings, setSettings, setEdgeOpacity, setBackground, setSt
           .add({
             targets: { i: 0 },
             ...{ i: 1 },
-            delay: 0,
+            delay: 1000,
             duration: 4000,
             easing: 'easeInOutExpo',
             changeBegin: function () {
               if (!running) return;
-              currentSettings = { ...currentSettings, layout: Object.keys(layouts)[2] };
-              setEdgeOpacity(0);
+              currentSettings = { ...currentSettings, edges:{...currentSettings.edges, display:false}, layout: Object.keys(layouts)[2] };
+              setEdgeWidthPx(EDGE_PX_EMPH);
+              setEdgeOpacity(0.0);
               setSettings(currentSettings);
             },
           }, 200).finished;
-        animations.push(a);
-        await a;
+          animations.push(a);
+          await a;
+        }
       }
-    }
 
-    run();
+      run();
 
-    return () => {
-      running = false;
-      animations.forEach(d=>anime.remove(d));
-    };
-  }, []);
+      return () => {
+        running = false;
+        animations.forEach(d=>anime.remove(d));
+      };
+    }, []);
 
-  return null;
-}
+    return null;
+  }
 
-/* ================= Boot ================= */
-if (!webglOK()) { alert('WebGL unavailable. Enable hardware acceleration.'); }
-createRoot(document.getElementById('root')).render(
-  React.createElement(IntlProvider, { locale: 'en', messages: MESSAGES }, React.createElement(App)),
-);
-    </script>
+  /* ================= Boot ================= */
+  if (!webglOK()) { alert('WebGL unavailable. Enable hardware acceleration.'); }
+  createRoot(document.getElementById('root')).render(
+      React.createElement(IntlProvider, { locale: 'en', messages: MESSAGES }, React.createElement(App)),
+  );
+</script>
 
-    <script type="module">
-import * as THREE from 'three';
+<script type="module">
+  import * as THREE from 'three';
 
 
-window.addEventListener('DOMContentLoaded', () => {
-  removeLoader();
+  window.addEventListener('DOMContentLoaded', () => {
+    removeLoader();
 
-  const svgMarkup = `<svg xmlns="http://www.w3.org/2000/svg" class="vaeora-wordmark" viewBox="0 0 700 100" width="200px" preserveAspectRatio="xMidYMid meet">
+    const svgMarkup = `<svg xmlns="http://www.w3.org/2000/svg" class="vaeora-wordmark" viewBox="0 0 700 100" width="200px" preserveAspectRatio="xMidYMid meet">
 <defs>
 <linearGradient gradientUnits="userSpaceOnUse" x1="50" y1="0" x2="50" y2="100" id="gradient-1" spreadMethod="pad" gradientTransform="matrix(-0.358977, 0.93331, -0.730712, -0.499981, 67.042038, 53.336289)"><stop offset="0" style="stop-color: rgb(255, 255, 255);"/>
 <stop offset="0.1" style="stop-color: rgb(255, 255, 255);"/>
@@ -1719,20 +1883,20 @@ window.addEventListener('DOMContentLoaded', () => {
                         keySplines="0.87 0 0.13 1; 0.55 0 1 0.45; 0.46 0 1 0.33; 1 0 0.87 1"/>
 </path>
 </svg>`
-  const placeholder = document.getElementById('logo-placeholder');
-  const loader = document.getElementById('intro-overlay');
-});
+    const placeholder = document.getElementById('logo-placeholder');
+    const loader = document.getElementById('intro-overlay');
+  });
 
-const removeLoader = () => {
-  const intro = document.getElementById('intro-overlay');
-  intro.style.transition = 'opacity 0.5s ease';
-  setTimeout(() => {
-    intro.style.opacity = '0'; // fade-out
-    setTimeout(() => intro.remove(), 500); // detach from DOM
-  }, 500);
-};
+  const removeLoader = () => {
+    const intro = document.getElementById('intro-overlay');
+    intro.style.transition = 'opacity 0.5s ease';
+    setTimeout(() => {
+      intro.style.opacity = '0'; // fade-out
+      setTimeout(() => intro.remove(), 500); // detach from DOM
+    }, 500);
+  };
 
-    </script>
-  </body>
+</script>
+</body>
 
 </html>
