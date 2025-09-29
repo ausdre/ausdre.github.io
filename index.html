@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>Disrupt tomorrow, today.</title>
+    <title>Le Canvas.</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -84,30 +84,12 @@
             line-height:             150%;
             text-rendering:          optimizeLegibility;
             font-feature-settings:   "liga", "kern", "ss01";
-            -webkit-font-smoothing:  antialiased;
+            -webkit-font-smoothing:  subpixel-antialiased;
             -moz-osx-font-smoothing: grayscale;
-            overflow-x:              hidden;
-            cursor: auto                  ;
+            overflow:              hidden;
+            cursor: none                  ;
             }
 
-        /* ensure only body scrolls */
-        html, body {overflow-y: auto;}
-
-        #snap-container {
-            height: auto;
-            overflow: visible;
-            }
-
-
-        /* make the root the snap scroller */
-        html {
-            scroll-snap-type: y mandatory;
-            scroll-behavior: smooth;
-
-            }
-
-
-        #root, .R3FHeader, .section-immersive, footer {scroll-snap-align: start;}
 
         /* prevent margin-collapsing from breaking the snap */
         .section-immersive {min-height: 100vh;}
@@ -209,194 +191,10 @@
                 }
             }
 
-        #bg3d {
-            position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100vh;
-            z-index: -1;
-            pointer-events: none;
-            }
 
-        #snap-container {
-            height: auto !important;
-            overflow: visible !important;
-            }
-
-        #snap-container p{
-            font-family: Manrope,sans-serif;
-            font-kerning: auto;
-            font-weight: lighter;
-            text-rendering: optimizeLegibility;
-            text-align-last: start;
-            text-align: justify;
-            -webkit-backface-visibility: hidden;
-            -webkit-font-smoothing: antialiased;
-            font-feature-settings: "liga", "kern", "ss01";
-            }
-
-        /* Section transition effects */
-        .section-immersive {
-            min-height: 100vh;
-            min-width: 100%;
-            opacity: 1;
-            backdrop-filter: blur(0px);
-            filter: blur(100px) brightness(1.08);
-            transition: opacity .77s cubic-bezier(.7, 0, .3, 1),
-                        backdrop-filter .99s cubic-bezier(.7, 0, .3, 1),
-                        filter .99s cubic-bezier(.7, 0, .3, 1);
-            will-change: opacity, backdrop-filter, filter;
-            z-index: 2;
-            }
-
-        .section-immersive.active {
-            opacity: 1;
-            filter: blur(0) brightness(1);
-            backdrop-filter: blur(100px);
-            }
-
-        /* Glassy container */
-        .glass {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(3px) saturate(112%);
-            }
-
-        /* Burger menu */
-        .burger {
-            position:        fixed;
-            top:             4rem;
-            right:           4rem;
-            z-index:         60;
-            width:           48px;
-            height:          48px;
-            display:         flex;
-            flex-direction:  column;
-            justify-content: center;
-            align-items:     center;
-            border-radius:   50%;
-            background:      none;
-            border:          none;
-            transition:      .77s cubic-bezier(.7, 0, .3, 1), filter .77s ease-in-out;
-            cursor:          pointer;
-            }
-
-        .burger-bar {
-            width:         26px;
-            height:        3px;
-            background:    #FFFFFF;
-            margin:        4px 0;
-            border-radius: 0;
-            transition:    .77s cubic-bezier(.7, 0, .3, 1), filter .77s ease-in-out;
-            filter:        none;
-            }
-
-
-        @keyframes breathe {
-            0%   { transform: scaleX(1) rotate(0deg); opacity: 1; }
-            25%  { transform: scaleX(1.18) rotate(1deg); opacity: 0.95; }
-            50%  { transform: scaleX(1) rotate(0deg); opacity: 1; }
-            75%  { transform: scaleX(0.82) rotate(-1deg); opacity: 0.95; }
-            100% { transform: scaleX(1) rotate(0deg); opacity: 1; }
-            }
-
-        .burger:not(.open):hover .bar1{
-            animation: breathe 2s ease-in-out infinite;
-            }
-        .burger:not(.open):hover .bar2 {
-            animation: breathe 2s ease-in-out infinite 0.2s;
-            }
-        .burger:not(.open):hover .bar3 {
-            animation: breathe 2s ease-in-out infinite 0.4s;
-            }
-
-
-        .burger.open .bar1 {
-            transform: rotate(45deg) translate(6px, 6px);
-            }
-
-        .burger.open .bar2 {
-            opacity: 0;
-            }
-
-        .burger.open .bar3 {
-            transform: rotate(-45deg) translate(6px, -6px);
-            }
-
-        /* Navigation overlay */
-        #nav-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 55;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            /*background: radial-gradient(rgb(3 5 25), #000);*/
-            backdrop-filter: blur(24px) saturate(60%);
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity .33s, backdrop-filter .33s;
-            }
-
-        #nav-overlay.open {
-            opacity: 1;
-            pointer-events: all;
-            }
-
-        #nav-overlay ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            }
-
-        #nav-overlay li {
-            margin: 2.5rem 0;
-            }
-
-        #nav-overlay a {
-            font-family: 'Atkinson Hyperlegible', 'Inter', Arial, sans-serif;
-            font-size: 2.5vw;
-            color: #FFFFFF;
-            text-decoration: none;
-            letter-spacing: 0.09em;
-            font-weight: 300;
-            transition: font-weight .177s linear(0 0%, 0.21 31.79%, 0.43 70.7%, 0.99 98.26%), letter-spacing .12s linear;
-            }
-
-        #nav-overlay a:hover, #nav-overlay a.active-nav {
-            font-weight: 900;
-            letter-spacing: -0.05em;
-            }
-
-        /* Footer */
-        footer {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 6vh 0 2vh 0;
-            gap: 2rem;
-            background: transparent;
-            }
 
         .vaeora-logo-svg { max-width: 10vw; }
 
-        /* Custom pointer */
-        #custom-pointer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 30px;
-            height: 30px;
-            border-radius: 40%;
-            backdrop-filter: invert(1) blur(2px) saturate(100%);
-            background: rgba(17, 17, 17, 0.0085);
-            transform: translate(-50%, -50%) scale(1);
-            pointer-events: none;
-            z-index: 1000;
-            transition: transform 0.1s ease, background 0.3s ease-in-out;
-            }
 
         /* Intro overlay transition */
         #intro-overlay {
@@ -417,24 +215,6 @@
 
         .invertMe { filter: invert(1); }
 
-        /* one scroller with snapping */
-        #page {
-            height: 100vh;
-            overflow-y: auto;
-            scroll-snap-type: y mandatory;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
-            }
-
-        /* snap targets */
-        #root,
-        .R3FHeader,
-        .section-immersive,
-        footer {
-            scroll-snap-align: start;
-            scroll-snap-stop: always;
-            /* forces stop on each */
-            }
 
         /* ensure header + sections fill a viewport */
         #root {
@@ -446,26 +226,6 @@
             height: 100vh;
             }
 
-        /* your header wrapper */
-        .section-immersive {
-            min-height: 100vh;
-            }
-
-        /* kill the second scroller completely */
-        html, body {
-            overflow: hidden;
-            }
-
-        /* body does NOT scroll */
-        #snap-container {
-            height: auto;
-            overflow: visible;
-            }
-
-        /* remove outer margins that break snapping */
-        .section-immersive {
-            margin: 0;
-            }
 
         /* replace margins with padding inside */
 
@@ -547,8 +307,8 @@
   const xRatio = () => innerWidth / BASE_W;
   const yRatio = () => innerHeight / BASE_H;
 
-  const NODE_PX = 0.91;
-  const FOV = 70;
+  const NODE_PX = 1.2;
+  const FOV = 95;
   const CAMERA_FAR = 5e3;
   const CAMERA_NEAR = 0.1;
 
@@ -633,31 +393,6 @@
 
   const Title = TitleBase;
 
-  /* ================= Title (react-spring crossfade) =================
-  function TitleBase({ intl, current }) {
-    const [items, setItems] = React.useState([]);
-    React.useEffect(() => {
-      setItems({ text: intl.formatMessage({ id: `home-main-title-${current}` }), key: String(current) });
-    }, [current, intl]);
-    const transitions = useTransition(items, {
-      config: { mass: 1, tension: 140, friction: 40 },
-      trail: 1500,
-      initial: { opacity: 0, position: 'absolute', transform: 'translate3d(100px,-50%,0)' },
-      from: { opacity: 0, position: 'absolute', transform: 'translate3d(100px,-50%,0)' },
-      enter: { opacity: 1, position: 'absolute', transform: 'translate3d(0px,-50%,0)' },
-      leave: { opacity: 0, position: 'absolute', transform: 'translate3d(-100px,-50%,0)' },
-      keys: item => item.key,
-    });
-    return React.createElement('div', { className: 'TitleContainer' },
-      React.createElement('div', { className: 'TitleHome' },
-        React.createElement('div', { key: current },
-          transitions((style, item) => React.createElement(animated.div, { style }, item.text)),
-        )));
-  }
-  const Title = injectIntl(TitleBase);
-  */
-
-  /* ================= Shaders ================= */
   const edgeShader = {
     transparent: true,
     depthTest: false,
@@ -919,7 +654,7 @@
 
     useFrame(() => {
       if (!geo.current || !mat.current) return;
-      mat.current.uniforms.paillette.value += 0.0317;
+      mat.current.uniforms.paillette.value += 0.02;
 
       if (state.nodesFrom) {
         const posA = geo.current.getAttribute('instancePosition');
@@ -1077,7 +812,7 @@
     const [settings, setSettings] = React.useState({
       layout: Object.keys(layouts)[0],
       colorScale: 'users',
-      edges: { display: true, opacity: 0.1, width: EDGE_PX_EMPH },
+      edges: { display: true, opacity: 0.05, width: EDGE_PX_EMPH },
       nodes: { display: true, opacity: 1, width: 1 },
       axises: {
         axis1: {
@@ -1166,8 +901,8 @@
       state.seed = new Float32Array(state.nodesFrom.length / 3);
       for (let i = 0; i < state.seed.length; i++) state.seed[i] = Math.random() * 1000;
 
-      state.wobbleAmp   = 1.3;
-      state.wobbleFreq  = 0.99;
+      state.wobbleAmp   = 1.1;
+      state.wobbleFreq  = 0.9;
       state.wobbleScale = 1;      // wird dynamisch gesetzt
 
       state.lerpMax = 0.09;   // schnell am Anfang
@@ -1202,14 +937,14 @@
 
     const bumpFrame = React.useCallback(() => {
       frameRef.current = (frameRef.current + 1) % data.frames.length
-      console.debug('bumpFrame', frameRef.current);
+      //console.debug('bumpFrame', frameRef.current);
       const [p, c] = data.frames[frameRef.current];
       state.nodesTo.set(p);
       state.colTo.set(c);
       updateWobbleScale();           // << hier Skala aktualisieren
     }, [data.frames, state]);
 
-    window.nextFrame = bumpFrame;
+
     /* ---- LERP loop (worker or main) ---- */
     let worker = null;
 
@@ -1243,7 +978,7 @@
           minF: state.lerpMin,
           snap: state.snapDist
         }
-      ]);;
+      ]);
     }
 
     function tickFallback(){
@@ -1546,7 +1281,7 @@
           const a = anime.timeline({ easing: 'easeInOutExpo' })
           .add({
             targets: { opacity: 0 },
-            opacity: 0.5,
+            opacity: 0.35,
             delay: 5000,
             easing: 'linear',
             duration: 4000,
@@ -1615,7 +1350,7 @@
               };
               setEdgeWidthPx(EDGE_PX_EMPH)
               setBackground(BACKG[1]);
-              //setEdgeOpacity(0.05)
+              setEdgeOpacity(0.025)
               setSettings(currentSettings);
             },
           }, 200).add({
@@ -1642,7 +1377,7 @@
               };
               // CIRCLE EXTRUSION SETTINGS
               setEdgeOpacity(0.05)
-              setEdgeWidthPx(EDGE_PX_EMPH * 7);
+              setEdgeWidthPx(EDGE_PX_EMPH * 4);
               setSettings(currentSettings);
             },
           }, 1500).add({
@@ -1714,7 +1449,7 @@
         animations.push(anime({
           targets: state,
           ...{
-            cameraLat: Math.PI * 2.7,
+            cameraLat: Math.PI * 2.6,
             cameraRadius: (height * 1.1) / ratio()
           },
           easing: 'linear',
@@ -1889,11 +1624,11 @@
 
   const removeLoader = () => {
     const intro = document.getElementById('intro-overlay');
-    intro.style.transition = 'opacity 0.5s ease';
+    intro.style.transition = 'opacity .5s ease';
     setTimeout(() => {
       intro.style.opacity = '0'; // fade-out
-      setTimeout(() => intro.remove(), 500); // detach from DOM
-    }, 500);
+      setTimeout(() => intro.remove(), 1500); // detach from DOM
+    }, 1500);
   };
 
 </script>
