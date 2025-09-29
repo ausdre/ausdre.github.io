@@ -307,7 +307,7 @@
   const xRatio = () => innerWidth / BASE_W;
   const yRatio = () => innerHeight / BASE_H;
 
-  const NODE_PX = 1.2;
+  const NODE_PX = isMobile ? 0.9 : 1.2;
   const FOV = 95;
   const CAMERA_FAR = 5e3;
   const CAMERA_NEAR = 0.1;
@@ -320,7 +320,7 @@
   */
   const edgeClipFromPx = (px) => (px * 2.0) / 1080.0;
   const EDGE_PX_BASE = isMobile ? 14 : 18; // Grunddicke (sichtbar, aber dezent)
-  const EDGE_PX_EMPH = isMobile ? 35 : 55; // betont (Steps 3 & 6)
+  const EDGE_PX_EMPH = isMobile ? 45 : 55; // betont (Steps 3 & 6)
 
 
   const layouts = {
@@ -901,12 +901,12 @@
       state.seed = new Float32Array(state.nodesFrom.length / 3);
       for (let i = 0; i < state.seed.length; i++) state.seed[i] = Math.random() * 1000;
 
-      state.wobbleAmp   = 1.1;
+      state.wobbleAmp   = 1;
       state.wobbleFreq  = 0.9;
       state.wobbleScale = 1;      // wird dynamisch gesetzt
 
       state.lerpMax = 0.09;   // schnell am Anfang
-      state.lerpMin = 0.02;  // sehr langsam am Ende
+      state.lerpMin = 0.04;  // sehr langsam am Ende
       state.snapDist = 0.001;   // unterhalb: direkt aufs Ziel setzen
 
       setLayoutEdges(settings.layout);
@@ -1146,34 +1146,34 @@
         // connections mit edges collapse zu circle
         setTimeout(() => {
           bumpFrame();
-          setTimeout(setStep, 200);
+          setTimeout(setStep, 1000);
         }, calcOffset(6000));
 
         // circle extrusion mit edges
         setTimeout(() => {
           bumpFrame();
-          setTimeout(setStep, 1400);
+          setTimeout(setStep, 2400);
         }, calcOffset(3600));
 
         // circle transform to grid
         setTimeout(() => {
           bumpFrame();
-          setTimeout(setStep, 2000);
+          setTimeout(setStep, 3000);
         }, calcOffset(3000));
 
         setTimeout(() => {
           bumpFrame();
-          setTimeout(setStep, 200);
+          setTimeout(setStep, 1000);
         }, calcOffset(6000));
 
         setTimeout(() => {
           bumpFrame();
-          setTimeout(setStep, 100);
+          setTimeout(setStep, 1500);
         }, calcOffset(5000));
 
         setTimeout(() => {
           bumpFrame();
-          setTimeout(setStep, 100);
+          setTimeout(setStep, 500);
         }, calcOffset(8000));
 
         const state = {
