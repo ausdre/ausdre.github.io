@@ -303,13 +303,13 @@
   const BASE_W = 2560, BASE_H = 1361;
   const BACKG = ['#030519', '#120319', '#031419'];
 
-  const ratio = () => Math.max(innerWidth / BASE_W, innerHeight / BASE_H);
-  const xRatio = () => innerWidth / BASE_W;
-  const yRatio = () => innerHeight / BASE_H;
+  const ratio = Math.max(innerWidth / BASE_W, innerHeight / BASE_H);
+  const xRatio = innerWidth / BASE_W;
+  const yRatio = innerHeight / BASE_H;
 
-  const NODE_PX = isMobile ? 0.9 : 1.2;
-  const FOV = 95;
-  const CAMERA_FAR = 5e3;
+  const NODE_PX = isMobile ? 0.9 : 1;
+  const FOV = 75;
+  const CAMERA_FAR = 9000;
   const CAMERA_NEAR = 0.1;
 
   /* Edge-Breiten-Konfiguration:
@@ -320,7 +320,7 @@
   */
   const edgeClipFromPx = (px) => (px * 2.0) / 1080.0;
   const EDGE_PX_BASE = isMobile ? 14 : 18; // Grunddicke (sichtbar, aber dezent)
-  const EDGE_PX_EMPH = isMobile ? 45 : 55; // betont (Steps 3 & 6)
+  const EDGE_PX_EMPH = isMobile ? 55 : 70; // betont (Steps 3 & 6)
 
 
   const layouts = {
@@ -398,43 +398,131 @@
     depthTest: false,
     depthWrite: false,
     uniforms: {
-      opacity: { value: 0.0 }, // wird pro Step gesetzt
+      opacity: { value: 0.005 }, // wird pro Step gesetzt
       width: { value: edgeClipFromPx(EDGE_PX_EMPH) }, // wird pro Frame aus state.edgeWidthPx gespiegelt
       resolution: { value: new THREE.Vector2(1920, 1080) }
     },
-    vertexShader: `
-      precision highp float; uniform vec2 resolution; uniform float width;
-      attribute vec3 instanceFrom,instanceTo;
-      void main(){
-        // Y "fix" auf 1080 -> width verhält sich pixelähnlich über verschiedene Viewports
-        vec2 r=vec2(resolution.x,1080.0);
-        float aspect=r.x/r.y;
-        vec4 s=projectionMatrix*(modelViewMatrix*vec4(instanceFrom,1.0));
-        vec4 e=projectionMatrix*(modelViewMatrix*vec4(instanceTo,1.0));
-        vec2 ns=s.xy/s.w, ne=e.xy/e.w, dir=ne-ns; dir.x*=aspect; dir=normalize(dir);
-        vec2 off=vec2(dir.y,-dir.x); dir.x/=aspect; off.x/=aspect;
-        if(position.x<0.0) off*=-1.0;
-        if(position.y<0.0) off+=-dir; else if(position.y>1.0) off+=dir;
-        off*=width; vec4 clip=(position.y<0.5)?s:e; clip.xy+=off; gl_Position=clip;
-      }`,
-    fragmentShader: `precision highp float; uniform float opacity; void main(){ gl_FragColor=vec4(1.0,1.0,1.0,opacity); }`,
+    vertexShader: `#define PI 3.1415926535897932384626433832795
+    precision highp float;
+
+    uniform vec2 resolution;
+    uniform float opacity;
+    uniform float width;
+
+    attribute vec3 instanceFrom;
+    attribute vec3 instanceTo;
+
+    varying vec3 vColor;
+    varying float vOpacity;
+    varying float vDistance;
+
+    float atan2(in float y, in float x)
+    {
+        return x == 0.0 ? sign(y) * PI / 2.0 : atan(y, x);
+    }
+
+    void main() {
+      vec2 r = vec2(resolution.x, 1080);
+      float linewidth = width;
+      float aspect = r.x / r.y;
+
+      vec4 start = modelViewMatrix * vec4( instanceFrom, 1.0 );
+      vec4 end = modelViewMatrix * vec4( instanceTo, 1.0 );
+
+      vec4 clipStart = projectionMatrix * start;
+      vec4 clipEnd = projectionMatrix * end;
+
+      vec2 ndcStart = clipStart.xy / clipStart.w;
+      vec2 ndcEnd = clipEnd.xy / clipEnd.w;
+
+      // direction
+      vec2 dir = ndcEnd - ndcStart;
+
+      // account for clip-space aspect ratio
+      dir.x *= aspect;
+      dir = normalize( dir );
+
+      // perpendicular to dir
+      vec2 offset = vec2( dir.y, - dir.x );
+
+      // undo aspect ratio adjustment
+      dir.x /= aspect;
+      offset.x /= aspect;
+
+      // sign flip
+      if ( position.x < 0.0 ) offset *= - 1.0;
+
+      // endcaps
+      if ( position.y < 0.0 ) {
+        offset += - dir;
+      } else if ( position.y > 1.0 ) {
+        offset += dir;
+      }
+
+      // adjust for linewidth
+      offset *= linewidth;
+
+      // adjust for clip-space to screen-space conversion // maybe resolution should be based on viewport ...
+      // offset /= resolution.y;
+
+      // select end
+      vec4 clip = ( position.y < 0.5 ) ? clipStart : clipEnd;
+
+      // back to clip space
+      // offset *= clip.w;
+
+      clip.xy += offset;
+      vOpacity = opacity;
+
+      gl_Position = clip;
+    }`,
+    fragmentShader: `precision highp float;
+    varying float vOpacity;
+    void main() {
+      gl_FragColor = vec4(1.0, 1.0, 1.0, vOpacity);
+    }`,
   };
   const nodeShader = {
     transparent: true,
     depthTest: true,
     depthWrite: true,
     uniforms: { paillette: { value: 0 } },
-    vertexShader: `
-      precision highp float; uniform float paillette;
-      attribute vec3 instancePosition,instanceColor; attribute float instanceScale,instanceOpacity;
-      varying vec3 vColor; varying float vOpacity;
-      void main(){
-        vec4 mv=modelViewMatrix*vec4(instancePosition,1.0);
-        mv.xyz+=position*instanceScale; gl_Position=projectionMatrix*mv;
-        vColor=instanceColor+(vec3(1.0)*(cos(instanceOpacity+paillette)*0.1));
-        vOpacity=(instanceOpacity==1.0)?(0.8+cos(instanceOpacity+paillette)*0.2):instanceOpacity;
-      }`,
-    fragmentShader: `precision highp float; varying vec3 vColor; varying float vOpacity; void main(){ gl_FragColor=vec4(vColor,vOpacity); }`,
+    vertexShader: `precision highp float;
+    uniform float paillette;
+
+    attribute vec3 instancePosition;
+    attribute vec3 instanceColor;
+    attribute float instanceScale;
+    attribute float instanceOpacity;
+
+    varying vec3 vColor;
+    varying float vOpacity;
+
+    void main() {
+      // world matrix * instance position = world position
+      vec4 mvPosition = modelViewMatrix * vec4(instancePosition, 1.0);
+
+      // add scale
+      mvPosition.xyz += position * instanceScale;
+
+      // compute instance position from camera
+      gl_Position = projectionMatrix * mvPosition;
+
+      vColor = instanceColor + (vec3(1.0, 1.0 ,1.0) * (cos(instanceOpacity + paillette) * 0.1));
+      if (instanceOpacity == 1.0) {
+        vOpacity = 0.8 + cos(instanceOpacity + paillette) * 0.2;
+      } else {
+        vOpacity = instanceOpacity;
+      }
+    }`,
+    fragmentShader: `precision highp float;
+    varying vec3 vColor;
+    varying float vOpacity;
+
+    void main() {
+      gl_FragColor = vec4(vColor, vOpacity);
+      // gl_FragColor.a *= ((1.0 - pow( gl_FragCoord.z, 10000.0 )));
+    }`,
   };
 
   /* ================= Load data + global centering ================= */
@@ -528,42 +616,37 @@
   }
   /* ================= Inline worker (no-transfer → no detach) ================= */
   const workerCode = `
-  function easeInOutExpo(t){
-    if (t <= 0) return 0;
-    if (t >= 1) return 1;
-    return t < 0.5
-      ? Math.pow(2, 20 * t - 10) / 2
-      : 1 - Math.pow(2, -20 * t + 10) / 2;
-  }
 
   onmessage = (e)=>{
     let [nodesFrom, nodesTo, edgesFrom, edgesTo, relations, seed, params] = e.data;
-    const { time, amp, freq, scale, maxF, minF, snap } = params;
+    const { time, amp, freq, scale, gain, floorF, snap, dt } = params;
+
+function easeInOutExpo(t){
+  if (t <= 0) return 0;
+  if (t >= 1) return 1;
+  return t < 0.5 ? Math.pow(2, 20*t - 10)/2 : 1 - Math.pow(2, -20*t + 10)/2;
+}
 
     const N = nodesTo.length/3;
-    for (let i=0;i<N;i++){
-      const i3 = i*3;
+for (let i=0;i<N;i++){
+  const i3 = i*3;
+  const dx0 = nodesTo[i3]-nodesFrom[i3];
+  const dy0 = nodesTo[i3+1]-nodesFrom[i3+1];
+  const dz0 = nodesTo[i3+2]-nodesFrom[i3+2];
+  const dist0 = Math.sqrt(dx0*dx0 + dy0*dy0 + dz0*dz0);
 
-      // Distanz zum Ziel
-      const dx0 = nodesTo[i3]   - nodesFrom[i3];
-      const dy0 = nodesTo[i3+1] - nodesFrom[i3+1];
-      const dz0 = nodesTo[i3+2] - nodesFrom[i3+2];
-      const dist0 = Math.sqrt(dx0*dx0 + dy0*dy0 + dz0*dz0);
-
-      if (dist0 < snap){
-        nodesFrom[i3]   = nodesTo[i3];
-        nodesFrom[i3+1] = nodesTo[i3+1];
-        nodesFrom[i3+2] = nodesTo[i3+2];
-      } else {
-        // adaptiver LERP-Faktor via easeInOutExpo
-        const x = Math.min(1, dist0 / (scale || 1));   // 0..1
-        const eased = easeInOutExpo(x);                // 0..1
-        const f = (minF || 0.001) + ((maxF || 0.08) - (minF || 0.001)) * eased;
-
-        nodesFrom[i3]   += dx0 * f;
-        nodesFrom[i3+1] += dy0 * f;
-        nodesFrom[i3+2] += dz0 * f;
-      }
+  if (dist0 < snap){
+    nodesFrom[i3]=nodesTo[i3]; nodesFrom[i3+1]=nodesTo[i3+1]; nodesFrom[i3+2]=nodesTo[i3+2];
+  } else {
+    const x = Math.min(1, dist0 / (scale || 1));    // 0..1
+    // Gain + Floor + FPS-Normierung:
+    let f = (gain || 0.08) * easeInOutExpo(x) * ((dt || 1/60) * 60);
+    if (floorF) f = Math.max(f, floorF);            // z.B. 0.004
+    // LERP
+    nodesFrom[i3]   += dx0 * f;
+    nodesFrom[i3+1] += dy0 * f;
+    nodesFrom[i3+2] += dz0 * f;
+  }
 
       // Wobble nur während Bewegung, distanz-gewichtet
       if (dist0 > 1e-4 && amp > 0 && freq > 0){
@@ -611,7 +694,7 @@
     const root = React.useRef();
     const geo = React.useRef();
     const mat = React.useRef();
-    const base = React.useMemo(() => new THREE.CircleGeometry(2, 24), []);
+    const base = React.useMemo(() => new THREE.CircleGeometry(2, 30), []);
 
     React.useEffect(() => {
       const g = new THREE.InstancedBufferGeometry();
@@ -623,6 +706,8 @@
       const m = new THREE.ShaderMaterial(nodeShader);
       mat.current = m;
       const mesh = new THREE.Mesh(g, m);
+      mesh.matrixWorldNeedsUpdate = false
+      mesh.matrixAutoUpdate = false
       mesh.frustumCulled = false;
       root.current.add(mesh);
       return () => {
@@ -654,7 +739,7 @@
 
     useFrame(() => {
       if (!geo.current || !mat.current) return;
-      mat.current.uniforms.paillette.value += 0.02;
+      mat.current.uniforms.paillette.value += 0.03;
 
       if (state.nodesFrom) {
         const posA = geo.current.getAttribute('instancePosition');
@@ -705,13 +790,15 @@
       geo.current = g;
       const m = new THREE.ShaderMaterial(edgeShader);
       // Optional: additive Blending lässt Linien „glühen“
-      m.blending = THREE.AdditiveBlending;
+      //m.blending = THREE.AdditiveBlending;
       m.transparent = true;
       m.depthTest = false;
       m.depthWrite = false;
       m.uniforms.width.value = edgeClipFromPx(EDGE_PX_EMPH);
       mat.current = m;
       const mesh = new THREE.Mesh(g, m);
+      mesh.matrixWorldNeedsUpdate = false
+      mesh.matrixAutoUpdate = false
       mesh.frustumCulled = false;
       root.current.add(mesh);
       return () => {
@@ -764,6 +851,7 @@
       camera.far = CAMERA_FAR;
       camera.updateProjectionMatrix();
     }, [camera, state.fov]);
+
     React.useEffect(() => {
       gl.setPixelRatio(state.dpr);
       gl.setSize(state.viewportW, state.viewportH, false);
@@ -799,6 +887,7 @@
 
   function Scene({ data }) {
     const [dims, setDims] = React.useState({ w: innerWidth, h: innerHeight, dpr: Math.min(devicePixelRatio || 1, 2) });
+
     React.useEffect(() => {
       const onR = () => setDims({ w: innerWidth, h: innerHeight, dpr: Math.min(devicePixelRatio || 1, 2) });
       addEventListener('resize', onR, { passive: true });
@@ -806,7 +895,9 @@
     }, []);
 
     const [uiStep, setUiStep] = React.useState(0);
+
     const [bg, setBg] = React.useState(BACKG[0]);
+
     React.useEffect(() => setBG(bg), [bg]);
 
     const [settings, setSettings] = React.useState({
@@ -839,48 +930,44 @@
     const state = React.useRef({
       viewportW: dims.w,
       viewportH: dims.h,
+
       dpr: dims.dpr,
       fov: FOV,
-      camZ: dims.h * 0.5 / ratio(),
+      camZ: dims.h * 0.5 / ratio,
+
       needsScaleUpdate: true,
       nodesFrom: null,
       nodesTo: null,
+
       colFrom: null,
       colTo: null,
+
       edgesFrom: null,
       edgesTo: null,
       edgePairs: [],
       edgeOpacity: 0.0,
       edgeWidthPx: EDGE_PX_EMPH,
-      workerTicks: 0,
+
+      wobbleAmp   : 1.1,
+      wobbleFreq  : 4,
+      wobbleScale : 1,   // wird dynamisch gesetzt
+
+      tailStart: 0.80,     // 80% schnell, 20% Tail
+      fFast     : 0.03,    // konstantes Tempo in den ersten 80% (pro 60 FPS)
+      tailGain  : 0.01,    // Stärke im Tail (pro 60 FPS)
+      floorF    : 0.01,   // Mindestschritt
+
+      snapDist : 1e-5,   // unterhalb: direkt aufs Ziel setzen
+
+      workerTicks: 0
     }).current;
 
     const setEdgeOpacity = (o) => { state.edgeOpacity = o; };
     const setEdgeWidthPx = (px) => { state.edgeWidthPx = px; };
     const setBackground = (c) => setBg(c);
+
+    // changed
     const setStep = () => setUiStep(prev => (prev + 1) % MESSAGES.length);
-
-    function percentile(arr, p){
-      if (!arr.length) return 1;
-      const a = arr.slice().sort((x,y)=>x-y);
-      const i = Math.min(a.length-1, Math.max(0, Math.floor((p/100)*a.length)));
-      return a[i] || 1;
-    }
-
-    function updateWobbleScale(){
-      const nf = state.nodesFrom, nt = state.nodesTo;
-      const N = nt.length/3;
-      const dists = new Array(N);
-      for (let i=0;i<N;i++){
-        const i3=i*3;
-        const dx = nt[i3]-nf[i3], dy = nt[i3+1]-nf[i3+1], dz = nt[i3+2]-nf[i3+2];
-        dists[i] = Math.hypot(dx,dy,dz);
-      }
-      // robuste Skala: 90. Perzentil der aktuellen Bewegungsdistanzen
-      let s = percentile(dists, 90);
-      if (!(s>0)) s = 1;
-      state.wobbleScale = s;
-    }
 
     React.useEffect(() => {
       state.viewportW = dims.w;
@@ -890,43 +977,60 @@
       state.needsScaleUpdate = true;
     }, [dims]);
 
+
+    // ================= Init (in Scene.useEffect nach loadFramesAndLinks) =================
     React.useEffect(() => {
       const [p0, c0] = data.frames[0];
-      state.nodesFrom = new Float32Array(p0);
-      state.nodesTo = new Float32Array(p0);
-      state.colFrom = new Float32Array(c0);
-      state.colTo = new Float32Array(c0);
+      const N = p0.length / 3;
 
-      // Seeds für organisches Wobble
-      state.seed = new Float32Array(state.nodesFrom.length / 3);
-      for (let i = 0; i < state.seed.length; i++) state.seed[i] = Math.random() * 1000;
+      // Speicher anlegen, aber NICHT chaotisch füllen
+      state.nodesFrom = new Float32Array(p0.length);           // bleibt 0 bis bumpFrame()
+      state.nodesTo   = new Float32Array(p0.length);           // Ziel wird in bumpFrame gesetzt
+      state.colFrom   = new Float32Array(c0.length);
+      state.colTo     = new Float32Array(c0.length);
+      state.initDist  = new Float32Array(N);
 
-      state.wobbleAmp   = 1;
-      state.wobbleFreq  = 0.9;
-      state.wobbleScale = 1;      // wird dynamisch gesetzt
+      // Seeds für optionales Wobble
+      state.seed = new Float32Array(N);
+      for (let i=0;i<N;i++) state.seed[i] = Math.random() * 1000;
 
-      state.lerpMax = 0.09;   // schnell am Anfang
-      state.lerpMin = 0.04;  // sehr langsam am Ende
-      state.snapDist = 0.001;   // unterhalb: direkt aufs Ziel setzen
+      // Defaults für Lerp/Timing
+      state.tailStart = state.tailStart ?? 0.8;   // 80% schnell
+      state.fFast     = state.fFast     ?? 0.16;  // pro 60 FPS
+      state.tailGain  = state.tailGain  ?? 0.14;  // pro 60 FPS
+      state.floorF    = state.floorF    ?? 0.003;
+      state.snapDist  = state.snapDist  ?? 0;
 
+      // Wobble-Defaults (kann 0 bleiben)
+      state.wobbleAmp  = state.wobbleAmp  ?? 0;
+      state.wobbleFreq = state.wobbleFreq ?? 0;
+
+      // Edges vorbereiten
       setLayoutEdges(settings.layout);
-      setBg(BACKG[0]);
-      startLerpLoop();
+
+      // erster Frame wird via bumpFrame gesetzt
+      setBG(BACKG[0]);
+
+      // Render-Loop starten (ohne Worker)
+      requestAnimationFrame(tickFallback);
     }, []);
 
-    React.useEffect(() => { setLayoutEdges(settings.layout); }, [settings.layout]);
 
     function setLayoutEdges(layoutKey) {
       const key = linksKeyForLayout(layoutKey);
       const raw = data.linksByType[key] || [];
       const pairs = dedupeLinks(raw);
+
       state.edgePairs = pairs;
       state.edgesFrom = new Float32Array(pairs.length * 3);
       state.edgesTo = new Float32Array(pairs.length * 3);
     }
 
-    const frameRef = React.useRef(0);
+    React.useEffect(() => { setLayoutEdges(settings.layout); }, [settings.layout]);
+
+    const frameRef = React.useRef(-1);
     window.frameRef = frameRef;
+
     window.setEdgeOpacity = setEdgeOpacity;
     window.setEdgeWidthPx = setEdgeWidthPx;
     window.setSettings = setSettings;
@@ -935,21 +1039,91 @@
     window.state = state;
     window.data = data;
 
+// ================= bumpFrame (komplett) =================
     const bumpFrame = React.useCallback(() => {
-      frameRef.current = (frameRef.current + 1) % data.frames.length
-      //console.debug('bumpFrame', frameRef.current);
+      // Erstaufruf: Offscreen-Spawn + erstes Ziel setzen
+      if (frameRef.current === -1) {
+        frameRef.current = 0;
+
+        const [p0, c0] = data.frames[0];
+        const N = p0.length / 3;
+
+        // --- 1) Offscreen-Spawn basierend auf Kamera/Viewport ---
+        const aspect = state.viewportW / state.viewportH;
+        const viewH  = 2 * Math.tan((state.fov * Math.PI / 180) * 0.5) * state.camZ;
+        const viewW  = viewH * aspect;
+        const diagR  = Math.hypot(viewW * 0.5, viewH * 0.5);
+        const spawnR = diagR * 1.25; // 25% außerhalb des Bildes
+
+        for (let i = 0; i < N; i++) {
+          const a = Math.random() * Math.PI * 2;     // Ring
+          state.nodesFrom[i*3+0] = Math.cos(a) * spawnR;
+          state.nodesFrom[i*3+1] = Math.sin(a) * spawnR;
+          state.nodesFrom[i*3+2] = 0;                // oder leichte Z-Varianz
+        }
+
+        // --- 2) Wobble temporär aus, damit sauber einfliegen ---
+        state.initialFlight = true;
+        state._wobbleBackup = { amp: state.wobbleAmp, freq: state.wobbleFreq };
+        state.wobbleAmp = 0; state.wobbleFreq = 0;
+
+        // --- 3) Ziel + Farben auf erstes Frame ---
+        state.nodesTo.set(p0);
+        state.colTo.set(c0);
+        // colFrom initial gleich colTo (keine Farb-Interps beim ersten Setzen)
+        state.colFrom.set(c0);
+
+        // --- 4) initDist + wobbleScale berechnen ---
+        const dists = new Array(N);
+        for (let i=0;i<N;i++){
+          const i3=i*3;
+          const d = Math.hypot(
+              state.nodesTo[i3]-state.nodesFrom[i3],
+              state.nodesTo[i3+1]-state.nodesFrom[i3+1],
+              state.nodesTo[i3+2]-state.nodesFrom[i3+2]
+          );
+          state.initDist[i] = d;
+          dists[i] = d;
+        }
+        dists.sort((a,b)=>a-b);
+        state.wobbleScale = Math.max(1e-6, dists[Math.floor(0.9*(N-1))] || 1);
+
+        return; // fertig für den ersten Flug
+      }
+
+      // Folgeaufrufe: normales Weiterschalten
+      frameRef.current = (frameRef.current + 1) % data.frames.length;
       const [p, c] = data.frames[frameRef.current];
+
       state.nodesTo.set(p);
       state.colTo.set(c);
-      updateWobbleScale();           // << hier Skala aktualisieren
+      if (!state.colFrom || state.colFrom.length !== c.length) {
+        state.colFrom = new Float32Array(c);
+      }
+
+      // initDist + wobbleScale für neue Transition
+      const N = p.length / 3;
+      const dists = new Array(N);
+      for (let i=0;i<N;i++){
+        const i3=i*3;
+        const d = Math.hypot(
+            state.nodesTo[i3]-state.nodesFrom[i3],
+            state.nodesTo[i3+1]-state.nodesFrom[i3+1],
+            state.nodesTo[i3+2]-state.nodesFrom[i3+2]
+        );
+        state.initDist[i] = d;
+        dists[i] = d;
+      }
+      dists.sort((a,b)=>a-b);
+      state.wobbleScale = Math.max(1e-6, dists[Math.floor(0.9*(N-1))] || 1);
     }, [data.frames, state]);
 
-
     /* ---- LERP loop (worker or main) ---- */
-    let worker = null;
-
+    let worker;
+    let lerping=false;
+    const useWorker = false;
     function startLerpLoop() {
-      worker = makeWorker();
+      worker = useWorker ? makeWorker() : null;
       if (worker) {
         worker.onmessage = (e)=>{
           const [nodesFromArr, edgesFromArr, edgesToArr] = e.data;
@@ -965,68 +1139,107 @@
       }
     }
 
+    let lastT = performance.now();
+
     function tick(){
+      const now = performance.now();
+      const dt  = Math.max(1/120, (now - lastT) / 1000); // s
+      lastT = now;
+
       worker.postMessage([
         state.nodesFrom, state.nodesTo, state.edgesFrom, state.edgesTo, state.edgePairs,
         state.seed,
         {
-          time: performance.now()*0.001,
+          time: now*0.001,
           amp: state.wobbleAmp,
           freq: state.wobbleFreq,
           scale: state.wobbleScale,
-          maxF: state.lerpMax,
-          minF: state.lerpMin,
-          snap: state.snapDist
+          gain: 0.10,          // Startempfehlung: 0.08–0.18
+          floorF: 0.025,       // Minimaler Schritt, verhindert „stehen bleiben“
+          snap: 1e-4,
+          dt
         }
       ]);
     }
 
+    function easeOutExpo(t){ return t<=0?0 : t>=1?1 : 1 - Math.pow(2, -10*t); }
+
+    function easeInOutExpo(t){
+      if (t <= 0) return 0;
+      if (t >= 1) return 1;
+      return t < 0.5
+          ? Math.pow(2, 20 * t - 10) / 2
+          : 1 - Math.pow(2, -20 * t + 10) / 2;
+    }
+
     function tickFallback(){
-      const nf = state.nodesFrom, nt = state.nodesTo, rel = state.edgePairs, seed = state.seed;
+      const now = performance.now();
+      const dt  = Math.max(1/120, (now - lastT) / 1000); // Sekunden
+      lastT = now;
+
+      const nf = state.nodesFrom, nt = state.nodesTo, rel = state.edgePairs;
       if (!nf || !nt || !rel) { requestAnimationFrame(tickFallback); return; }
 
-      const N = nt.length/3, time = performance.now()*0.001;
-      const amp = state.wobbleAmp||0, freq = state.wobbleFreq||0;
-      const scale = state.wobbleScale>0 ? state.wobbleScale : 1;
-      const maxF = state.lerpMax||0.08, minF = state.lerpMin||0.001, pow = state.lerpPow||1.2;
-      const snap = state.snapDist||0.5;
+      const N = nt.length / 3;
+      const dt60 = dt * 60;
+      const tailStart = state.tailStart;
+      const fFast  = Math.max(state.floorF, state.fFast * dt60);
+      const gain   = state.tailGain * dt60;
+      const floorF = state.floorF;
+      const snap   = state.snapDist || 0;
 
+      // Wobble
+      const amp  = state.wobbleAmp  || 0;
+      const freq = state.wobbleFreq || 0;
+      const scale = state.wobbleScale > 0 ? state.wobbleScale : 1;
+      const seed = state.seed || (state.seed = new Float32Array(N));
+
+      // Positions-Update
       for (let i=0;i<N;i++){
-        const i3=i*3;
+        const i3 = i*3;
 
-        const dx0 = nt[i3]-nf[i3];
-        const dy0 = nt[i3+1]-nf[i3+1];
-        const dz0 = nt[i3+2]-nf[i3+2];
-        const dist0 = Math.hypot(dx0,dy0,dz0);
+        const dx0 = nt[i3]   - nf[i3];
+        const dy0 = nt[i3+1] - nf[i3+1];
+        const dz0 = nt[i3+2] - nf[i3+2];
+        const dist0 = Math.hypot(dx0, dy0, dz0);
 
         if (dist0 < snap){
           nf[i3]=nt[i3]; nf[i3+1]=nt[i3+1]; nf[i3+2]=nt[i3+2];
         } else {
-          const x = Math.min(1, dist0/scale);
-          const eased = Math.pow(x, Math.max(0.1, pow));
-          const f = minF + (maxF - minF) * eased;
+          // exakter Fortschritt je Node relativ zur initialen Distanz
+          const id = Math.max(1e-6, state.initDist ? state.initDist[i] : scale);
+          const progress = 1 - dist0 / id; // 0..1
+
+          let f;
+          if (progress < tailStart){
+            f = fFast; // 0..80%: konstantes schnelles LERP
+          } else {
+            const tTail = (progress - tailStart) / (1 - tailStart); // 0..1
+            f = Math.max(floorF, gain * easeOutExpo(tTail));        // 80..100%: Expo-Bremse
+          }
 
           nf[i3]   += dx0 * f;
           nf[i3+1] += dy0 * f;
           nf[i3+2] += dz0 * f;
         }
 
-        if (amp>0 && freq>0){
-          // perpendikuläres Wobble wie zuvor
+        // Optionales perpendikuläres Wobble nur während Bewegung
+        if (amp > 0 && freq > 0){
           const dx = nt[i3]-nf[i3], dy = nt[i3+1]-nf[i3+1], dz = nt[i3+2]-nf[i3+2];
           const dist = Math.hypot(dx,dy,dz);
-          if (dist>1e-4){
-            const inv=1/dist, ux=dx*inv, uy=dy*inv, uz=dz*inv;
-            const ax = Math.abs(ux)<0.9 ? 1:0, ay = Math.abs(ux)<0.9 ? 0:1, az=0;
-            let px = uy*az-uz*ay, py = uz*ax-ux*az, pz = ux*ay-uy*ax;
-            const pl = Math.hypot(px,py,pz)||1e-6; px/=pl; py/=pl; pz/=pl;
-            const falloff = Math.min(1, Math.max(0, dist/scale));
-            const wob = amp * falloff * Math.sin(time*freq + seed[i]);
-            nf[i3]+=px*wob; nf[i3+1]+=py*wob; nf[i3+2]+=pz*wob;
+          if (dist > 1e-4){
+            const inv = 1/dist, ux=dx*inv, uy=dy*inv, uz=dz*inv;
+            const ax = Math.abs(ux) < 0.9 ? 1 : 0, ay = Math.abs(ux) < 0.9 ? 0 : 1, az = 0;
+            let px = uy*az - uz*ay, py = uz*ax - ux*az, pz = ux*ay - uy*ax;
+            const pl = Math.hypot(px,py,pz) || 1e-6; px/=pl; py/=pl; pz/=pl;
+            const falloff = Math.min(1, Math.max(0, dist / scale));
+            const wob = amp * falloff * Math.sin(now*0.001 * freq + seed[i]);
+            nf[i3] += px*wob; nf[i3+1] += py*wob; nf[i3+2] += pz*wob;
           }
         }
       }
 
+      // Edges updaten
       if (!state.edgesFrom || state.edgesFrom.length !== rel.length*3)
         state.edgesFrom = new Float32Array(rel.length*3);
       if (!state.edgesTo || state.edgesTo.length !== rel.length*3)
@@ -1034,13 +1247,38 @@
 
       for (let i=0;i<rel.length;i++){
         const v3=i*3, f3=rel[i].from*3, t3=rel[i].to*3;
-        state.edgesFrom[v3]=nf[f3]; state.edgesFrom[v3+1]=nf[f3+1]; state.edgesFrom[v3+2]=nf[f3+2];
-        state.edgesTo[v3]=nf[t3];   state.edgesTo[v3+1]=nf[t3+1];   state.edgesTo[v3+2]=nf[t3+2];
+        state.edgesFrom[v3]   = nf[f3];
+        state.edgesFrom[v3+1] = nf[f3+1];
+        state.edgesFrom[v3+2] = nf[f3+2];
+        state.edgesTo[v3]     = nf[t3];
+        state.edgesTo[v3+1]   = nf[t3+1];
+        state.edgesTo[v3+2]   = nf[t3+2];
+      }
+
+      // ================= Re-Enable Wobble während des ersten Flugs (am Ende von tickFallback) =================
+      if (state.initialFlight) {
+        // groben Fortschritt schätzen
+        const nf = state.nodesFrom, nt = state.nodesTo;
+        const N = nt.length/3;
+        let acc=0, cnt=0;
+        for (let i=0;i<N;i+=256){
+          const i3=i*3;
+          const d0 = state.initDist[i] || 1;
+          const d  = Math.hypot(nt[i3]-nf[i3], nt[i3+1]-nf[i3+1], nt[i3+2]-nf[i3+2]);
+          acc += 1 - d/Math.max(1e-6, d0); cnt++;
+        }
+        const avg = acc / Math.max(1, cnt);
+        if (avg > 0.2) { // nach ~20% Weg Wobble wieder an
+          if (state._wobbleBackup) {
+            state.wobbleAmp  = state._wobbleBackup.amp ?? state.wobbleAmp;
+            state.wobbleFreq = state._wobbleBackup.freq ?? state.wobbleFreq;
+          }
+          state.initialFlight = false;
+        }
       }
 
       requestAnimationFrame(tickFallback);
     }
-
     React.useEffect(() => () => { if (worker) worker.terminate(); }, []);
 
     window.setLerpTail = (min,max,snap) => {state.lerpMin=min; state.lerpMax=max; state.snapDist=snap};
@@ -1122,59 +1360,68 @@
 
       async function run() {
         let currentSettings = settingsClone;
-        const width = window.innerWidth, height = window.innerHeight;
+        const width = window.innerWidth,
+            height = window.innerHeight;
 
         let offset = 0;
+
+
 
         const calcOffset = s => offset = offset + s
 
 
-        setTimeout(setStep, 10);
+                setTimeout(()=>{
+                  if(window.frameRef.current < 0) {
+                    bumpFrame();
+                    setTimeout(setStep, 1000)
+                  }
+                }, 1000);
 
-        // zoom-like effekt direkt nach dem intro schwenk
-        setTimeout(() => {
-          bumpFrame();
-          setTimeout(setStep, 1500);
-        }, calcOffset(4000));
+                // zoom-like effekt direkt nach dem intro schwenk
+                setTimeout(() => {
+                  bumpFrame();
+                  setTimeout(setStep, 1500);
+                }, calcOffset(7000));
 
-        // formt collaboration "tube"
-        setTimeout(() => {
-          bumpFrame();
-          setTimeout(setStep, 3000);
-        }, calcOffset(3000));
+                // formt collaboration "tube"
+                setTimeout(() => {
+                  bumpFrame();
+                  setTimeout(setStep, 3000);
+                }, calcOffset(3000));
 
-        // connections mit edges collapse zu circle
-        setTimeout(() => {
-          bumpFrame();
-          setTimeout(setStep, 1000);
-        }, calcOffset(6000));
+                // connections mit edges collapse zu circle
+                setTimeout(() => {
+                  bumpFrame();
+                  setTimeout(setStep, 1000);
+                }, calcOffset(5000));
 
-        // circle extrusion mit edges
-        setTimeout(() => {
-          bumpFrame();
-          setTimeout(setStep, 2400);
-        }, calcOffset(3600));
+                // circle extrusion mit edges
+                setTimeout(() => {
+                  bumpFrame();
+                  setTimeout(setStep, 2400);
+                }, calcOffset(2800));
 
-        // circle transform to grid
-        setTimeout(() => {
-          bumpFrame();
-          setTimeout(setStep, 3000);
-        }, calcOffset(3000));
+                // circle transform to grid
+                setTimeout(() => {
+                  bumpFrame();
+                  setTimeout(setStep, 3000);
+                }, calcOffset(3000));
 
-        setTimeout(() => {
-          bumpFrame();
-          setTimeout(setStep, 1000);
-        }, calcOffset(6000));
+                setTimeout(() => {
+                  bumpFrame();
+                  setTimeout(setStep, 1000);
+                }, calcOffset(6000));
 
-        setTimeout(() => {
-          bumpFrame();
-          setTimeout(setStep, 1500);
-        }, calcOffset(5000));
+                setTimeout(() => {
+                  bumpFrame();
+                  setTimeout(setStep, 1500);
+                }, calcOffset(5000));
 
-        setTimeout(() => {
-          bumpFrame();
-          setTimeout(setStep, 500);
-        }, calcOffset(8000));
+                setTimeout(() => {
+                  bumpFrame();
+                  setTimeout(setStep, 500);
+                }, calcOffset(8000));
+
 
         const state = {
           cameraLat: Math.PI,
@@ -1194,7 +1441,7 @@
             targets: state,
             ...{
               cameraLat: Math.PI * 2,
-              cameraRadius: state.cameraRadius / ratio()
+              cameraRadius: state.cameraRadius / ratio
             },
             delay: 0,
             duration: 4000,
@@ -1232,7 +1479,7 @@
           animations.push(anime.timeline({ easing: 'easeInOutExpo' }).add({
             targets: { i: 0 },
             ...{ i: 1 },
-            delay: 0,
+            delay: 2000,
             duration: 100,
             changeBegin: function () {
               if (!running) return;
@@ -1240,7 +1487,7 @@
                 ...currentSettings,
                 axises: {
                   ...currentSettings.axises,
-                  axis3: { value: 'users', bounds: { values: [(-window.innerWidth * 0.3) / ratio(), (window.innerWidth * 0.3) / ratio()] } }
+                  axis3: { value: 'users', bounds: { values: [(-window.innerWidth * 0.3) / ratio, (window.innerWidth * 0.3) / ratio] } }
                 }
               };
               setSettings(currentSettings);
@@ -1249,16 +1496,16 @@
           }));
 
           animations.push(anime.timeline({
-                delay: 0,
-                duration: 10000
+                delay: 1000,
+                duration: 12000
               }).add({
+                easing: 'easeInOutExpo',
                 targets: state,
-            easing: 'easeInOutExpo',
                 ...{
                   cameraLat: Math.PI * 2.55,
-                  cameraRadius: (height * 0.9) / ratio()
+                  cameraRadius: (height * 0.9) / ratio
                 },
-                duration: 8000,
+                duration: 10000,
                 changeBegin: function () {
                   if (!running) return;
                   console.debug(".")
@@ -1281,8 +1528,8 @@
           const a = anime.timeline({ easing: 'easeInOutExpo' })
           .add({
             targets: { opacity: 0 },
-            opacity: 0.35,
-            delay: 5000,
+            opacity: 0.15,
+            delay: 7000,
             easing: 'linear',
             duration: 4000,
             update: function (v) { if (running && v.changeBegan) setEdgeOpacity(v.animatables[0].target.opacity); },
@@ -1290,19 +1537,19 @@
             targets: { i: 0 },
             ...{ i: 1 },
             duration: 4000,
-            delay: 4000,
+            delay: 6000,
             changeBegin: function () {
               if (!running) return;
               currentSettings = {
                 ...currentSettings,
-                edges: {
+                /*edges: {
                   ...currentSettings.edges,
                   display: true
-                },
+                },*/
                 axises: {
                   ...currentSettings.axises,
                   axis2: { value: 'projects', bounds: { values: [100, 700] } },
-                  axis3: { value: 'users', bounds: { values: [(-window.innerWidth * 0.3) / ratio(), (window.innerWidth * 0.3) / ratio()] } },
+                  axis3: { value: 'users', bounds: { values: [(-width * 0.3) / ratio, (width * 0.3) / ratio] } },
                 },
               };
               setEdgeWidthPx(EDGE_PX_EMPH*2);
@@ -1334,13 +1581,16 @@
             duration: 100,
             changeBegin: function () {
               if (!running) return;
+              setEdgeWidthPx(EDGE_PX_EMPH*4)
+              setBackground(BACKG[1]);
               currentSettings = {
                 ...currentSettings,
                 colorScale: 'collaborationNumber',
                 edges: {
                   ...currentSettings.edges,
-                  display: true,
-                  // placeholder
+                  opacity: 0.05,
+                  width: 1,
+                  display: true
                 },
                 axises: {
                   ...currentSettings.axises,
@@ -1348,9 +1598,7 @@
                   axis3: { value: 'users', bounds: { values: [-1, 1] } },
                 },
               };
-              setEdgeWidthPx(EDGE_PX_EMPH)
-              setBackground(BACKG[1]);
-              setEdgeOpacity(0.025)
+              setEdgeOpacity(0.05)
               setSettings(currentSettings);
             },
           }, 200).add({
@@ -1363,8 +1611,9 @@
                 ...currentSettings,
                 edges: {
                   ...currentSettings.edges,
+                  opacity: 0.05,
+                  width: 1,
                   display: true
-                  //opacity: 0,
                 },
                 axises: {
                   ...currentSettings.axises,
@@ -1385,7 +1634,7 @@
             targets: state,
             ...{
               cameraLng: Math.PI * -0.25,
-              cameraRadius: (window.innerHeight * 0.66) / ratio()
+              cameraRadius: (height * 0.65) / ratio
             },
             duration: 5000,
             update: function (v) { if (running && v.changeBegan) deplaceCAmera(state.cameraLat, state.cameraLng, state.cameraRadius); },
@@ -1404,7 +1653,7 @@
             targets: state,
             ...{
               cameraLng: 0,
-              cameraRadius: (height * 0.71) / (isMobile ? yRatio() : xRatio())
+              cameraRadius: (height * 0.71) / (isMobile ? yRatio : xRatio)
             },
             easing: 'easeInOutExpo',
             duration: 1000,
@@ -1414,7 +1663,7 @@
             targets: state,
             ...{
               cameraLat: state.cameraLat + Math.PI * 0.01,
-              cameraRadius: (height * 0.62) / (isMobile ? yRatio() : xRatio()),
+              cameraRadius: (height * 0.62) / (isMobile ? yRatio : xRatio),
             },
             easing: 'linear',
             duration: 5000,
@@ -1430,7 +1679,7 @@
                 ...currentSettings,
                 layout: Object.keys(layouts)[1],
                 colorScale: 'projects',
-                edges: { ...currentSettings.edges, display: true },
+                edges: { ...currentSettings.edges, display: false },
                 axises: {
                   axis1: { value: 'startDay', bounds: { values: [-width * 0.48, width * 0.48] } },
                   axis2: { value: 'projectTasks', bounds: { values: [-height * 0.45, height * 0.45] } },
@@ -1450,7 +1699,7 @@
           targets: state,
           ...{
             cameraLat: Math.PI * 2.6,
-            cameraRadius: (height * 1.1) / ratio()
+            cameraRadius: (height * 1.1) / ratio
           },
           easing: 'linear',
           duration: 19000,
@@ -1478,21 +1727,25 @@
           const a = anime.timeline({ easing: 'easeInOutExpo' })
           .add({
             targets: { opacity: 0 },
-            opacity: 0,
+            opacity: 0.05,
             duration: 3000,
             update: function (v) { if (running && v.changeBegan) setEdgeOpacity(v.animatables[0].target.opacity); },
           })
           .add({
             targets: { i: 0 },
             ...{ i: 1 },
-            delay: 1000,
+            delay: 0,
             duration: 6000,
             changeBegin: function () {
               if (!running) return;
               currentSettings = {
                 ...currentSettings,
                 layout: Object.keys(layouts)[3],
-                edges: { ...currentSettings.edges, display: true },
+                edges: {
+                  ...currentSettings.edges,
+                  display: true,
+                  opacity:0.1
+                }
               };
               setEdgeWidthPx(EDGE_PX_EMPH*4);
               setSettings(currentSettings);
@@ -1516,10 +1769,16 @@
             ...{ i: 1 },
             delay: 1000,
             duration: 4000,
-            easing: 'easeInOutExpo',
             changeBegin: function () {
               if (!running) return;
-              currentSettings = { ...currentSettings, edges:{...currentSettings.edges, display:false}, layout: Object.keys(layouts)[2] };
+              currentSettings = {
+                ...currentSettings,
+                edges:{
+                  ...currentSettings.edges,
+                  display:false
+                },
+                layout: Object.keys(layouts)[2]
+              };
               setEdgeWidthPx(EDGE_PX_EMPH);
               setEdgeOpacity(0.0);
               setSettings(currentSettings);
@@ -1534,12 +1793,16 @@
 
       return () => {
         running = false;
-        animations.forEach(d=>anime.remove(d));
+        animations.forEach(
+            d => anime.remove(d)
+        );
       };
     }, []);
 
     return null;
   }
+
+
 
   /* ================= Boot ================= */
   if (!webglOK()) { alert('WebGL unavailable. Enable hardware acceleration.'); }
@@ -1627,8 +1890,8 @@
     intro.style.transition = 'opacity .5s ease';
     setTimeout(() => {
       intro.style.opacity = '0'; // fade-out
-      setTimeout(() => intro.remove(), 1500); // detach from DOM
-    }, 1500);
+      setTimeout(() => intro.remove(), 750); // detach from DOM
+    }, 250);
   };
 
 </script>
